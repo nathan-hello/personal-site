@@ -4,8 +4,8 @@ import Latex from "@components/natalie/Latex.astro";
 import { readRelative } from "@utils/fileReader";
 
 export const details: BlogDetails = {
-  title: "asdf",
-  date: new Date("2024-jan-03"),
+  title: "asdf2",
+  date: "2024-jan-03",
   author: "nathan"
 }
 
@@ -28,4 +28,3 @@ const a = readRelative(import.meta.url, "03-latex.txt")
 
 <p>fdsa</p>
 <Latex formula={a} />
-{

@@ -3,7 +3,7 @@ import type { AstroInstance } from "astro";
 
 export type BlogDetails = {
   title: string;
-  date: Date;
+  date: string;
   author: string;
   overrideHref?: string;
   overrideLayout?: boolean;

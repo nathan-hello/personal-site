@@ -3,19 +3,14 @@ import type { GetStaticPaths } from 'astro'
 import type { BlogPage, Frontmatter } from '@/types'
 import Layout from '@layouts/nathan/Post.astro'
 import Mdx from '@layouts/default/Mdx.astro'
-import { parseAuthorName } from '@/utils/parseAuthor'
+import { parseAuthorName, parseDateString } from '@/utils/parseMetadata'
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const blogs = await Astro.glob<BlogPage>('../../../blog/nathan/**/*.astro')
     const blogParams = blogs
         .filter((b) => parseAuthorName(b.details.author, b.file) === 'nathan')
         .map((b) => {
-            const dateStr = b.details.date.toLocaleDateString('eu', {
-                month: '2-digit',
-                day: '2-digit',
-                year: 'numeric',
-            })
-
+            const dateStr = parseDateString(b.details.date, b.file)
             let href
             if (b.details.overrideHref) {
                 href = b.details.overrideHref
@@ -35,18 +30,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
     const mdxs = await Astro.glob<Frontmatter>('../../../blog/nathan/**/*.mdx')
     const mdxParams = mdxs
-    .filter(
-         (b) => parseAuthorName(b.frontmatter.author, b.file) === 'nathan'
-      )
+        .filter(
+            (b) => parseAuthorName(b.frontmatter.author, b.file) === 'nathan'
+        )
         .map((m) => {
-            const dateStr = new Date(m.frontmatter.date).toLocaleDateString(
-                'eu',
-                {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: 'numeric',
-                }
-            )
+            const dateStr = parseDateString(m.frontmatter.date, m.file)
 
             let href
             if (m.frontmatter.overrideHref) {
@@ -65,7 +53,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
             }
         })
 
-        console.log([...blogParams, ...mdxParams], "asdf")
+    console.log([...blogParams, ...mdxParams], 'asdf')
 
     return [...blogParams, ...mdxParams]
 }
@@ -82,7 +70,7 @@ const { type, Component, details } = Astro.props as any
                 description={details.description}
                 image={details.image}
             >
-                <component />
+                <Component />
             </Layout>
     : type === 'blog-markdown' ?
         <Mdx

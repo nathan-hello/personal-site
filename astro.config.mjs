@@ -13,5 +13,5 @@ export default defineConfig({
   },
   output: "static",
   site: "http://localhost:3000/",
-  devToolbar: {enabled: false}
+  devToolbar: {enabled: false},
 });
