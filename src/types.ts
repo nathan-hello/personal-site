@@ -1,13 +1,23 @@
-import type { AstroInstance, MarkdownInstance } from "astro";
+import type { AstroInstance } from "astro";
 
-type BlogDetails = {
+
+export type BlogDetails = {
   title: string;
-  img?: string;
+  date: Date;
+  author: string;
+  overrideHref?: string;
+  overrideLayout?: boolean;
+  description?: string;
+  image?: string;
 };
 
 export interface Frontmatter {
   title: string;
-  img?: string;
+  date: string;
+  author: string;
+  overrideHref?: string;
+  description?: string;
+  image?: string;
 }
 
 export type BlogPage = AstroInstance & {

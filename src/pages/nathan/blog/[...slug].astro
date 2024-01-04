@@ -1,18 +1,96 @@
 ---
 import type { GetStaticPaths } from 'astro'
 import type { BlogPage, Frontmatter } from '@/types'
+import Layout from '@layouts/nathan/Post.astro'
+import Mdx from '@layouts/default/Mdx.astro'
+import { parseAuthorName } from '@/utils/parseAuthor'
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const blogs = await Astro.glob<BlogPage>('../../../blog/nathan/**/*.astro')
-    const blogParams = blogs.map((b) => {
-    return { params: { path: b.url }, hi: "asdf" } })
+    const blogParams = blogs
+        .filter((b) => parseAuthorName(b.details.author, b.file) === 'nathan')
+        .map((b) => {
+            const dateStr = b.details.date.toLocaleDateString('eu', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric',
+            })
 
-    console.log(blogParams)
-    return [...blogParams]
+            let href
+            if (b.details.overrideHref) {
+                href = b.details.overrideHref
+            } else {
+                href = dateStr + '/' + encodeURIComponent(b.details.title)
+            }
+
+            return {
+                params: { slug: href },
+                props: {
+                    type: 'blog-astro',
+                    Component: b.default,
+                    details: b.details,
+                },
+            }
+        })
+
+    const mdxs = await Astro.glob<Frontmatter>('../../../blog/nathan/**/*.mdx')
+    const mdxParams = mdxs
+    .filter(
+         (b) => parseAuthorName(b.frontmatter.author, b.file) === 'nathan'
+      )
+        .map((m) => {
+            const dateStr = new Date(m.frontmatter.date).toLocaleDateString(
+                'eu',
+                {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                }
+            )
+
+            let href
+            if (m.frontmatter.overrideHref) {
+                href = m.frontmatter.overrideHref
+            } else {
+                href = dateStr + '/' + encodeURIComponent(m.frontmatter.title)
+            }
+
+            return {
+                params: { slug: href },
+                props: {
+                    type: 'blog-markdown',
+                    Component: m.Content,
+                    details: m.frontmatter,
+                },
+            }
+        })
+
+        console.log([...blogParams, ...mdxParams], "asdf")
+
+    return [...blogParams, ...mdxParams]
 }
 
-const { slug } = Astro.params
+const { type, Component, details } = Astro.props as any
 ---
 
-asdf
-{JSON.stringify(slug)}
+{
+    type === 'blog-astro' ?
+        details.overrideLayout === true ?
+            <Component />
+        :   <Layout
+                title={details.title}
+                description={details.description}
+                image={details.image}
+            >
+                <component />
+            </Layout>
+    : type === 'blog-markdown' ?
+        <Mdx
+            title={details.title}
+            description={details.description}
+            image={details.image}
+        >
+            <Component />
+        </Mdx>
+    :   <div>No one should see this!</div>
+}

@@ -1,0 +1,31 @@
+---
+import type { BlogDetails } from "@/types";
+import Latex from "@components/natalie/Latex.astro";
+import { readRelative } from "@utils/fileReader";
+
+export const details: BlogDetails = {
+  title: "asdf",
+  date: new Date("2024-jan-03"),
+  author: "nathan"
+}
+
+const a = readRelative(import.meta.url, "03-latex.txt")
+
+---
+
+<style is:global>
+  .latex-default {
+    background-color: cyan; 
+    text-align: center;
+  }
+</style>
+
+<style>
+  p {
+    background-color: red;
+  }
+</style>
+
+<p>fdsa</p>
+<Latex formula={a} />
+{

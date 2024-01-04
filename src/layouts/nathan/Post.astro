@@ -1,0 +1,27 @@
+---
+import Meta from '@components/default/Meta.astro'
+import Header from '@components/default/Header.astro'
+import Footer from '@components/default/Footer.astro'
+
+interface Props {
+    title: string
+    description?: string
+    image?: string
+}
+
+const {
+    title,
+    description = "Nate's blog",
+    image = '/blog-placeholder-1.jpg',
+} = Astro.props
+---
+
+<Meta title={title} description={description} image={image} />
+
+<Header />
+
+<main class="min-h-screen">
+    <slot />
+</main>
+
+<Footer />
