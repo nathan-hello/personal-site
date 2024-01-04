@@ -1,0 +1,7 @@
+---
+
+import type {BlogPage} from "@/types"
+
+const blogs = await Astro.glob<BlogPage>("../blog/nathan/**/*.astro")
+
+---

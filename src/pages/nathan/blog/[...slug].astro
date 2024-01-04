@@ -1,0 +1,18 @@
+---
+import type { GetStaticPaths } from 'astro'
+import type { BlogPage, Frontmatter } from '@/types'
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    const blogs = await Astro.glob<BlogPage>('../../../blog/nathan/**/*.astro')
+    const blogParams = blogs.map((b) => {
+    return { params: { path: b.url }, hi: "asdf" } })
+
+    console.log(blogParams)
+    return [...blogParams]
+}
+
+const { slug } = Astro.params
+---
+
+asdf
+{JSON.stringify(slug)}
