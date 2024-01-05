@@ -9,6 +9,7 @@ export type BlogDetails = {
   overrideLayout?: boolean;
   description?: string;
   image?: string;
+  tags?: string[];
 };
 
 export interface Frontmatter {
@@ -18,6 +19,7 @@ export interface Frontmatter {
   overrideHref?: string;
   description?: string;
   image?: string;
+  tags?: string[];
 }
 
 export type BlogPage = AstroInstance & {
