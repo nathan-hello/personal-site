@@ -6,11 +6,13 @@ import Footer from '@components/default/Footer.astro'
 interface Props {
     title: string
     description?: string
+    author: string
     image?: string
 }
 
 const {
     title,
+    author,
     description = "Nate's blog",
     image = '/blog-placeholder-1.jpg',
 } = Astro.props
@@ -19,6 +21,8 @@ const {
 <Meta title={title} description={description} image={image} />
 
 <Header />
+
+<h1>{author}</h1>
 
 <main class="min-h-screen">
     <slot />

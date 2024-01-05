@@ -11,7 +11,7 @@ export default defineConfig({
     host: true,
     port: 3000,
   },
-  output: "static",
+  output: "hybrid",
   site: "http://localhost:3000/",
   devToolbar: {enabled: false},
 });

@@ -1,0 +1,36 @@
+---
+import type { BlogDetails } from '@/types'
+import Latex from '@components/natalie/Latex.astro'
+
+export const details: BlogDetails = {
+    title: 'asdf2',
+    date: '2024-jan-05',
+    author: 'nathan',
+}
+---
+
+There are two kinds of posts: `.astro` and `.mdx`. Astro is a framework designed
+to not ship JS to the client (unless specifically told to do so). Astro sites
+are made up of Components. Each .astro file can have one component. A component
+can be any amount or combination of html, css, and js elements. Components can
+stack on each other recursively. When you want a Component to render its
+children, you use a slot. Astro files require an object to be declared at the
+top, the minimum being this:
+
+<code>
+    export const details: BlogDetails = [[ title: "asdf2", date: "2024-jan-03",
+    author: "nathan" ]]
+</code>
+
+Other than that, it's totally fair game to do whatever math, 3rd party api
+requests, or whatever else. Because this happens at build time and not per
+request, any computation is basically free.
+
+<ul>
+    3 Rules
+    <li>All Astro</li>
+</ul>
+
+Advanced: You can make a page dynamic by setting <code
+    >export const prerender = false;</code
+> in the top of the file.
