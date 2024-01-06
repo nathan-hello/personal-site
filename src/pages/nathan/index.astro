@@ -20,7 +20,7 @@ const mdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
         .map((b) => shapeForRendering(extractMetadata(b)))
 )
 
-const all = [...blogs, ...mdxs]
+const recents = [...blogs, ...mdxs]
     .sort(
         (a, b) =>
             new Date(b.props.details.date).getTime() -
@@ -33,7 +33,7 @@ const all = [...blogs, ...mdxs]
     <div class="bg-gray-800 min-h-screen">
         <div class="flex flex-col p-10 gap-2">
             {
-                all.map((a) => (
+                recents.map((a) => (
                     <a class="bg-red-900 text-xl " href={a.params.slug}>
                         <div class="h-32 w-48">{a.props.details.title}</div>
                     </a>

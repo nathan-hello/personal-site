@@ -2,27 +2,16 @@
 import Meta from '@components/default/Meta.astro'
 import Header from '@components/default/Header.astro'
 import Footer from '@components/default/Footer.astro'
-
+import type { BlogDetails } from '@/types'
 interface Props {
-    title: string
-    description?: string
-    author: string
-    image?: string
+    details: BlogDetails
 }
-
-const {
-    title,
-    author,
-    description = "Natalie's blog",
-    image = '/blog-placeholder-1.jpg',
-} = Astro.props
+const { details } = Astro.props
 ---
-
-<Meta title={title} description={description} image={image} />
-
+<Meta title={details.title} description={details.description} image={details.image} />
 <Header />
 
-<h1>{author}</h1>
+<h1>{details.author}</h1>
 
 <main class="min-h-screen">
     <slot />

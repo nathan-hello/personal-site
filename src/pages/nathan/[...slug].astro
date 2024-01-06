@@ -33,12 +33,7 @@ const { Component, details } = Astro.props as any
     details.overrideLayout === true ? (
         <Component />
     ) : (
-        <DefaultLayout
-            title={details.title}
-            description={details.description}
-            image={details.image}
-            author={details.author}
-        >
+        <DefaultLayout details={details}>
             <Component />
         </DefaultLayout>
     )
