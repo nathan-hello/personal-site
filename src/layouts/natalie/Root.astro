@@ -8,12 +8,13 @@ interface Props {
 }
 const { details } = Astro.props
 ---
+
 <Meta title={details.title} description={details.description} image={details.image} />
 <Header />
 
 <h1>{details.author}</h1>
 
-<main class="min-h-screen">
+<main>
     <slot />
 </main>
 

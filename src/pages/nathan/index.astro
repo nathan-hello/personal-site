@@ -5,8 +5,8 @@ import {
     extractMetadata,
     parseAuthorName,
 } from '@/utils/parseMetadata'
-
 import Layout from '@layouts/Root.astro'
+import '@/styles/tw.css'
 
 const blogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
     b

@@ -7,6 +7,7 @@ import {
     extractMetadata,
     parseAuthorName,
 } from '@/utils/parseMetadata'
+import '@/styles/tw.css'
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const blogs = await Astro.glob<BlogAstro>('/src/blog/**/*.astro').then((b) =>
