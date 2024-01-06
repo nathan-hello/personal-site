@@ -1,12 +1,13 @@
 ---
 import katex from 'katex'
 
-const { formula = '' } = Astro.props
+const { formula = '', className = 'latex-default' } = Astro.props
 const renderedLatex = katex.renderToString(formula, { throwOnError: false })
 ---
 
-<span set:html={renderedLatex} class="" />
-
+<div class={className}>
+    <span set:html={renderedLatex} class="" />
+</div>
 <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.css"
