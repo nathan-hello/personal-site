@@ -1,0 +1,28 @@
+---
+import type { BlogDetails } from '@/types'
+import Latex from '@components/natalie/Latex.astro'
+
+export const details: BlogDetails = {
+    title: 'asdf2',
+    date: '2024-jan-03',
+    author: 'nathan',
+}
+
+const a = 'E=mc^2'
+---
+
+<style is:global>
+    .latex-default {
+        background-color: cyan;
+        text-align: center;
+    }
+</style>
+
+<style>
+    p {
+        background-color: red;
+    }
+</style>
+
+<p>fdsa</p>
+<Latex formula={a} />

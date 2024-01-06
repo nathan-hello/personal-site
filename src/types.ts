@@ -1,4 +1,4 @@
-import type { AstroInstance } from "astro";
+import type { AstroInstance, MDXInstance } from "astro";
 
 
 export type BlogDetails = {
@@ -10,18 +10,12 @@ export type BlogDetails = {
   description?: string;
   image?: string;
   tags?: string[];
+  hidden?: boolean;
 };
 
-export interface Frontmatter {
-  title: string;
-  date: string;
-  author: string;
-  overrideHref?: string;
-  description?: string;
-  image?: string;
-  tags?: string[];
-}
 
-export type BlogPage = AstroInstance & {
+export type BlogAstro = AstroInstance & {
   details: BlogDetails;
 };
+
+export type BlogMdx = MDXInstance<BlogDetails>;

@@ -5,7 +5,7 @@ import Latex from '@components/natalie/Latex.astro'
 export const details: BlogDetails = {
     title: 'asdf2',
     date: '2024-jan-05',
-    author: 'nathan',
+    author: 'natalie',
 }
 ---
 
@@ -40,33 +40,18 @@ export const details: BlogDetails = {
 
 <p>Mdx files are just like markdown files, but they also have some super powers.</p>
 <ul>
-    <li>
-        They can import components
-    </li>
+    <li>They can import components</li>
 </ul>
-
 
 Astro files require an object to be declared at the top, the minimum being this:
 
 <code>
-    ---
-    import type &gt BlogDetails &gt from '@/types'
-    export const details: BlogDetails = &gt 
-        title: "asdf2", 
-        date: "2024-jan-03", 
-        author: "nathan" &gt
-    ---
+    --- import type &gt BlogDetails &gt from '@/types' export const details: BlogDetails =
+    &gt title: "asdf2", date: "2024-jan-03", author: "nathan" &gt ---
 </code>
 
 Mdx files require the same thing, but formatted a bit differently
-<code>
----
-title: fdsa
-date: 04-Jan-2024
-author: nathan
----
-</code>
-
+<code> --- title: fdsa date: 04-Jan-2024 author: nathan ---</code>
 
 Other than that, it's totally fair game to do whatever math, 3rd party api requests, or
 whatever else. Because this happens at build time and not per request, any computation is
@@ -80,3 +65,5 @@ basically free.
 Advanced: You can make a page dynamic by setting <code
     >export const prerender = false;</code
 > in the top of the file.
+
+<Latex formula="E=mc^2" />

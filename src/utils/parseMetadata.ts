@@ -1,8 +1,7 @@
 import type { PossibleAuthors } from "@/consts";
 import { possibleAuthors } from "@/consts";
-import type { BlogPage, Frontmatter } from "@/types";
-import type { AstroInstance, MDXInstance } from "astro";
-import { z } from "zod";
+import type { BlogAstro, BlogDetails, BlogMdx } from "@/types";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 export function parseAuthorName(s: string, file: string): PossibleAuthors {
 
@@ -10,7 +9,6 @@ export function parseAuthorName(s: string, file: string): PossibleAuthors {
 
   for (const [key, names] of Object.entries(possibleAuthors)) {
     if (names.includes(s.toLowerCase())) {
-      console.log(key);
       return key as PossibleAuthors;
     }
   }
@@ -19,51 +17,49 @@ export function parseAuthorName(s: string, file: string): PossibleAuthors {
 
 }
 
-export function parseDateString(s: string, file: string): string {
+export function parseDateString(s: string): { dateStr: string, dateObj: Date; } {
   const d = new Date(s);
 
-  if (!d) { throw Error("Date from file " + file + " not valid"); }
+  if (!d) { throw Error("Date: " + s + " not valid"); }
 
-  return d.toLocaleDateString("eu", { month: '2-digit', day: '2-digit', year: 'numeric', });
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const day = d.getDate().toString().padStart(2, "0");
+
+
+  return {
+    dateStr: year + '/' + month + '/' + day,
+    dateObj: d
+  };
 
 }
 
-export function parseAstroPostMetadata(i: BlogPage) {
-  const dateStr = parseDateString(i.details.date, i.file);
+export function extractMetadata(i: BlogAstro | BlogMdx): [BlogDetails, AstroComponentFactory] {
+  if ("details" in i) {
+    return [i.details, i.default];
+  }
+  if ("frontmatter" in i) {
+    return [i.frontmatter, i.Content];
+  }
+
+  throw new Error("Input: " + i + " is not a valid BlogAstro or BlogMdx");
+}
+
+export function shapeForRendering([details, component]: [BlogDetails, AstroComponentFactory]) {
+
+  const { dateObj, dateStr } = parseDateString(details.date);
   let href;
-  if (i.details.overrideHref) {
-    href = i.details.overrideHref;
+  if (details.overrideHref) {
+    href = details.overrideHref;
   } else {
-    href = dateStr + '/' + encodeURIComponent(i.details.title);
+    href = dateStr + '/' + encodeURIComponent(details.title);
   }
 
   return {
     params: { slug: href },
     props: {
-      type: "blog-astro",
-      Component: i.default,
-      details: i.details
+      Component: component,
+      details: details,
     }
   };
-}
-
-export function parseMdxPostMetadata(m: MDXInstance<Frontmatter>) {
-  const dateStr = parseDateString(m.frontmatter.date, m.file);
-
-  let href;
-  if (m.frontmatter.overrideHref) {
-    href = m.frontmatter.overrideHref;
-  } else {
-    href = dateStr + '/' + encodeURIComponent(m.frontmatter.title);
-  }
-
-  return {
-    params: { slug: href },
-    props: {
-      type: 'blog-markdown',
-      Component: m.Content,
-      details: m.frontmatter,
-    },
-  };
-
 }

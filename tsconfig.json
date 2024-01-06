@@ -16,6 +16,9 @@
       "@utils/*": [
         "src/utils/*"
       ],
+      "@public/*": [
+        "public/*"
+      ],
       "@/*": [
         "src/*"
       ]

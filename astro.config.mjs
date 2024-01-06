@@ -1,17 +1,14 @@
 import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
-import sitemap from "@astrojs/sitemap";
+import vercel from "@astrojs/vercel/serverless";
 
-import tailwind from "@astrojs/tailwind";
+import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [mdx(), sitemap(), tailwind()],
-  server: {
-    host: true,
-    port: 3000,
-  },
+  site:"https://nathan-hello.com",
   output: "hybrid",
-  site: "http://localhost:3000/",
-  devToolbar: {enabled: false},
+  adapter: vercel({
+    webAnalytics: false
+  }),
+  integrations: [mdx()]
 });
