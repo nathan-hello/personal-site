@@ -42,7 +42,9 @@ git push
 
 This will push it to prod. 
 
-Blogs will be at `.com/author/yyyy/mm/dd/title`
+Blogs will be at `.com/author/yyyy/mm/dd/title`.
+
+If you want to verify that there are no errors, run `npm run build`, fix any errors, and then push. There are going to be a bunch of warns, don't worry about that.
 
 
 ## Things that matter:
