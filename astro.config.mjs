@@ -11,7 +11,5 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: false
   }),
-  integrations: [mdx(), tailwind({
-    applyBaseStyles: false
-  })]
+  integrations: [mdx(), tailwind()]
 });
