@@ -11,5 +11,6 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: false
   }),
-  integrations: [mdx(), tailwind()]
+  integrations: [mdx(), tailwind()],
+  server: { port: 3000 }
 });
