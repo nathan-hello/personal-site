@@ -8,6 +8,9 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   site: "https://nathan-hello.com",
   output: "hybrid",
+  build: {
+    inlineStylesheets: "always"
+  },
   adapter: vercel({
     webAnalytics: false
   }),

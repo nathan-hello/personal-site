@@ -1,5 +1,73 @@
 ---
 import Root from '@layouts/Root.astro'
+import type { BlogDetails, BlogAstro } from '@/types'
+import {
+    shapeForRendering,
+    extractMetadata,
+    parseAuthorName,
+} from '@/utils/parseMetadata'
+
+const natBlogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
+    b
+        .filter((b) => parseAuthorName(b.details.author, b.file) === 'natalie')
+        .map((b) => shapeForRendering(extractMetadata(b)))
+)
+
+const natMdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
+    b
+        .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'natalie')
+        .map((b) => shapeForRendering(extractMetadata(b)))
+)
+
+const natRecents = [...natBlogs, ...natMdxs]
+    .sort(
+        (a, b) =>
+            new Date(b.props.details.date).getTime() -
+            new Date(a.props.details.date).getTime()
+    )
+    .slice(0, 10)
+const nateBlogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
+    b
+        .filter((b) => parseAuthorName(b.details.author, b.file) === 'nathan')
+        .map((b) => shapeForRendering(extractMetadata(b)))
+)
+
+const nateMdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
+    b
+        .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'nathan')
+        .map((b) => shapeForRendering(extractMetadata(b)))
+)
+
+const nateRecents = [...nateBlogs, ...nateMdxs]
+    .sort(
+        (a, b) =>
+            new Date(b.props.details.date).getTime() -
+            new Date(a.props.details.date).getTime()
+    )
+    .slice(0, 10)
 ---
 
-<Root>asdf</Root>
+<Root>
+    <a href="/nathan">Nathan</a>
+    <a href="/natalie">Natalie</a>
+    <section>
+        Nathan's recents:
+        {
+            nateRecents.map((n) => (
+                <a href={`nathan/${n.params.slug}`}>
+                    {n.props.details.title} - {n.props.details.date}
+                </a>
+            ))
+        }
+    </section>
+    <section>
+        Natalie's recents:
+        {
+            natRecents.map((n) => (
+                <a href={`natalie/${n.params.slug}`}>
+                    {n.props.details.title} - {n.props.details.date}
+                </a>
+            ))
+        }
+    </section>
+</Root>
