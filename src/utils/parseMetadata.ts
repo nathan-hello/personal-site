@@ -17,7 +17,7 @@ export function parseAuthorName(s: string, file: string): PossibleAuthors {
 
 }
 
-export function parseDateString(s: string): { dateStr: string, dateObj: Date; } {
+export function parseDateString(s: string): string {
   const d = new Date(s);
 
   if (!d) { throw Error("Date: " + s + " not valid"); }
@@ -27,32 +27,29 @@ export function parseDateString(s: string): { dateStr: string, dateObj: Date; } 
   const day = d.getDate().toString().padStart(2, "0");
 
 
-  return {
-    dateStr: year + '/' + month + '/' + day,
-    dateObj: d
-  };
+  return year + '/' + month + '/' + day;
 
 }
 
-export function extractMetadata(i: BlogAstro | BlogMdx): [BlogDetails, AstroComponentFactory] {
+export function extractMetadata(i: BlogAstro | BlogMdx): { details: BlogDetails, component: AstroComponentFactory; } {
   if ("details" in i) {
-    return [i.details, i.default];
+    return { details: i.details, component: i.default };
   }
   if ("frontmatter" in i) {
-    return [i.frontmatter, i.Content];
+    return { details: i.frontmatter, component: i.Content };
   }
 
   throw new Error("Input: " + i + " is not a valid BlogAstro or BlogMdx");
 }
 
-export function shapeForRendering([details, component]: [BlogDetails, AstroComponentFactory]) {
+export function shapeForRendering({ details, component }: { details: BlogDetails, component: AstroComponentFactory; }, i: number) {
 
-  const { dateObj, dateStr } = parseDateString(details.date);
+  const dateStr = parseDateString(details.date);
   let href;
   if (details.overrideHref) {
     href = details.overrideHref;
   } else {
-    href = dateStr + '/' + encodeURIComponent(details.title);
+    href = dateStr + '/' + (i + 1).toString();
   }
 
   return {

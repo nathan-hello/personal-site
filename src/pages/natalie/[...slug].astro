@@ -13,7 +13,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         b
             .filter((b) => b.details.hidden !== true)
             .filter((b) => parseAuthorName(b.details.author, b.file) === 'natalie')
-            .map((b) => shapeForRendering(extractMetadata(b)))
+            .map((b, i) => shapeForRendering(extractMetadata(b), i))
     )
 
     const mdxs = await Astro.glob<BlogDetails>('/src/blog/**/*.mdx').then((b) =>
@@ -21,7 +21,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
             .filter((b) => b.frontmatter.hidden !== true)
             .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'natalie')
-            .map((b) => shapeForRendering(extractMetadata(b)))
+            .map((b, i) => shapeForRendering(extractMetadata(b), i))
     )
 
     const c = [...blogs, ...mdxs]

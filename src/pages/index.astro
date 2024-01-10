@@ -9,14 +9,16 @@ import {
 
 const natBlogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
     b
+        .filter((b) => b.details.hidden !== true)
         .filter((b) => parseAuthorName(b.details.author, b.file) === 'natalie')
-        .map((b) => shapeForRendering(extractMetadata(b)))
+        .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
 
 const natMdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
     b
+        .filter((b) => b.frontmatter.hidden !== true)
         .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'natalie')
-        .map((b) => shapeForRendering(extractMetadata(b)))
+        .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
 
 const natRecents = [...natBlogs, ...natMdxs]
@@ -28,14 +30,16 @@ const natRecents = [...natBlogs, ...natMdxs]
     .slice(0, 10)
 const nateBlogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
     b
+        .filter((b) => b.details.hidden !== true)
         .filter((b) => parseAuthorName(b.details.author, b.file) === 'nathan')
-        .map((b) => shapeForRendering(extractMetadata(b)))
+        .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
 
 const nateMdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
     b
+        .filter((b) => b.frontmatter.hidden !== true)
         .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'nathan')
-        .map((b) => shapeForRendering(extractMetadata(b)))
+        .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
 
 const nateRecents = [...nateBlogs, ...nateMdxs]
