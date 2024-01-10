@@ -1,0 +1,30 @@
+---
+import type { BlogDetails } from '@/types'
+
+interface Props {
+    details: BlogDetails
+}
+
+const { details } = Astro.props as Props
+---
+
+<div class="term" id="post">
+    <span class="user"> {details.author}</span>
+    {details.title} - {details.date}
+    <a
+        class="links"
+        id="16808367 /*random number? */"
+        href="https://reluekiss.com/{details.author}/"
+    >
+        No.16808367
+    </a>
+    <br />
+    "file: "
+    <a class="url" href={details.image}> {details.id ?? 'no id'}</a>/* can this be
+    automated? */ " (137KB, image/gif)" /* the metadata with this formatting? */
+    <br />
+    <img class="media" src={details.image} />
+    "head of text goes here"
+    <br />
+    <a class="links" href="{details.href}" ??> Read more</a>
+</div>
