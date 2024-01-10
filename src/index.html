@@ -1,0 +1,111 @@
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natzone</title>
+  <style>
+.term {
+    font-size: 14px;
+    background-color: #0C090A;
+    color: #b3b8c3;
+    width: 555px;
+    border: solid 2px #1e1e1e;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+}
+.user {
+    color: #a47996;
+    font-weight: bold;
+}
+#post {
+    display: table;
+    margin-top: 5px;
+}
+.media {
+    width: 33%;
+    padding: 2px 4px 2px 2px;
+    float: left;
+}
+.term:hover {
+    border: solid 2px #0C090A;
+}
+.links {
+    text-decoration: none;
+    color: #b3b8c3;
+}
+.links:hover {
+    background-color: #b3b8c3;
+    color: #0C090A;
+}
+.url {
+    text-decoration: underline;
+    color: #b3b8c3;
+}
+.url:hover {
+    background-color: #b3b8c3;
+    color: #0C090A;
+}
+a {
+    text-decoration: none;
+}
+.bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    overflow: hidden;
+}
+.controls {
+    background-color: #0C090A!important;
+    border: solid 2px #0C090A!important;
+    text-decoration: none;
+    color: #b3b8c3!important;
+    padding: 3px;
+}
+.controls:hover {
+    background-color: #b3b8c3!important;
+    color: #0C090A!important;
+    cursor: pointer;
+}
+html {
+    background-image: url(/home/relue/Downloads/wallpapers/carpark.png);
+    background-repeat: no-repeat;
+    background-color: #1e1e1e;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+}
+.greentext {
+   color: #87b379;
+}
+.redtext {
+   color: #a47996;
+}
+  </style>
+</head>
+<body>
+    <div class="term">
+        <a class=
+    </div>
+    <div class="term" id="post">
+        <span class="user"> {n.props.details.author} </span>
+        {n.props.details.title} - {n.props.details.date}
+        <a class="links" id="16808367 /*random number? */" href="https://reluekiss.com/{n.props.details.author}/"> No.16808367 </a>
+        <br>
+        "file: "
+        <a class="url" href="https://reluekiss.com/path/to/image"> 16808367.gif </a>/* can this be automated? */
+        " (137KB, image/gif)" /* the metadata with this formatting? */
+        <br>
+        <img class="media" src="/home/relue/Downloads/wallpapers/LainLaugh.gif" </img>
+        "head of text goes here"
+        <br>
+        <a class="links" href="https://reluekiss.com/{n.props.details.author}/{n.props.details.blogid}/"??> Read more </a>
+    </div>
+</body>
+</html>
