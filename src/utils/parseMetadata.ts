@@ -3,9 +3,7 @@ import { possibleAuthors } from "@/consts";
 import type { BlogAstro, BlogDetails, BlogMdx } from "@/types";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
-export function parseAuthorName(s: string, file: string): PossibleAuthors {
-
-  if (typeof s !== "string") { throw Error("Author name at " + file + " is  not string!"); }
+export function parseAuthorName(s: string, _: string): PossibleAuthors {
 
   for (const [key, names] of Object.entries(possibleAuthors)) {
     if (names.includes(s.toLowerCase())) {
@@ -13,21 +11,20 @@ export function parseAuthorName(s: string, file: string): PossibleAuthors {
     }
   }
 
-  throw Error("Author of name: " + s + " not found");
-
+  throw Error(`Author of name: ${s} not found`);
 }
 
 export function parseDateString(s: string): string {
   const d = new Date(s);
 
-  if (!d) { throw Error("Date: " + s + " not valid"); }
+  if (!d) { throw Error(`Date: ${s} not valid`); }
 
   const year = d.getFullYear();
   const month = (d.getMonth() + 1).toString().padStart(2, "0");
   const day = d.getDate().toString().padStart(2, "0");
 
 
-  return year + '/' + month + '/' + day;
+  return `${year}/${month}/${day}`;
 
 }
 
@@ -39,7 +36,7 @@ export function extractMetadata(i: BlogAstro | BlogMdx): { details: BlogDetails,
     return { details: i.frontmatter, component: i.Content };
   }
 
-  throw new Error("Input: " + i + " is not a valid BlogAstro or BlogMdx");
+  throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`);
 }
 
 export function shapeForRendering({ details, component }: { details: BlogDetails, component: AstroComponentFactory; }, i: number) {
@@ -49,7 +46,7 @@ export function shapeForRendering({ details, component }: { details: BlogDetails
   if (details.overrideHref) {
     href = details.overrideHref;
   } else {
-    href = dateStr + '/' + (i + 1).toString();
+    href = `${dateStr}/${(i + 1).toString()}`;
   }
 
   return {

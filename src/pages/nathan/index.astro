@@ -9,14 +9,14 @@ import Layout from '@layouts/Root.astro'
 
 const blogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
     b
-    .filter((b) => b.details.hidden !== true)
-
+        .filter((b) => b.details.hidden !== true)
         .filter((b) => parseAuthorName(b.details.author, b.file) === 'nathan')
         .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
 
 const mdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
     b
+        .filter((b) => b.frontmatter.hidden !== true)
         .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'nathan')
         .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )

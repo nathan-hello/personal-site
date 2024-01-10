@@ -11,7 +11,6 @@ import Layout from '@layouts/Root.astro'
 const blogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
     b
         .filter((b) => b.details.hidden !== true)
-
         .filter((b) => parseAuthorName(b.details.author, b.file) === 'natalie')
         .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
@@ -19,12 +18,11 @@ const blogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
 const mdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
     b
         .filter((b) => b.frontmatter.hidden !== true)
-
         .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'natalie')
         .map((b, i) => shapeForRendering(extractMetadata(b), i))
 )
 
-const all = [...blogs, ...mdxs]
+const recents = [...blogs, ...mdxs]
     .sort(
         (a, b) =>
             new Date(b.props.details.date).getTime() -
