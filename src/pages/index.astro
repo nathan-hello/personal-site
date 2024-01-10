@@ -7,6 +7,8 @@ import {
     parseAuthorName,
 } from '@/utils/parseMetadata'
 
+import BlogPost from '@/components/BlogImageBoard.astro'
+
 const natBlogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
     b
         .filter((b) => b.details.hidden !== true)
@@ -49,29 +51,110 @@ const nateRecents = [...nateBlogs, ...nateMdxs]
             new Date(a.props.details.date).getTime()
     )
     .slice(0, 10)
+
+const bothRecents = [...natRecents, ...nateRecents].sort(
+    (a, b) =>
+        new Date(b.props.details.date).getTime() -
+        new Date(a.props.details.date).getTime()
+)
 ---
 
-<Root>
-    <a href="/nathan">Nathan</a>
-    <a href="/natalie">Natalie</a>
-    <section>
-        Nathan's recents:
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Natzone</title>
+        <style>
+            .term {
+                font-size: 14px;
+                background-color: #0c090a;
+                color: #b3b8c3;
+                width: 555px;
+                border: solid 2px #1e1e1e;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 3px;
+            }
+            .user {
+                color: #a47996;
+                font-weight: bold;
+            }
+            #post {
+                display: table;
+                margin-top: 5px;
+            }
+            .media {
+                width: 33%;
+                padding: 2px 4px 2px 2px;
+                float: left;
+            }
+            .term:hover {
+                border: solid 2px #0c090a;
+            }
+            .links {
+                text-decoration: none;
+                color: #b3b8c3;
+            }
+            .links:hover {
+                background-color: #b3b8c3;
+                color: #0c090a;
+            }
+            .url {
+                text-decoration: underline;
+                color: #b3b8c3;
+            }
+            .url:hover {
+                background-color: #b3b8c3;
+                color: #0c090a;
+            }
+            a {
+                text-decoration: none;
+            }
+            .bg {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                min-width: 100%;
+                min-height: 100%;
+                width: auto;
+                height: auto;
+                -webkit-transform: translateX(-50%) translateY(-50%);
+                transform: translateX(-50%) translateY(-50%);
+                overflow: hidden;
+            }
+            .controls {
+                background-color: #0c090a !important;
+                border: solid 2px #0c090a !important;
+                text-decoration: none;
+                color: #b3b8c3 !important;
+                padding: 3px;
+            }
+            .controls:hover {
+                background-color: #b3b8c3 !important;
+                color: #0c090a !important;
+                cursor: pointer;
+            }
+            html {
+                background-image: url(/home/relue/Downloads/wallpapers/carpark.png);
+                background-repeat: no-repeat;
+                background-color: #1e1e1e;
+                background-attachment: fixed;
+                background-size: cover;
+                background-position: center;
+            }
+            .greentext {
+                color: #87b379;
+            }
+            .redtext {
+                color: #a47996;
+            }
+        </style>
+    </head>
+    <body>
         {
-            nateRecents.map((n) => (
-                <a href={`nathan/${n.params.slug}`}>
-                    {n.props.details.title} - {n.props.details.date}
-                </a>
-            ))
+            bothRecents.map((b) => {
+                return <BlogPost details={b.props.details} />
+            })
         }
-    </section>
-    <section>
-        Natalie's recents:
-        {
-            natRecents.map((n) => (
-                <a href={`natalie/${n.params.slug}`}>
-                    {n.props.details.title} - {n.props.details.date}
-                </a>
-            ))
-        }
-    </section>
-</Root>
+    </body>
+</html>

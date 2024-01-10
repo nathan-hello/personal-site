@@ -39,6 +39,10 @@ export function extractMetadata(i: BlogAstro | BlogMdx): { details: BlogDetails,
   throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`);
 }
 
+export function parseDefaultHref(dateStr: string, i: number): string {
+  return `${dateStr}/${(i + 1).toString()}`
+}
+
 export function shapeForRendering({ details, component }: { details: BlogDetails, component: AstroComponentFactory; }, i: number) {
 
   const dateStr = parseDateString(details.date);
@@ -46,7 +50,7 @@ export function shapeForRendering({ details, component }: { details: BlogDetails
   if (details.overrideHref) {
     href = details.overrideHref;
   } else {
-    href = `${dateStr}/${(i + 1).toString()}`;
+    href = parseDefaultHref(dateStr, i);
   }
 
   return {
