@@ -14,7 +14,7 @@ export function parseAuthorName(s: string, _: string): PossibleAuthors {
   throw Error(`Author of name: ${s} not found`);
 }
 
-export function parseDateString(s: string): string {
+function parseDateString(s: string): string {
   const d = new Date(s);
 
   if (!d) { throw Error(`Date: ${s} not valid`); }
@@ -23,9 +23,7 @@ export function parseDateString(s: string): string {
   const month = (d.getMonth() + 1).toString().padStart(2, "0");
   const day = d.getDate().toString().padStart(2, "0");
 
-
   return `${year}/${month}/${day}`;
-
 }
 
 export function extractMetadata(i: BlogAstro | BlogMdx): { details: BlogDetails, component: AstroComponentFactory; } {
@@ -39,25 +37,7 @@ export function extractMetadata(i: BlogAstro | BlogMdx): { details: BlogDetails,
   throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`);
 }
 
-export function parseDefaultHref(dateStr: string, i: number): string {
-  return `${dateStr}/${(i + 1).toString()}`
+export function generateHref(dateStr: string, i: number) {
+  return `${parseDateString(dateStr)}/${(i).toString()}`;
 }
 
-export function shapeForRendering({ details, component }: { details: BlogDetails, component: AstroComponentFactory; }, i: number) {
-
-  const dateStr = parseDateString(details.date);
-  let href;
-  if (details.overrideHref) {
-    href = details.overrideHref;
-  } else {
-    href = parseDefaultHref(dateStr, i);
-  }
-
-  return {
-    params: { slug: href },
-    props: {
-      Component: component,
-      details: details,
-    }
-  };
-}
