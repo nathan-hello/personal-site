@@ -63,7 +63,7 @@ const bothRecents = [...natRecents, ...nateRecents].sort(
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Natzone</title>
+        <title>Nat/e</title>
         <style is:global>
             .term {
                 font-size: 14px;
@@ -110,6 +110,10 @@ const bothRecents = [...natRecents, ...nateRecents].sort(
             a {
                 text-decoration: none;
             }
+            b {
+                font-weight: bold;
+                color: #eeeeee;
+            }
             .bg {
                 position: fixed;
                 top: 50%;
@@ -135,7 +139,7 @@ const bothRecents = [...natRecents, ...nateRecents].sort(
                 cursor: pointer;
             }
             html {
-            background-image: url(/public/carpark.png);
+            background-image: url(/carpark.png);
                 background-repeat: no-repeat;
                 background-color: #1e1e1e;
                 background-attachment: fixed;
@@ -151,6 +155,21 @@ const bothRecents = [...natRecents, ...nateRecents].sort(
         </style>
     </head>
     <body>
+        <div class="term">
+            <pre>
+ _   _       _       __   
+| \ | |     | |     / /   
+|  \| | __ _| |_   / /__  
+| . ` |/ _` | __| / / _ \ 
+| |\  | (_| | |_ / /  __/ 
+|_| \_|\__,_|\__/_/ \___| "We are Boingus"
+            </pre>
+            <b>
+                <a class="links" href="natalie"> /Natzone/ </a>
+                <a class="links" href="nathan"> /Natecorner/ </a>
+                <a class="links" href="https://github.com/nathan-hello"> /gh/ </a> 
+            </b>
+        </div>    
         {
             bothRecents.map((b) => {
                 return <BlogPost details={b.props.details} />
