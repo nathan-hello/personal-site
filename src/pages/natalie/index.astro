@@ -28,7 +28,7 @@ const recents = [...blogs, ...mdxs]
             new Date(b.props.details.date).getTime() -
             new Date(a.props.details.date).getTime()
     )
-    .slice(0, 10)
+    .slice(0, 100)
 ---
 <head>
 <style>
@@ -62,15 +62,22 @@ input:checked + div { display: none; }
         <br>
             "Hey hi, welcome you goobers, this is my little hang out spot (watchout for Nate he likes to invade, but he is just a silly). Aaaanyway, I'm nat, nice to meetcha, and here you can find the paticular tidbits that are currently interesting me, get ready for maths and computer stuff cause that's pretty much all I do [I joke, but sometimes its a little :))]" - nat 11/01/24 - 01:24+0000
             OH FUCK IT'S LATE, OK I'LL FINISH THIS LATER\
-            Hey there is audio that you can play, click 
-        <label for=cb> here. </label>
-        <input type='checkbox' style='display: none' id=cb>
-        <div>
-        <audio loop controls src="catnap.mp3" /> 
-        </div>
+            Hey there is audio that you can play, click
+        <a class="links" href="#audio"> here. </a>
+        <br>
         {
-        blogs.map((b) => {
-            return <blogs details={b.props.details} />
+            recents.map((b) => {
+        return (
+                    <a href={"natalie/" + b.params.slug}> aaaa </a>
+            <b.props.Component/>
+            )
             })
         }
+        <br>
+        <label for=cb> Click me for to hide audio.</label>
+        <input type='checkbox' style='display: none' id=cb>
+        <div id="audio">
+        <audio loop controls src="catnap.mp3" />
+        </div>
+
 </div>
