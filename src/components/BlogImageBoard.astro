@@ -15,15 +15,15 @@ const { details } = Astro.props as Props
     {details.title} - {details.date}
     <a
         class="links"
-        id="16808367 /*random number? */"
-        href="https://reluekiss.com/{details.author}/"
+        id={details.id ?? 'no id'}
+        href="{details.author}/{details.id}"
     >
-        No.16808367
+        No.{details.id ?? 'no id'}
     </a>
     <br />
     "file: "
-    <a class="url" href={details.image}> {details.id ?? 'no id'}</a>/* can this be
-    automated? */ " (137KB, image/gif)" /* the metadata with this formatting? */
+    <a class="url" href={details.image}> {details.id ?? 'no id'}</a>
+    " (137KB, image/gif)"
     <br />
     <img class="media" src={details.image} />
     "head of text goes here"
