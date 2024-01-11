@@ -1,83 +1,62 @@
 ---
-import type { BlogDetails, BlogAstro } from '@/types'
-import {
-    shapeForRendering,
-    extractMetadata,
-    parseAuthorName,
-} from '@/utils/parseMetadata'
-
 import Layout from '@layouts/Root.astro'
+import { globBlogs } from '@utils/glob'
 
-const blogs = await Astro.glob<BlogAstro>('/src/blog/**/b_*.astro').then((b) =>
-    b
-        .filter((b) => b.details.hidden !== true)
-        .filter((b) => parseAuthorName(b.details.author, b.file) === 'natalie')
-        .map((b, i) => shapeForRendering(extractMetadata(b), i))
-)
-
-const mdxs = await Astro.glob<BlogDetails>('/src/blog/**/b_*.mdx').then((b) =>
-    b
-        .filter((b) => b.frontmatter.hidden !== true)
-        .filter((b) => parseAuthorName(b.frontmatter.author, b.file) === 'natalie')
-        .map((b, i) => shapeForRendering(extractMetadata(b), i))
-)
-
-const recents = [...blogs, ...mdxs]
-    .sort(
-        (a, b) =>
-            new Date(b.props.details.date).getTime() -
-            new Date(a.props.details.date).getTime()
-    )
-    .slice(0, 100)
+const recents = await globBlogs(10, 'natalie')
 ---
+
 <head>
-<style>
-body {
-background-image: url('cyber.jpg');
-background-attachment: fixed;
-}
+    <style>
+        body {
+            background-image: url('cyber.jpg');
+            background-attachment: fixed;
+        }
 
-.floaty {
-margin-left: 10%;
-margin-right: 10%;
-background: rgb(37, 20, 61);
-background-color: #0c090a;
-color: #b3b8c3;
-border-style: ridge;
-border: solid 2px #1e1e1e;
-padding: 10px;
-box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
-}
+        .floaty {
+            margin-left: 10%;
+            margin-right: 10%;
+            background: rgb(37, 20, 61);
+            background-color: #0c090a;
+            color: #b3b8c3;
+            border-style: ridge;
+            border: solid 2px #1e1e1e;
+            padding: 10px;
+            box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
+        }
 
-input:checked + div { display: none; }
-
-</style>
+        input:checked + div {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<div class="floaty">
-        <h1>
-            Natzone
-        </h1>
-        <hr>
-        <br>
-            "Hey hi, welcome you goobers, this is my little hang out spot (watchout for Nate he likes to invade, but he is just a silly). Aaaanyway, I'm nat, nice to meetcha, and here you can find the paticular tidbits that are currently interesting me, get ready for maths and computer stuff cause that's pretty much all I do [I joke, but sometimes its a little :))]" - nat 11/01/24 - 01:24+0000
-            OH FUCK IT'S LATE, OK I'LL FINISH THIS LATER\
-            Hey there is audio that you can play, click
-        <a class="links" href="#audio"> here. </a>
-        <br>
+    <div class="floaty">
+        <h1>Natzone</h1>
+        <hr />
+        <br />
+        "Hey hi, welcome you goobers, this is my little hang out spot (watchout for Nate he
+        likes to invade, but he is just a silly). Aaaanyway, I'm nat, nice to meetcha, and
+        here you can find the paticular tidbits that are currently interesting me, get ready
+        for maths and computer stuff cause that's pretty much all I do [I joke, but sometimes
+        its a little :))]" - nat 11/01/24 - 01:24+0000 OH FUCK IT'S LATE, OK I'LL FINISH THIS
+        LATER\ Hey there is audio that you can play, click
+        <a class="links" href="#audio"> here.</a>
+        <br />
         {
             recents.map((b) => {
-        return (
-                    <a href={"natalie/" + b.params.slug}> aaaa </a>
-            <b.props.Component/>
-            )
+                return (
+                    <>
+                        <a href={b.params.post}> aaaa </a>
+                        <b.props.c.Component />
+                    </>
+                )
             })
         }
-        <br>
-        <label for=cb> Click me for to hide audio.</label>
-        <input type='checkbox' style='display: none' id=cb>
+        <br />
+        <label for="cb"> Click me for to hide audio.</label>
+        <input type="checkbox" style="display: none" id="cb" />
         <div id="audio">
-        <audio loop controls src="catnap.mp3" />
+            <audio loop controls src="catnap.mp3"></audio>
         </div>
-
-</div>
+    </div>
+</body>

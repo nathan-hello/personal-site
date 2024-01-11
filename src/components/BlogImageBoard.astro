@@ -1,23 +1,14 @@
 ---
-import type { BlogDetails } from '@/types'
+import type { Post } from '@/types'
+import type { globBlogs } from '@utils/glob'
 
-interface Props {
-    details: BlogDetails
-}
-
-const { details } = Astro.props as Props
-
-
+const details = Astro.props as Post
 ---
 
 <div class="term" id="post">
     <span class="user"> {details.author}</span>
     {details.title} - {details.date}
-    <a
-        class="links"
-        id={`${details.id}` ?? '123'}
-        href="{details.author}/{details.id}"
-    >
+    <a class="links" id={`${details.id}` ?? '123'} href="{details.author}/{details.id}">
         No.{details.id ?? 'no id'}
     </a>
     <br />

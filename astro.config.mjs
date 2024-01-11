@@ -16,13 +16,4 @@ export default defineConfig({
   }),
   integrations: [mdx(), tailwind()],
   server: { port: 3000 },
-  vite: {
-    resolve: {
-      alias: {
-        "@images": path.resolve(__dirname, "public/images"),
-        "@videos": path.resolve(__dirname, "public/videos"),
-        "@audios": path.resolve(__dirname, "public/audios"),
-      }
-    }
-  }
 });
