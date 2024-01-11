@@ -49,6 +49,8 @@ padding: 10px;
 box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
 }
 
+input:checked + div { display: none; }
+
 </style>
 </head>
 <body>
@@ -59,8 +61,14 @@ box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
         <hr>
         <br>
             "Hey hi, welcome you goobers, this is my little hang out spot (watchout for Nate he likes to invade, but he is just a silly). Aaaanyway, I'm nat, nice to meetcha, and here you can find the paticular tidbits that are currently interesting me, get ready for maths and computer stuff cause that's pretty much all I do [I joke, but sometimes its a little :))]" - nat 11/01/24 - 01:24+0000
-            OH FUCK IT'S LATE, OK I'LL FINISH THIS LATER
-
+            OH FUCK IT'S LATE, OK I'LL FINISH THIS LATER\
+            Hey there is audio that you can play, click 
+        <label for=cb> here. </label>
+        <input type='checkbox' style='display: none' id=cb>
+        <div>
+        <audio loop controls src="rain.mp3" /> 
+        <audio loop controls src="catnap.mp3" /> 
+        </div>
         {
         blogs.map((b) => {
             return <blogs details={b.props.details} />
