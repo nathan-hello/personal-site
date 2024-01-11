@@ -15,7 +15,7 @@ const { details } = Astro.props as Props
     {details.title} - {details.date}
     <a
         class="links"
-        id={details.id ?? 'no id'}
+        id={`${details.id}` ?? '123'}
         href="{details.author}/{details.id}"
     >
         No.{details.id ?? 'no id'}
