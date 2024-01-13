@@ -1,12 +1,13 @@
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import mdx from "@astrojs/mdx";
-import path from "path"
 import tailwind from "@astrojs/tailwind";
+import MDXCodeBlocks, { mdxCodeBlockAutoImport } from 'astro-mdx-code-blocks';
+import AutoImport from "astro-auto-import"
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://nathan-hello.com",
+  site: "https://reluekiss.com",
   output: "hybrid",
   build: {
     inlineStylesheets: "always"
@@ -14,6 +15,14 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: false
   }),
-  integrations: [mdx(), tailwind()],
+  integrations: [
+    tailwind(),
+    AutoImport({
+      imports: [mdxCodeBlockAutoImport("src/components/Code.astro")]
+    }),
+    MDXCodeBlocks(),
+    mdx(), 
+  ],
   server: { port: 3000, host: "127.0.0.1" },
+  
 });

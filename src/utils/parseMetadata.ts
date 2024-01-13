@@ -3,7 +3,19 @@ import { possibleAuthors } from "@/consts";
 import type { BlogAstro, BlogDetails, BlogMdx } from "@/types";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
-export function parseAuthorName(s: string, _: string): PossibleAuthors {
+export function formatBytes(bytes: number, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+export function parseAuthorName(s: string): PossibleAuthors {
 
   for (const [key, names] of Object.entries(possibleAuthors)) {
     if (names.includes(s.toLowerCase())) {

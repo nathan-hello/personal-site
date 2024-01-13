@@ -1,23 +1,72 @@
 ---
 import type { Post } from '@/types'
-import type { globBlogs } from '@utils/glob'
+import Image from '@components/Image.astro'
+import '@styles/css.css'
 
-const details = Astro.props as Post
+const { details } = Astro.props as Record<string, Post>
+
+// let cardColor = 'bg-red-950'
+//
+// if (details.id.toString().at(-1) === '1') {
+//     cardColor = 'bg-gray-950'
+// }
+// if (details.id.toString().at(-1) === '2') {
+//     cardColor = 'bg-red-950'
+// }
+// if (details.id.toString().at(-1) === '3') {
+//     cardColor = 'bg-yellow-950'
+// }
+// if (details.id.toString().at(-1) === '4') {
+//     cardColor = 'bg-green-950'
+// }
+// if (details.id.toString().at(-1) === '5') {
+//     cardColor = 'bg-blue-950'
+// }
+// if (details.id.toString().at(-1) === '6') {
+//     cardColor = 'bg-indigo-950'
+// }
+// if (details.id.toString().at(-1) === '7') {
+//     cardColor = 'bg-purple-950'
+// }
+// if (details.id.toString().at(-1) === '8') {
+//     cardColor = 'bg-pink-950'
+// }
+// if (details.id.toString().at(-1) === '9') {
+//     cardColor = 'bg-teal-950'
+// }
+
+let cardColor = 'bg-black'
+let borderColor = 'border-white'
+
+if (details.author === 'nathan') {
+    cardColor = 'bg-cyan-950'
+    borderColor = 'border-green-900'
+}
+if (details.author === 'natalie') {
+    cardColor = 'bg-gray-950'
+    borderColor = 'border-nat-white-c01'
+}
+const showImg = details.globbedImgs.length > 0
 ---
 
-<div class="term" id="post">
-    <span class="user"> {details.author}</span>
-    {details.title} - {details.date}
-    <a class="links" id={`${details.id}` ?? '123'} href="{details.author}/{details.id}">
-        No.{details.id ?? 'no id'}
-    </a>
+<div
+    class={`border-2 border-solid hover:border-none p-4 hover:p-[18px] lg:w-[1000px] mx-auto text-[#b3b8c3] h-80 mb-3 ${cardColor} ${borderColor}`}
+>
+    <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
+    <span class="">{' '}-{' '}</span>
+    <span class="">{details.title} - {details.dateObj.toLocaleString()}</span>
     <br />
-    "file: "
-    <a class="url" href={details.image}> {details.id ?? 'no id'}</a>
-    " (137KB, image/gif)"
+
+    {showImg && (
+    <div class="float-left mr-10 mt-2">
+    <Image img={details.globbedImgs.at(0)!}/>
+    </div>
+    )
+    }
+
+    <div class="max-h-48 overflow-clip font-ibmplexserief">
+        <slot />
+    </div>
     <br />
-    <img class="media" src={details.image} />
-    "head of text goes here"
-    <br />
-    <a class="links" href="{details.href}"> Read more</a>
+    <a class="" href={details.absoluteUrl}> Read more</a>
 </div>

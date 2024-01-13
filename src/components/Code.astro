@@ -1,0 +1,17 @@
+---
+import hljs from 'highlight.js';
+import 'highlight.js/styles/dark.css';
+const { code, language } = Astro.props;
+
+
+let highlightedCode;
+if (language) {
+  highlightedCode = hljs.highlight(code, { language }).value;
+} else {
+  highlightedCode = hljs.highlightAuto(code).value;
+}
+
+---
+<br/>
+<pre class="whitespace-pre-line bg-gray-900 p-6 w-fit"><code class="" set:html={highlightedCode}></code></pre>
+<br/>

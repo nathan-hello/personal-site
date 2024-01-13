@@ -1,22 +1,26 @@
 ---
-import Meta from '@components/default/Meta.astro'
-import Header from '@components/default/Header.astro'
-import Footer from '@components/default/Footer.astro'
-import type { BlogDetails } from '@/types'
+import type { Post } from '@/types'
+import DefaultLayout from '@layouts/Root.astro'
+import Image from '@components/Image.astro'
 interface Props {
-    details: BlogDetails
+    details: Post
 }
 const { details } = Astro.props
 ---
 
-<Meta title={details.title} description={details.description} image={details.image} />
-<Header />
-<div class="term">
-<h1>{details.author} - {details.title}</h1>
-  <hr>
-</div>    
-<main class="term">
-    <slot />
-</main>
-
-<Footer />
+<DefaultLayout>
+    <div class="w-[80%] text-nat-white-c01 bg-neutral-800 mx-auto">
+        <div class="text-lg pt-6 pl-10 mx-auto">
+            <span class="text-[#a47996] font-bold">{details.author}</span>
+            <span class="">{' '}-{' '}</span>
+            <span class="">{details.title} - {details.dateObj.toLocaleString()}</span>
+            <br />
+        </div>
+        <div class="float-left flex flex-wrap px-10 gap-x-2">
+            {details.globbedImgs.map((g) => <Image img={g} />)}
+        </div>
+        <div class="p-10">
+        <slot />
+        </div>
+    </div>
+</DefaultLayout>

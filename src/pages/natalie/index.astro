@@ -2,7 +2,7 @@
 import Layout from '@layouts/Root.astro'
 import { globBlogs } from '@utils/glob'
 
-const recents = await globBlogs(10, 'natalie')
+const recents = await globBlogs(10, 'natalie', true)
 ---
 
 <head>

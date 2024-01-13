@@ -9,21 +9,24 @@ export type BlogDetails = {
   overrideHref?: string;
   overrideLayout?: boolean;
   description?: string;
-  image?: string;
+  image?: string | string[];
   tags?: string[];
   hidden?: boolean;
 };
 
 export type Image = {
-  href: string,
+  url: string,
   size: string,
-  type: string,
+  ext: string,
+  filename: string,
+  fullname: string,
 };
 
 export type Post = BlogDetails & {
   id: number,
-  images?: Image[];
-  href: string;
+  globbedImgs: Image[];
+  relativeUrl: string;
+  absoluteUrl: string;
   dateObj: Date;
   Component: AstroComponentFactory;
 };
