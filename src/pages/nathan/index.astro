@@ -1,20 +1,17 @@
 ---
 import Layout from '@layouts/Root.astro'
+import BlogImageBoard from '@components/BlogImageBoard.astro'
 import { globBlogs } from '@utils/glob'
 
 const recents = await globBlogs(10, 'nathan', true)
 ---
 
 <Layout>
-    <div class=" min-h-screen">
-        <div class="flex flex-col p-10 gap-2">
-            {
-                recents.map((a) => (
-                    <a class="bg-red-900 text-xl " href={a.params.post}>
-                        <div class="h-32 w-48">{a.props.c.title}</div>
-                    </a>
-                ))
-            }
-        </div>
-    </div>
+    {
+        recents.map((a) => (
+            <BlogImageBoard details={a.props.c}>
+                <a.props.c.Component />
+            </BlogImageBoard>
+        ))
+    }
 </Layout>

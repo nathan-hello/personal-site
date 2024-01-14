@@ -1,14 +1,14 @@
 ---
-import Layout from '@layouts/Root.astro'
 import { globBlogs } from '@utils/glob'
 
+import BlogImageBoard from '@components/BlogImageBoard.astro'
 const recents = await globBlogs(10, 'natalie', true)
 ---
 
 <head>
     <style>
         body {
-        background-image: url('images/cyber.jpg');
+            background-image: url('images/cyber.jpg');
             background-attachment: fixed;
         }
 
@@ -42,16 +42,17 @@ const recents = await globBlogs(10, 'natalie', true)
         LATER\ Hey there is audio that you can play, click
         <a class="links" href="#audio"> here.</a>
         <br />
-        {
-            recents.map((b) => {
-                return (
-                    <>
-                        <a href={b.params.post}> aaaa </a>
-                        <b.props.c.Component />
-                    </>
-                )
-            })
-        }
+        <div class="py-2 gap-y-2">
+            {
+                recents.map((a) => {
+                    return (
+                        <BlogImageBoard details={a.props.c}>
+                            <a.props.c.Component />
+                        </BlogImageBoard>
+                    )
+                })
+            }
+        </div>
         <br />
         <label for="cb"> Click me for to hide audio.</label>
         <input type="checkbox" style="display: none" id="cb" />
