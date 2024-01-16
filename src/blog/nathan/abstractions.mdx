@@ -1,0 +1,70 @@
+---
+title: Abstraction Essay
+author: nathan
+date: 16-Jan-2024
+---
+I have this recurring nightmare where I make a website, ship it, forget about it for a decade, and then I need to do a decade's worth of catching up to ever work on it again.
+This is my personal problem with abstractions. They are really, really great for most software developers who work in companies shipping products. You can rely on there being
+a software team for the next decade to maintain, and if necessary rewrite, the website so work can continue. Developer experience is important for this reason. If you ship
+products quicker, your company will be more successful than the competitor that ships products slower (even if theirs is marginally better/faster/more sustainable). Just for
+clarity, when I'm thinking about this example, I'm referring to NextJS/React/RSC/that whole paradigm. And this isn't much of an original thought, it's an argument that makes
+sense from Theo. In an age where compute and data storage are so incredibly cheap, why bother? Especially before you have properly figured out your problem space, you need to
+pick technologies that let you quickly add features and rewrite ones that you inevitably mess up. 
+
+But what if we had both? What if the ramp-up time for something like the [no-magic-stack](https://github.com/nathan-hello/no-magic-stack) that I'm building is just the same as
+something like Remix, NextJS, or SolidJS? What if there were something using go that had a shockingly similar amount of DX? What if you
+didn't need 300 node modules to get a todo app running? And really interesting to me, what if your entire website were one single binary that you can ship anywhere (including 
+static files). I don't know if that binary would be any better than traditional deployments, but it sounds fun. Speaking of deployments, what if they were as easy to make cheap 
+as NextJS and AstroJS? With those, you just use the primatives that they give you, and because the hosting platforms know how the frameworks are designed, it's plug and play.
+
+Yes, using htmx and go is a different mental model than React, but for me at least, it just clicks. I'm sure other people have the same thing with Server Components, or React Router,
+or whatever else. This is what makes sense to me, personally. So, when I say how great and easy it is, I need to keep in mind my bias. I'm still a beginner to programming, and
+I very much remember not that long ago watching tutorial after tutorial of someone who thinks they know what to say to an inexperienced person, but is blinded by the fact that they
+are not themselves inexperienced anymore. The most I can do is contribute to the conversation with what makes sense to me, personally.
+
+So, what makes sense to me? Well, I've struck my personal balance of comfort with abstractions. Go is the middle ground, I feel like it being a fantastic http server language is
+obvious.
+
+Sqlc is barely an abstraction - you port in your database schema in SQL, you write your queries in SQL, and it parses these two to output typesafe Go code. If you look
+at the `.go` files it generates, it's not using its own library code for these queries. It uses the builtin `database/sql` for the connections and requests to the database url. 
+It uses `github.com/lib/pq` for the Postgres part of the database and `github.com/google/uuid` for UUID types. I'm sure there are others, but this is a sense of how extremely 
+typical and unobtrusive this generated code is. 
+
+Tailwind literally is CSS - even if it uses some JS to generate it, and the standalone binary literally uses nodejs, I don't care because what comes out is a blank, normal CSS file.
+It's difficult to call tailwind an abstraction, it's more like they just did the work of making useful classes for you. All the program does is add in those classes selectively
+based on what you're using so that way you don't ship a [190kB file](https://v1.tailwindcss.com/docs/controlling-file-size) to every single user. 
+
+The most library-code of the stack is between `a-h/templ` and htmx. templ is probably the more difficult one to justify. You can think of templ as React functional components, 
+but aren't very capable of running Go code within them. It's really just html templating but the primitives of actually using it are so much better than anything else. It's a 
+function that returns html, accepts and gives LSP support for structs/maps/slices/strings/whatever. You can't put that complicated of logic inside of the templ
+components, but this is fine. Some might go as far as to say that logic doesn't belong at all in components that return html. 
+
+And that brings us to htmx. This library I know the least about, is the most "library" kind of piece, and is probably the most powerful out of all of these. Sqlc, tailwind, and templ, all 
+aren't that different from what they're supporting (you write sql for sqlc, you still need to know css for tailwind, and templ is just html+go templating), all require very
+little new knowledge to learn the library, and provide type safety. Htmx doesn't do any of these. Although there is an [htmx-go library](https://github.com/angelofallars/htmx-go) that
+provides server-side typesafety, it would only be useful if it also provided typesafety and LSP support from the client (.templ files) and the server. I believe this is impossible even in
+theory unless one side (client/server) changes their syntax to allow for static analysis.
+
+Sure, htmx is easy to learn from 20% -> 80%. But first understanding how a server responds with html, what that looks like, the swapping strategies, and what the hell is ajax and why does the documentation mention it all the time?. It sounds so painfully obvious now, but there was a few weeks were I would watch "let's build a crud app" tutorials and be more confused than before. It's not really until I built the todo app myself did I really understand what htmx did for me and how to use it. Again, I know it very little because there actually kind of is a lot to learn with it to get really good. But, htmx seems really cool because it allows me to write so much less code for client-side interactivity. It allows me to not care about the client much at all
+because the server renders the html and htmx sends that html to the dom. Also importantly, it's *one* javascript file, of which I can host myself and keep forever. There will
+be this version of htmx available for free on the internet forever. I could see myself giving up templ because it's an abstraction that is relatively unstable and I'm sure I
+could figure out the builtin templating if I cared enough to - but htmx solves so many problems and I assume it's extremely stable. By allowing me to send html to the client
+and have the client know what to do with it, htmx is what allows me to build this at all. Because this is the same problem that React tries to solve - and it does it well. 
+
+But, I want to care about performance, and I want to not have my recurring nightmare. This stack seems to be comprised of parts that will exist in 10 years. Go will exist in
+10 years. SQL will exist in 10 years, and even though the sqlc parser might not update with my database of choice (for now, postgres), by using Sqlc I am getting the SQL muscles
+I need to learn. CSS will exist in 10 years, and I'm sure the tailwind classes will still work, and I will bet that Tailwind will be updated with whatever new CSS comes out because
+tailwind is how most people write CSS and I don't see that changing unless the browsers implement CSS differently. Will templ exist in 10 years? Maybe not, and that will be a shame.
+It's this fact that makes me consider using go's buitin template but the primitives are so good. Also, what I'm writing can so easily be transferred in the future - it's just html with
+some for loops! Will htmx exist in 10 years? Almost certainly, and if not, I'm sure this current version of htmx will be just fine for most stuff. If it's good enough now, it'll be good
+enough in the future because AFAIK, there aren't really any security considerations with htmx. 
+
+In the most abstract way possible, this stack is what I think the web "should be". Say you have a SPA, using a javascript library on the client to do client-side navigation. That
+is no where near what the web was intended for. Putting aside the performance, SEO, and UX issues with SPAs, they are in my mind, illegal. You shouldn't make them because you are
+ignoring, putting aside, and almost mocking what thousands of engineers have spent three decades curating: the web. To use javascript to treat the browser like a native application
+is, again, in my mind illegal. (This concept is kind of difficult to come across, so I've made these statements more pointy for conveyance reasons. I don't actually think that people
+should be in jail for making SPAs. I do think it was a mistake.) In this stack, we go back to what the web is supposed to be not because they are arbitrary standards taken on from
+down high, but because these standards will continue to exist in the next 10 years. 
+
+I'm building this stack because I think it will help me rest easy.
+
