@@ -2,7 +2,7 @@
 import { globBlogs } from '@utils/glob'
 
 import BlogImageBoard from '@components/BlogImageBoard.astro'
-const recents = await globBlogs(10, 'natalie', true)
+const recents = await globBlogs(50, 'natalie', true)
 ---
 
 <head>
@@ -15,8 +15,7 @@ const recents = await globBlogs(10, 'natalie', true)
         .floaty {
             margin-left: 10%;
             margin-right: 10%;
-            background: rgb(37, 20, 61);
-            background-color: #0c090a;
+            background-color: #262626;
             color: #b3b8c3;
             border-style: ridge;
             border: solid 2px #1e1e1e;
