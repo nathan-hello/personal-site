@@ -7,6 +7,10 @@ const recents = await globBlogs(50, 'natalie', true)
 
 <head>
     <style>
+        b {
+           font-weight: bold;
+           color: #eeeeee;
+       }
         body {
             background-image: url('images/cyber.jpg');
             background-attachment: fixed;
@@ -31,6 +35,11 @@ const recents = await globBlogs(50, 'natalie', true)
 <body>
     <div class="floaty">
         <h1>Natzone</h1>
+        <b>
+            <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="natalie"> /Natzone/</a>
+            <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="nathan"> /Natecorner/</a>
+            <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="https://github.com/nathan-hello"> /gh/</a>
+        </b>
         <hr />
         <br />
         "Hey hi, welcome you goobers, this is my little hang out spot (watchout for Nate he
@@ -56,7 +65,7 @@ const recents = await globBlogs(50, 'natalie', true)
         <label for="cb"> Click me for to hide audio.</label>
         <input type="checkbox" style="display: none" id="cb" />
         <div id="audio">
-            <audio loop controls src="catnap.mp3"></audio>
+            <audio loop controls src="/audio/catnap.mp3"></audio>
         </div>
     </div>
 </body>

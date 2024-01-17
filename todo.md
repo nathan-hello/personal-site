@@ -11,3 +11,7 @@
 
 - rss feed
 - generate random id for blogpost
+
+# bugs
+
+- in the header for a paticular post the href goes to the absaloute path as if it were a blog post so it just 404's.
