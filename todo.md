@@ -9,6 +9,7 @@
 
 # To do
 
+- thread like system where visitors can reply to the main posts
 - rss feed
 - generate random id for blogpost
 
