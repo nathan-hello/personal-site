@@ -4,6 +4,8 @@ import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import MDXCodeBlocks, { mdxCodeBlockAutoImport } from 'astro-mdx-code-blocks';
 import AutoImport from "astro-auto-import"
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,7 +23,10 @@ export default defineConfig({
       imports: [mdxCodeBlockAutoImport("src/components/Code.astro")]
     }),
     MDXCodeBlocks(),
-    mdx(), 
+    mdx({
+    	remarkPlugins: [remarkMath],
+    	rehypePlugins: [rehypeKatex]
+    }),
   ],
   server: { port: 3000, host: "127.0.0.1" },
   

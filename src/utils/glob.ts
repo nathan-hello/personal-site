@@ -68,6 +68,7 @@ export async function globBlogs(
     const g = extractMetadata(f);
     interim.push(g);
     count++;
+    const newCount = count + 1; count++
   }
 
   const mdxs = import.meta.glob<BlogMdx>("/src/blog/**/*.mdx");
@@ -77,6 +78,7 @@ export async function globBlogs(
     const g = extractMetadata(f);
     interim.push(g);
     count++;
+    const newCount = count + 1; count++
   }
 
   for (const p of interim) {
