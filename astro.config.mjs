@@ -9,25 +9,25 @@ import remarkMath from 'remark-math'
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://reluekiss.com',
-    output: 'hybrid',
-    build: {
-        inlineStylesheets: 'always',
-      assets: "a",
-    },
-    adapter: vercel({
-        webAnalytics: false,
+  site: 'https://reluekiss.com',
+  output: 'hybrid',
+  build: {
+    inlineStylesheets: 'always',
+    assets: "a",
+  },
+  adapter: vercel({
+    webAnalytics: false,
+  }),
+  integrations: [
+    tailwind(),
+    AutoImport({
+      imports: [mdxCodeBlockAutoImport('src/components/Code.astro')],
     }),
-    integrations: [
-        tailwind(),
-        AutoImport({
-            imports: [mdxCodeBlockAutoImport('src/components/Code.astro')],
-        }),
-        MDXCodeBlocks(),
-        mdx({
-            remarkPlugins: [remarkMath],
-            rehypePlugins: [rehypeKatex],
-        }),
-    ],
-    server: { port: 3000, host: '127.0.0.1' },
+    MDXCodeBlocks(),
+    mdx({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+  ],
+  server: { port: 3000, host: '127.0.0.1' },
 })

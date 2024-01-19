@@ -43,7 +43,7 @@ export const globImages = async (imgs: string[]): Promise<Image[]> => {
     images.push({
       size: formatBytes(size),
       ext: ext,
-      url: urlNoPublic,
+      url: url,
       filename: file,
       fullname: `${file}${ext}`,
       accessibility: accessibility
