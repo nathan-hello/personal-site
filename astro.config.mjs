@@ -13,6 +13,7 @@ export default defineConfig({
     output: 'hybrid',
     build: {
         inlineStylesheets: 'always',
+      assets: "a",
     },
     adapter: vercel({
         webAnalytics: false,
