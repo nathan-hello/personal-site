@@ -1,7 +1,7 @@
 ---
 import { globBlogs } from '@utils/glob'
 
-import BlogImageBoard from '@components/BlogImageBoard.astro'
+import ForumPostCard from '@components/ForumPostCard.astro'
 const recents = await globBlogs(50, 'natalie', true)
 ---
 
@@ -17,7 +17,7 @@ const recents = await globBlogs(50, 'natalie', true)
             color: #eeeeee;
         }
         body {
-            background-image: url('images/cyber.jpg');
+            background-image: url('/images/cyber.jpg');
             background-attachment: fixed;
         }
 
@@ -117,9 +117,9 @@ const recents = await globBlogs(50, 'natalie', true)
                 {
                     recents.map((a) => {
                         return (
-                            <BlogImageBoard details={a.props.c}>
+                            <ForumPostCard details={a.props.c}>
                                 <a.props.c.Component />
-                            </BlogImageBoard>
+                            </ForumPostCard>
                         )
                     })
                 }

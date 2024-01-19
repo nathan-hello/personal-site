@@ -1,5 +1,6 @@
 ---
 import type { Image } from '@/types'
+import ImageAria from './ImageAria.astro';
 interface Props {
     img: Image
 }
@@ -16,5 +17,5 @@ const { img } = Astro.props
         ({img.size}, image/{img.ext.split('.').pop()})
         <hr />
     </span>
-    <img class="max-h-48 max-w-full" src={img.url} />
+    <ImageAria className="max-h-48 max-w-full" image={img} />
 </div>

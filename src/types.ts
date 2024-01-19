@@ -1,5 +1,6 @@
 import type { AstroInstance, MDXInstance } from 'astro'
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js'
+import type { ImageAccessibility } from './consts'
 
 export type BlogDetails = {
     title: string
@@ -19,6 +20,7 @@ export type Image = {
     ext: string
     filename: string
     fullname: string
+    accessibility: ImageAccessibility
 }
 
 export type Post = BlogDetails & {

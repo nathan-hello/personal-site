@@ -1,7 +1,6 @@
 ---
-import type { Post } from '@/types'
 import { globBlogs, type RGlobBlogs } from '@utils/glob'
-import type { GetStaticPaths, GetStaticPathsResult } from 'astro'
+import type { GetStaticPaths } from 'astro'
 import NatalieLayout from '@layouts/natalie/Root.astro'
 
 export const getStaticPaths: GetStaticPaths = async () => {

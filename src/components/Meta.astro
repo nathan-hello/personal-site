@@ -7,7 +7,7 @@ interface Props {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
-const { title, description = '', image = '/blog-placeholder-1.jpg' } = Astro.props
+const { title, description , image = "/images/carpark.png"  } = Astro.props
 ---
 
 <!-- Global Metadata -->
@@ -16,21 +16,14 @@ const { title, description = '', image = '/blog-placeholder-1.jpg' } = Astro.pro
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Font preloads -->
+<!-- Font & CSS preloads -->
 <link
-    rel="preload"
-    href="/fonts/atkinson-regular.woff"
-    as="font"
-    type="font/woff"
-    crossorigin
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.css"
+    integrity="sha384-WsHMgfkABRyG494OmuiNmkAOk8nhO1qE+Y6wns6v+EoNoTNxrWxYpl5ZYWFOLPCM"
+    crossorigin="anonymous"
 />
-<link
-    rel="preload"
-    href="/fonts/atkinson-bold.woff"
-    as="font"
-    type="font/woff"
-    crossorigin
-/>
+
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

@@ -1,0 +1,18 @@
+---
+import type { Image } from '@/types'
+interface Props {
+    image: Image
+    className?: string
+}
+const { image, className = '' } = Astro.props
+const imgId = `${image.filename}-id`
+---
+
+<img
+    id={imgId}
+    class={className}
+    src={image.url}
+    role={image.accessibility.role ?? undefined}
+    aria-describedby={image.accessibility.ariaDescribedby ?? ""}
+    loading={image.accessibility.loading ?? 'lazy'}
+/>

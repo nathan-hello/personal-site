@@ -162,8 +162,6 @@ const { details } = Astro.props
 <main class="min-h-screen bg-pink-800 max-w-3xl">
     <slot />
 </main>
-
-<Footer />
 ```
 
 If you're making a custom layout, and you want to use it for a post, you use it like this:

@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Root.astro'
-import BlogImageBoard from '@components/BlogImageBoard.astro'
+import ForumPostCard from '@components/ForumPostCard.astro'
 import { globBlogs } from '@utils/glob'
 
 const recents = await globBlogs(10, 'nathan', true)
@@ -9,9 +9,9 @@ const recents = await globBlogs(10, 'nathan', true)
 <Layout>
     {
         recents.map((a) => (
-            <BlogImageBoard details={a.props.c}>
+            <ForumPostCard details={a.props.c}>
                 <a.props.c.Component />
-            </BlogImageBoard>
+            </ForumPostCard>
         ))
     }
 </Layout>
