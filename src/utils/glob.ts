@@ -31,6 +31,8 @@ export const globImages = async (imgs: string[]): Promise<Image[]> => {
     const ext = path.extname(fsPath)
     const file = path.basename(fsPath, path.extname(fsPath))
     const urlNoPublic = url.slice('/public'.length)
+    console.log("withpublic", url)
+    console.log("nopublic", urlNoPublic)
 
     if (!url || !urlNoPublic) {
       throw new Error(`ERROR: ${url} undefined from ${imgs}`)
