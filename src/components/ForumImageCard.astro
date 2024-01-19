@@ -1,7 +1,8 @@
 ---
-import type { Image } from '@/types'
+import type { Image as TImage } from '@/types'
+import { Image as ImageAstro } from 'astro:assets'
 interface Props {
-    image: Image
+    image: TImage
 }
 const { image } = Astro.props
 const imgId = `${image.filename}-id`
@@ -16,14 +17,15 @@ const imgId = `${image.filename}-id`
         <br />
         ({image.size}, image/{image.ext.split('.').pop()})
         <hr />
-        <img
+        <ImageAstro
+            class="max-h-48 w-auto aspect-auto"
+            style="object-fit: contain;"
             id={imgId}
-            class="max-h-48 max-w-full"
             alt={image.accessibility.alt ?? ''}
-            src={image.url}
+            src={import(`/public/${image.url}`)}
             role={image.accessibility.role ?? 'img'}
-            aria-describedby={image.accessibility.ariaDescribedby ?? ''}
             loading={image.accessibility.loading ?? 'lazy'}
+            aria-describedby={image.accessibility.ariaDescribedby ?? ''}
         />
     </span>
 </div>
