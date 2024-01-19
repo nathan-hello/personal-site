@@ -7,9 +7,10 @@ interface Props {
 }
 const { details } = Astro.props
 ---
+
 <DefaultLayout>
     <div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
-         <div class="float-left flex px-10 gap-x-2 pt-6">
+        <div class="float-left flex px-10 gap-x-2 pt-6">
             {details.globbedImgs.map((g) => <Image img={g} />)}
         </div>
         <div class="text-lg pt-6 mx-auto">
@@ -19,7 +20,7 @@ const { details } = Astro.props
             <br />
         </div>
         <div class="p-10">
-        <slot />
+            <slot />
         </div>
     </div>
 </DefaultLayout>

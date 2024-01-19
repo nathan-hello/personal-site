@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <html lang="en">
@@ -6,45 +7,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Nat/e</title>
-        <style is:global >
-            .term {
-                font-size: 14px;
-                background-color: #0c090a;
-                color: #b3b8c3;
-                width: 555px;
-                border: solid 2px #1e1e1e;
-                margin-left: auto;
-                margin-right: auto;
-                padding: 3px;
-            }
-            .user {
-                color: #a47996;
-                font-weight: bold;
-            }
-            #post {
-                display: table;
-                margin-top: 5px;
-            }
-            .media {
-                width: 33%;
-                padding: 2px 4px 2px 2px;
-                float: left;
-            }
-            .term:hover {
-                border: solid 2px #0c090a;
-            }
-            .url {
-                text-decoration: underline;
-                color: #b3b8c3;
-            }
-            .url:hover {
-                background-color: #b3b8c3;
-                color: #0c090a;
-            }
-            b {
-                font-weight: bold;
-                color: #eeeeee;
-            }
+        <style is:global>
             .bg {
                 position: fixed;
                 top: 50%;
@@ -70,7 +33,7 @@
                 cursor: pointer;
             }
             html {
-              background-image: url(/images/carpark.png);
+                background-image: url(/images/carpark.png);
                 background-repeat: no-repeat;
                 background-color: #1e1e1e;
                 background-attachment: fixed;
@@ -86,7 +49,7 @@
         </style>
     </head>
     <body>
-        <div class="mx-auto w-min bg-nat-black-c01 text-nat-white-c01 px-3 mb-2 ">
+        <div class="mx-auto w-min bg-nat-black-c01 text-nat-white-c01 px-3 mb-2">
             <pre>
  _   _       _       __   
 | \ | |     | |     / /   
@@ -96,11 +59,26 @@
 |_| \_|\__,_|\__/_/ \___| "We are Boingus"
             </pre>
             <b>
-                <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="natalie"> /Natzone/</a>
-                <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="nathan"> /Natecorner/</a>
-                <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="https://github.com/nathan-hello"> /gh/</a>
+                <a
+                    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                    href="/natalie"
+                >
+                    /Natzone/</a
+                >
+                <a
+                    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                    href="/nathan"
+                >
+                    /Natecorner/</a
+                >
+                <a
+                    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                    href="https://github.com/nathan-hello"
+                >
+                    /gh/</a
+                >
             </b>
         </div>
-        <slot/>
+        <slot />
     </body>
 </html>

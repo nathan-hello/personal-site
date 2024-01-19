@@ -5,7 +5,7 @@ import NathanLayout from '@layouts/nathan/Root.astro'
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const g = await globBlogs(undefined, 'nathan', false)
-    console.log(g)
+    // console.log(g)
     return g
 }
 

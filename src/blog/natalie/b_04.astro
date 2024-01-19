@@ -1,12 +1,12 @@
 ---
 import type { BlogDetails } from '@/types'
-import Code from "@components/Code.astro"
+import Code from '@components/Code.astro'
 
 export const details: BlogDetails = {
     title: 'Images-in-the-terminal',
     date: '2024-Jan-01',
     author: 'natalie',
-    image: ["LainLaugh.gif", "ncmpcpp.png"]
+    image: ['LainLaugh.gif', 'ncmpcpp.png'],
 }
 const code = String.raw`
 #!/bin/bash
@@ -60,5 +60,4 @@ done
     of alternatives. But for my aformentioned reasons I still continue to use it.
 </div>
 <br />
-<Code code={code} lang="bash" filename="asdf.sh"/>
-</div>
+<Code code={code} lang="bash" filename="asdf.sh" />

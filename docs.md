@@ -1,9 +1,12 @@
 # Overview
+
 ---
+
 To make a new post:
-- Make a new document in `src/blogs/`
-- This document can be `.astro` (html) or `.mdx` (markdown)
-- If `.astro`, then export details as such:
+
+-   Make a new document in `src/blogs/`
+-   This document can be `.astro` (html) or `.mdx` (markdown)
+-   If `.astro`, then export details as such:
 
 ```ts
 ---
@@ -29,10 +32,11 @@ Markdown goes here
 
 > Note the triple-dashes in either file. They are necessary.
 
-- By default, posts will be made with the default layout.
-    - For Natalie, that is in `src/layouts/natalie/Root.astro`
+-   By default, posts will be made with the default layout.
 
-- After you're finished, run:
+    -   For Natalie, that is in `src/layouts/natalie/Root.astro`
+
+-   After you're finished, run:
 
 ```bash
 git add .
@@ -40,17 +44,16 @@ git commit -m "new post"
 git push
 ```
 
-This will push it to prod. 
+This will push it to prod.
 
 Blogs will be at `.com/author/yyyy/mm/dd/title`.
 
 If you want to verify that there are no errors, run `npm run build`, fix any errors, and then push. There are going to be a bunch of warns, don't worry about that.
 
-
 ## Things that matter:
 
-- The `date` in the details has to be able to be parsed by Javascript. It doesn't really matter what the format is as long as it's unambiguous, so I've elected for YYYY-MMM-DD. If javascript can't figure out the date, then it will throw an error and the build will fail.
-- The author name has to be one of those listed in `consts.ts`. This is a build-time check so it will make sure that each post knows where to go. This was done so we don't have to rely on filesystem locations (more on that later). If an author name is used that isn't in `possibleAuthors`, then the build will fail.
+-   The `date` in the details has to be able to be parsed by Javascript. It doesn't really matter what the format is as long as it's unambiguous, so I've elected for YYYY-MMM-DD. If javascript can't figure out the date, then it will throw an error and the build will fail.
+-   The author name has to be one of those listed in `consts.ts`. This is a build-time check so it will make sure that each post knows where to go. This was done so we don't have to rely on filesystem locations (more on that later). If an author name is used that isn't in `possibleAuthors`, then the build will fail.
 
 ## What is Astro/Mdx?
 
@@ -60,9 +63,8 @@ Astro files have two sides: Javascript and html.
 
 ```astro
 [label src/index.astro]
----
+
 export const text = "here"
----
 <div>This is html land, and here is that text from above: {text}</div>
 ```
 
@@ -72,9 +74,8 @@ This means that after build, the sites will not change. For example:
 
 ```astro
 [label src/index.astro]
----
+
 const randomNumber = Math.random()
----
 <div>The random number: {randomNumber}</div>
 ```
 
@@ -84,25 +85,27 @@ This random number will be generated once on build, and then after that it will 
 
 Full docs: [mdx-docs](https://mdxjs.com/docs/)
 
-Mdx is a superset of markdown, for our usecase it's cool for two reasons: 
+Mdx is a superset of markdown, for our usecase it's cool for two reasons:
 
-- We can statically analyze the title/date/author/etc so we can guarantee that everything is in the right shape
-- Components can be imported into them just the same as astro
+-   We can statically analyze the title/date/author/etc so we can guarantee that everything is in the right shape
+-   Components can be imported into them just the same as astro
 
 I think we'll find it often that markdown is preferable over html just because it's quicker to write.
 
 ```mdx
-[label src/blog/nathan/asdf.mdx]
----
+## [label src/blog/nathan/asdf.mdx]
+
 title: asdf
 author: nathan
 date: Jan-06-2024
+
 ---
-import Latex from "@components/natalie/Latex.astro"
 
-*Valid Markdown!*
+import Latex from '@components/natalie/Latex.astro'
 
-<Latex formula="E=mc^2"/>
+_Valid Markdown!_
+
+<Latex formula="E=mc^2" />
 
 _More valid markdown_
 ```
@@ -115,11 +118,10 @@ The big power of Astro is the composability of these without client-side js. You
 
 ```astro
 [label src/index.astro]
----
+
 import Component from "@components/default/CenterText.astro"
----
 <Component center={true}>
-    <div>This div will go in the slot tag </div>
+    <div>This div will go in the slot tag</div>
 </Component>
 ```
 
@@ -129,14 +131,10 @@ When you're making a component or layout that expects to have children, you use 
 
 ```astro
 [label src/components/default/CenterText.astro]
----
-interface Props {
-    center: boolean
-}
-const c = center ? "text-center" : "text-left"
----
+
+interface Props { center: boolean } const c = center ? "text-center" : "text-left"
 <div class={c}>
-    <slot/>
+    <slot />
 </div>
 ```
 
@@ -155,6 +153,7 @@ interface Props {
 }
 const { details } = Astro.props
 ---
+
 <Meta title={details.title} description={details.description} image={details.image} />
 <Header />
 
@@ -171,13 +170,14 @@ If you're making a custom layout, and you want to use it for a post, you use it 
 
 ```astro
 ---
-import Layout from "@layouts/natalie/CustomLayout.astro"
+import Layout from '@layouts/natalie/CustomLayout.astro'
 export const details = {
-    title: "fdsa",
-    author: "natalie",
-    date: "Jan-06-2024"
+    title: 'fdsa',
+    author: 'natalie',
+    date: 'Jan-06-2024',
 }
 ---
+
 <Layout details={details}>
     <h1>Content Here</h1>
 </Layout>
@@ -189,14 +189,12 @@ I made a Latex component already.
 
 ```astro
 [label src/blog/natalie/asdf.astro]
----
+
 import Latex from "@components/natalie/Latex.astro"
----
-<Latex formula="E=mc^2"/>
+<Latex formula="E=mc^2" />
 ```
 
 By default, this element will have a class of name "latex-default", which means you can style it like so:
-
 
 ```html
 [label src/blog/natalie/asdf.astro]
@@ -227,13 +225,13 @@ And because the CSS is scoped to that page or component, only the `h1` tags with
 
 The details object, defined in `types.ts`, has a few optional configurations for special usecases.
 
-| Key | Required? | Description |
-|-----|-----------|-------------|
-| title | X | Defines part of the URL |
-| date | X | Defines part of the URL |
-| author | X | Defines part of the URL |
-| tags | | However you want to use tags, we can figure it out. Actually using them is not implemented yet |
-| overrideHref| | If you don't want the url to be `YYYY/MM/DD/title`, you can use this to make a custom route that lives in, for example `/nathan/myOverride` |
-| overrideLayout | | Because `.astro` is just straight up html, and `.mdx` also supports importing components from Astro, you can make a route that does not inherit from the default layout. This means that the page is a blank canvas, do whatever you want. |
-| description | | Used for <meta> tags, for sharing on social media |
-| image | | Used for <meta> tags, for sharing on social media |
+| Key            | Required? | Description                                                                                                                                                                                                                                |
+| -------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| title          | X         | Defines part of the URL                                                                                                                                                                                                                    |
+| date           | X         | Defines part of the URL                                                                                                                                                                                                                    |
+| author         | X         | Defines part of the URL                                                                                                                                                                                                                    |
+| tags           |           | However you want to use tags, we can figure it out. Actually using them is not implemented yet                                                                                                                                             |
+| overrideHref   |           | If you don't want the url to be `YYYY/MM/DD/title`, you can use this to make a custom route that lives in, for example `/nathan/myOverride`                                                                                                |
+| overrideLayout |           | Because `.astro` is just straight up html, and `.mdx` also supports importing components from Astro, you can make a route that does not inherit from the default layout. This means that the page is a blank canvas, do whatever you want. |
+| description    |           | Used for <meta> tags, for sharing on social media                                                                                                                                                                                          |
+| image          |           | Used for <meta> tags, for sharing on social media                                                                                                                                                                                          |

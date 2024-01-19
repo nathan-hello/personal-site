@@ -12,13 +12,13 @@ had an idea, I said to Natalie that I should make a blog site for us and here it
 
 I'm Nathan - and on this side of the site I'm really excited to post about things I'm learning about. Right now
 that's web-dev, golang, and (soon) networking. I'm probably not going to post too personal of things at least until
-I'm comfortable with the potential of my internet and irl identiies colliding - but Natalie is perfectly free to 
-post whatever she wants. 
+I'm comfortable with the potential of my internet and irl identiies colliding - but Natalie is perfectly free to
+post whatever she wants.
 
 The site is built with AstroJS - something that's essentially a build tool for html templating. We're not using
 any ui libraries (react, vue, svelte, etc), just plain html. Html templating is really all we need, and if I want
 to do some client-side interactivity then I'll throw on HTMX and play around with that. Natalie really cares about
-not having client-side JS, so I'm going to put a flag somewhere whenever I do decide to make client-side JS. 
+not having client-side JS, so I'm going to put a flag somewhere whenever I do decide to make client-side JS.
 
 I did want to use something like Go to do the whole SSG situation, but I didn't want to have Natalie learn any
 go or templ (a really cool html templating library for go), and even so I wouldn't know how to do all of the cool SSG
@@ -26,15 +26,15 @@ stuff that AstroJS comes out of the box with. I have heard of Hugo, and even tho
 just think that adopting AstroJS and leaving AstroJS will be easier than Hugo. Also, I already know about Astro, the
 DX is absolutely insane how good it is. And that DX really matters to me because Natalie's experience in making her
 posts and her css and whatever it is that she wants is important! I want her to have fun, and the higher the learning
-curve the less likely she is to have fun. 
+curve the less likely she is to have fun.
 
-This said, I very much plan on moving off of Astro to something that is decades-long stable as soon as possible. I 
+This said, I very much plan on moving off of Astro to something that is decades-long stable as soon as possible. I
 really want to have an in-browser post creator that uploads to a database that we host, instead of making .astro or
 .mdx files manually. Doing it this way makes sense for what I wanted (get a site up to production as quickly as
 possible so Natalie stays excited about the project) - but it's not what I want for the long term. I'd like to have
 a router written in some language (it really doesn't matter, I'm just on a Go hype train right now), dependent only
 the standard library (something with Go is known for!). This does, however, come at the cost of instead of caring
-about abstractions and third-party libraries - I have to care about and maintain my own code. There's definitely a 
+about abstractions and third-party libraries - I have to care about and maintain my own code. There's definitely a
 situation in which this does not payoff. But I think if I write it well enough and document it well enough then I
 could make a solution that lasts decades. Or maybe that's a pipedream.
 
