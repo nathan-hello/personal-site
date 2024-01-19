@@ -2,6 +2,7 @@
 import type { Post } from '@/types'
 import ForumImageCard from '@components/ForumImageCard.astro'
 import '@styles/css.css'
+import FormattedDate from "@components/FormattedDate.astro"
 
 const { details } = Astro.props as Record<string, Post>
 
@@ -25,14 +26,14 @@ const showImg = details.globbedImgs.length > 0
     {
         showImg && (
             <div class="float-left mr-10 mt-2">
-                <ForumImageCard img={details.globbedImgs.at(0)!} />
+                <ForumImageCard image={details.globbedImgs.at(0)!} />
             </div>
         )
     }
 
     <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
     <span class="">{' '}-{' '}</span>
-    <span class="">{details.title} - {details.dateObj.toLocaleString('en-GB')}</span>
+    <span class="">{details.title} - <FormattedDate dateObj={details.dateObj}/></span>
     <br />
     <div class="max-h-64 overflow-clip text-ellipsis font-ibmplexserief">
         <slot />
