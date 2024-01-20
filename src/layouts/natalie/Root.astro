@@ -13,14 +13,13 @@ const { details } = Astro.props
 
 <DefaultLayout>
     <div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
-        <div class="float-left flex px-10 gap-x-2 pt-6">
-            {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
-        </div>
-        <div class="text-lg pt-6 mx-auto">
+         <div class="text-lg pt-6 mx-auto pl-10">
             <span class="text-[#a47996] font-bold">{details.author}</span>
             <span class="">{' '}-{' '}</span>
             <span class="">{details.title} - <FormattedDate dateObj={details.dateObj}/></span>
-            <br />
+        </div>
+        <div class="float-left flex px-10 gap-x-2">
+            {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
         </div>
         <div class="p-10">
             <slot />

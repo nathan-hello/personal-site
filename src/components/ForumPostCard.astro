@@ -23,10 +23,10 @@ const showImg = details.globbedImgs.length > 0
 <div
     class={`border-2 border-solid hover:border-none p-4 hover:p-[18px] lg:w-[1000px] mx-auto text-[#b3b8c3] h-96 mb-3 ${cardColor} ${borderColor}`}
 >
-    <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
+    <span class="text-[#a47996] font-bold font-vcrosdmono pl-6">{details.author}</span>
     <span class="">{' '}-{' '}</span>
     <span class="">{details.title} - <FormattedDate dateObj={details.dateObj}/></span>
-    
+
     {
         showImg && (
             <div class="float-left mr-10 mt-2">
@@ -35,7 +35,6 @@ const showImg = details.globbedImgs.length > 0
         )
     }
 
-    <br />
     <div class="max-h-72 overflow-clip text-ellipsis font-ibmplexserief">
         <slot />
     </div>
