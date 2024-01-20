@@ -1,7 +1,8 @@
 ---
-title: Excited By Routine
+title: Looking Forward to the Future
 date: 2024-Jan-20
 author: nathan
+image: excitementometer.jpg
 ---
 
 Thursday was my first proper maintenance day for this site. Not much for new stuff, design, or anything that people might notice.
@@ -9,35 +10,25 @@ Just things that make it easier for me to iterate on the site. Importantly, now 
 kind of scared of Natalie linking to a specific post for the past couple weeks because of this. Also, I added alt text to images
 in a pretty cool way. Check out the repo if you want, but the overview is that there's an object in `consts.ts` and it maps a
 filename to an object that has the accessibility stuff as the value. So, in `glob.ts`, when we grab the images using `import.meta.glob`,
-it tacks on this accessibility object to the image. This means that any time we link to an image, it will have that object attached
-to it. I really want to get good at accessibility, but it seems like everyone these days says "use React-Aria" or something. And I'm
-not going to lie, I'm starting to become skeptical of anyone who claims to be experts with their tutorials on famously complicated
-webdev things. If you teach about accessibility, I want to know how you know that what you're teaching is enough. "Accessibility" is
-so incredibly broad that whenever people talk about it, it's like a jumble of fun facts they've learned about things/practices that
-are inaccessible instead of a thorough understanding of what is required by these technologies (what technologies I'm not even sure,
-I just know screen readers exist). Also, comments coming soon. RSS a little later. Astro is not very interested in allowing md/mdx/astro
-files all go into an RSS feed at once.
+it tacks on this accessibility object to the image. Also, comments coming soon. RSS a little later. Astro is not very interested 
+in allowing md/mdx/astro files all go into an RSS feed at once.
 
-I've become skeptical of online tutorials on things like this because of what I've had to go through to learn how to do self-rolled
-authentication. Here is my question: "How do I store username and password information securely in a database and give the client
-a JWT or session token validating their session?". This quesiton seems impossible to answer. Even a high level overview, I can't find.
-I've seen countless reddit posts/stackoverflow comments and even twitter threads on my feed engaging in "is it acceptable to roll you
-own auth"? To which there seems to be a 50/50 split it seems. The "use a auth provider" crowd says that it is literally impossible to get
-it right ever, ever, ever so you shouldn't even try. I might agree with this for real companies/products, but for me I'm just trying to learn.
-Every tutorial I see is incomplete, uses deprecated the one deprecated JWT library, completely skips over password enryption, doesn't set
+Here's a question: "How do I store username and password information securely in a database and give the client a JWT or session token validating their session?". 
+
+This quesiton seems impossible to answer. Even a high level overview, I can't find.
+Every tutorial I see is incomplete, uses deprecated the one deprecated JWT library, completely skips over some vital step, doesn't set
 up a web server for the JWT to show it actually being used, I saw on that literally hardcoded the user/pass into the JWT creation part. 
-It's like these people are playing a game of telephone from the tutorials they read a month or a year ago in a different language, and 
-are getting worse and worse because there's no way they're actually building something following their tutorial. I think I'll write some 
-tutorials here soon about things that I got stuck on and overcame. It'll definitely be on this site, perhaps in a different section. I really
+It's like these people are playing a game of telephone from the tutorials. There's no way they're actually building something following they're teaching. 
+
+I think I'll write some tutorials. I've been wanting to do some kind of content in general (kind of like this blog!). I really
 want to do a writeup on how I used `import.meta.glob` to generate the sites here, because it's 100% a hack and not the way either Astro or Vite
 is documented. I also want to show off my [no-magic-stack](https://github.com/nathan-hello/no-magic-stack) at some point. In that stack, I want
 to make a few sample web apps just to learn. It's been so much fun figuring out different things in Go, and I feel like I'm learning software
-fundamentals by using it. Right now I'm working on user auth, and once that's done there's already a todo app. Next I'm going to make a twitch
+fundamentals by using it. After I get auth + todo app working, I'm going to make a twitch
 chat clone (websockets seem really cool!), and I have a couple more ideas for after that: something to do with wasm (I would need ideas on
 something sufficiently difficult for wasm to shine), and a service status page. Part of this is to learn, part is to show off a cool stack for
-others to replicate, and part is because I really want a twitch chat clone that uses htmx/go/sqlc/tailwind to exist. Other than different
-applications, I want some comforts to exist in the stack with examples, like testing, stress testing (as in requests/sec), and api token-based
-auth (though that's not going to use htmx/tailwind/templ so it's not that much of a showcase - I just want to do it). Maybe you, Natalie, can make 
+others to replicate, and part is because I really want a twitch chat clone that uses htmx/go/sqlc/tailwind to exist. I also want to 
+flesh out thing like testing, stress testing (as in requests/sec), and token-based api auth. Maybe you, Natalie, can make 
 some tutorial or documentation regarding the Latex stuff you had to go through recently (unless it actually was documented - I just know you were having issues).
 
 Also, Natalie, you asked what I would want to do while you're over here in the summer. I know around this time I'm going to meet up with
@@ -53,4 +44,4 @@ over here, I think, because of the driving angle. But I don't really have anythi
 - shop for clothes and you can pick out outfits for me and then I say that it's doing too much and you say no it looks good on you and I cave in
 - walk late at night like we did before and talk and hold hands, and then come home and look into each other's eyes for minutes at a time
 
-I hope this answers your question
+I hope this answers your question :)
