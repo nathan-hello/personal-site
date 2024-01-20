@@ -2,19 +2,6 @@ import type { AstroInstance, MDXInstance } from 'astro';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import type { ImageAccessibility } from './consts';
 
-export type BlogDetails = {
-    title: string;
-    date: string;
-    author: string;
-    overrideHref?: string;
-    overrideLayout?: boolean;
-    description?: string;
-    image?: string | string[];
-    tags?: string[];
-    aria?: { [x: string]: ImageAccessibility; };
-    hidden?: boolean;
-};
-
 export type Image = {
     url: string;
     size: string;
@@ -24,6 +11,27 @@ export type Image = {
     accessibility: ImageAccessibility;
 };
 
+export type BlogDetails = {
+    title: string;
+    date: string;
+    author: string;
+    overrideHref?: string;
+    overrideLayout?: boolean;
+    description?: string;
+    image?: string | string[];
+    tags?: string[];
+    hidden?: boolean;
+    aria: { [x: string]: ImageAccessibility; };
+};
+
+
+
+export type BlogAstro = AstroInstance & {
+    details: BlogDetails;
+};
+
+export type BlogMdx = MDXInstance<BlogDetails>;
+
 export type Post = BlogDetails & {
     id: number;
     globbedImgs: Image[];
@@ -32,9 +40,3 @@ export type Post = BlogDetails & {
     dateObj: Date;
     Component: AstroComponentFactory;
 };
-
-export type BlogAstro = AstroInstance & {
-    details: BlogDetails;
-};
-
-export type BlogMdx = MDXInstance<BlogDetails>;

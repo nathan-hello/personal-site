@@ -1,59 +1,59 @@
-import type { PossibleAuthors } from '@/consts'
-import { possibleAuthors } from '@/consts'
-import type { BlogAstro, BlogDetails, BlogMdx } from '@/types'
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js'
+import type { PossibleAuthors } from '@/consts';
+import { possibleAuthors } from '@/consts';
+import type { BlogAstro, BlogDetails, BlogMdx } from '@/types';
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 
 export function formatBytes(bytes: number, decimals = 2) {
-  if (bytes === 0) return '0 Bytes'
+  if (bytes === 0) return '0 Bytes';
 
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
 export function parseAuthorName(s: string): PossibleAuthors {
   for (const [key, names] of Object.entries(possibleAuthors)) {
     if (names.includes(s.toLowerCase())) {
-      return key as PossibleAuthors
+      return key as PossibleAuthors;
     }
   }
 
-  throw Error(`Author of name: ${s} not found`)
+  throw Error(`Author of name: ${s} not found`);
 }
 
-function parseDateString(s: string): { dateStr: string, dateObj: Date } {
-  const d = new Date(s)
+function parseDateString(s: string): { dateStr: string, dateObj: Date; } {
+  const d = new Date(s);
 
   if (!d) {
-    throw Error(`Date: ${s} not valid`)
+    throw Error(`Date: ${s} not valid`);
   }
 
-  const year = d.getFullYear()
-  const month = (d.getMonth() + 1).toString().padStart(2, '0')
-  const day = d.getDate().toString().padStart(2, '0')
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
 
-  return { dateStr: `${year}/${month}/${day}`, dateObj: d }
+  return { dateStr: `${year}/${month}/${day}`, dateObj: d };
 }
 
 export function extractMetadata(i: BlogAstro | BlogMdx): {
-  details: BlogDetails
-  component: AstroComponentFactory
-  dateObj: Date
+  details: BlogDetails;
+  component: AstroComponentFactory;
+  dateObj: Date;
 } {
   if ('details' in i) {
-    return { details: i.details, component: i.default, dateObj: parseDateString(i.details.date).dateObj }
+    return { details: i.details, component: i.default, dateObj: parseDateString(i.details.date).dateObj };
   }
   if ('frontmatter' in i) {
-    return { details: i.frontmatter, component: i.Content, dateObj: parseDateString(i.frontmatter.date).dateObj }
+    return { details: i.frontmatter, component: i.Content, dateObj: parseDateString(i.frontmatter.date).dateObj };
   }
 
-  throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`)
+  throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`);
 }
 
 export function generateHref(dateStr: string, i: number) {
-  return `${parseDateString(dateStr)}/${i.toString()}`
+  return `${parseDateString(dateStr)}/${i.toString()}`;
 }

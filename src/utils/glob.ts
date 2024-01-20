@@ -1,4 +1,4 @@
-import { CoversAccessibility, type PossibleAuthors } from '@/consts';
+import { type PossibleAuthors } from '@/consts';
 import {
   type BlogAstro,
   type BlogMdx,
@@ -11,11 +11,10 @@ import {
   formatBytes,
   parseAuthorName,
 } from './parseMetadata';
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import fs from 'fs';
 import path from 'path';
 
-export const globImages = async (imgs: string[], year: string): Promise<Image[]> => {
+export const globImages = async (imgs: string[], year: string, aria: BlogDetails["aria"]): Promise<Image[]> => {
   const globber = import.meta.glob('/public/**/*.{jpg,gif,png,jpeg,bmp,webp}', {
     as: 'url',
   });
@@ -38,7 +37,10 @@ export const globImages = async (imgs: string[], year: string): Promise<Image[]>
       throw new Error(`ERROR: ${url} undefined from ${imgs}`);
     }
 
-    const accessibility = CoversAccessibility[img] || {};
+
+    const defaultAria = { [img]: { alt: "" } };
+    const accessibility = { ...defaultAria, ...aria }[img];
+    console.log(img, aria, accessibility);
 
     images.push({
       size: formatBytes(size),
@@ -101,11 +103,11 @@ export async function globBlogs(
 
     let imgs: Image[] = [];
     if (typeof p.details.image === 'string') {
-      imgs = await globImages([p.details.image], p.dateObj.getFullYear().toString());
+      imgs = await globImages([p.details.image], p.dateObj.getFullYear().toString(), p.details.aria);
     }
 
     if (Array.isArray(p.details.image)) {
-      imgs = await globImages(p.details.image, p.dateObj.getFullYear().toString());
+      imgs = await globImages(p.details.image, p.dateObj.getFullYear().toString(), p.details.aria);
     }
 
     combined.push({
