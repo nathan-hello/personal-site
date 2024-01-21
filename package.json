@@ -6,7 +6,9 @@
         "dev": "astro dev",
         "build": "astro check && astro build",
         "preview": "astro preview",
-        "astro": "astro"
+        "astro": "astro",
+        "precommit": "pretty-quick --staged",
+        "prepare": "husky install .husky"    
     },
     "prettier": {
         "trailingComma": "es5",
@@ -39,7 +41,9 @@
         "@types/katex": "^0.16.7",
         "astro-auto-import": "^0.4.2",
         "astro-mdx-code-blocks": "^0.0.6",
-        "prettier": "^3.1.1",
-        "prettier-plugin-astro": "^0.12.3"
+        "husky": "^8.0.3",
+        "prettier": "^3.2.4",
+        "prettier-plugin-astro": "^0.12.3",
+        "pretty-quick": "^4.0.0"
     }
 }
