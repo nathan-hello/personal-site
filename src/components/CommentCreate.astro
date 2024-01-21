@@ -1,0 +1,19 @@
+---
+interface Props {
+  id: number;
+}
+
+const { id } = Astro.props;
+---
+
+<form action={`/api/comment?id=${id}`} method="post">
+  <label
+    >Author
+    <input type="text" name="author" />
+  </label>
+
+  <label
+    >Body
+    <input type="text" name="body" required />
+  </label>
+</form>
