@@ -30,8 +30,8 @@ const recents = await globBlogs(50, 'natalie', true)
         input:checked + div {
             display: none;
         }
-        .fixed
-        {
+        .fixed {
+            padding: 4px;
             position: fixed;
             bottom: 0px;
             right: 0px;
@@ -197,8 +197,8 @@ const recents = await globBlogs(50, 'natalie', true)
             [top]
         </a>
     </div>
-<div class="fixed">
-    <label class="text-nat-white-c01" for="cb"> Click me for to hide audio.</label>
+<div class="fixed bg-neutral-800">
+    <label class="text-nat-white-c01" for="cb"> Click me to hide audio.</label>
     <input type="checkbox" style="display: none" id="cb" />
     <div id="audio">
         <audio loop controls src="/audios/SadSvit-Небо.mp3"></audio>
