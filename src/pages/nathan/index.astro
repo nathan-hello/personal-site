@@ -7,6 +7,7 @@ const recents = await globBlogs(10, 'nathan', true)
 ---
 
 <Layout>
+    <div style="margin-left: 10%;margin-right: 10%;">
     {
         recents.map((a) => (
             <ForumPostCard details={a.props.c}>
@@ -14,4 +15,5 @@ const recents = await globBlogs(10, 'nathan', true)
             </ForumPostCard>
         ))
     }
+    </div>
 </Layout>

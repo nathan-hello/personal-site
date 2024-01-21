@@ -7,6 +7,7 @@ const bothRecents = await globBlogs(100, undefined, true)
 ---
 
 <DefaultLayout>
+    <div style="margin-left: 10%;margin-right: 10%;">
     {
         bothRecents.map((b) => {
             return (
@@ -16,4 +17,5 @@ const bothRecents = await globBlogs(100, undefined, true)
             )
         })
     }
+    </div>
 </DefaultLayout>
