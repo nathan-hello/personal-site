@@ -107,16 +107,19 @@ const recents = await globBlogs(50, 'natalie', true)
             [Bottom]
         </a>
 
-            {
-                recents.map((a) => {
-                    return (
-                        <CatalogPostCard details={a.props.c}>
-                            <a.props.c.Component />
-                        </CatalogPostCard>
-                    )
-                })
-            }
-
+        <div class="flex flex-col">
+            <div class="flex flex-row">
+                <!-- {
+                    recents.map((a) => {
+                        return (
+                            <CatalogPostCard details={a.props.c}>
+                                <a.props.c.Component />
+                            </CatalogPostCard>
+                        )
+                    })
+                } -->
+            </div>
+        </div>
         <hr>
         <a 
             class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
