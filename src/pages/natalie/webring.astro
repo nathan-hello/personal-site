@@ -1,0 +1,323 @@
+---
+import { globBlogs } from '@utils/glob'
+
+import CatalogPostCard from '@components/CatalogPostCard.astro'
+const recents = await globBlogs(50, 'natalie', true)
+---
+
+<head>
+    <style>
+        b {
+            font-weight: bold;
+            color: #eeeeee;
+        }
+        body {
+            background-image: url('/images/cyber.jpg');
+            background-attachment: fixed;
+        }
+
+        .floaty {
+            margin-left: 10%;
+            margin-right: 10%;
+            background-color: #171717;
+            color: #b3b8c3;
+            border-style: ridge;
+            border: solid 2px #1e1e1e;
+            padding: 10px;
+            box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
+        }
+
+        input:checked + div {
+            display: none;
+        }
+        .fixed {
+            padding: 4px;
+            position: fixed;
+            bottom: 0px;
+            right: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top" class="floaty">
+        <div>
+            <pre>
+      __                __         _                 __   
+     / / _      _____  / /_  _____(_)___  ____ _    / / 
+    / / | | /| / / _ \/ __ \/ ___/ / __ \/ __ `/   / /  
+   / /  | |/ |/ /  __/ /_/ / /  / / / / / /_/ /   / /   
+  / /   |__/|__/\___/_.___/_/  /_/_/ /_/\__, /   / /    
+ /_/                                   /____/   /_/
+                </pre>
+        </div>
+        <b>
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="/"
+            >
+                /Home/
+            </a>
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="../natalie"
+            >
+                /Natzone/</a
+            >
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="../../nathan"
+            >
+                /Natecorner/</a
+            >
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="https://github.com/nathan-hello"
+            >
+                /gh/</a
+            >
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="../natalie/links"
+            >
+                /links/</a
+            >
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="../natalie/webring"
+            >
+                /webring/<a/
+            >
+            <a
+                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+                href="../natalie/tv"
+            >
+                /tv/</a
+            >
+        </b>
+        <hr />
+        <a
+            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="#bottom">
+            [Bottom]
+        </a>
+        <a
+            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="#clearnet"
+        >
+            [Clearnet]</a
+        >
+        <a
+            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="#tor"
+        >
+            [Tor]</a
+        >
+        <a
+            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="#i2p"
+        >
+            [I2P]</a
+        >
+        <h1>Lainring</h1>
+        Lainring is a decentralised 
+        <a
+            class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="https://indieweb.org/webring"
+        >
+            webring</a
+        >
+        created by cool folks over at
+        <a
+            class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="https://www.lainchan.org/"
+        >
+            Lainchan</a
+        >
+        As a disclaimer, I am not personally affiliated with anyone linked to here and do not endorse any statements made in the webring.
+
+        
+        <h3 id="clearnet" >Clearnet</h3>
+        
+        <a title="Yukinu" href="https://yukinu.com"><img loading="lazy" src="/images/banner_img/yukinu.gif" alt="Yukinu" /></a>
+        <a title="Ophanim" href="https://ophanim.neocities.org"><img loading="lazy" src="/images/banner_img/ophanim.gif" alt="Ophanim" /></a>
+        <a title="getimiskon's space" href="https://getimiskon.neocities.org"><img loading="lazy" src="/images/banner_img/getimiskon.png" alt="getimiskon's space" /></a>
+        <a title="jyushimatsu" href="https://jyushimatsu.web.fc2.com"><img loading="lazy" src="/images/banner_img/jyushimatsu.png" alt="jyushimatsu" /></a>
+        <a title="FönixFogelFuchs" href="https://3xf.eu"><img loading="lazy" src="/images/banner_img/fenix.png" alt="FönixFogelFuchs" /></a>
+        <a title="Xerophyte" href="https://xerophyte.neocities.org"><img loading="lazy" src="/images/banner_img/xerophyte.gif" alt="Xerophyte" /></a>
+        <a title="tinfoil-hat" href="https://tinfoil-hat.net"><img loading="lazy" src="/images/banner_img/tinfoil-hat.png" alt="tinfoil-hat" /></a>
+        <a title="Nightt's retro art" href="https://nightt.neocities.org"><img loading="lazy" src="/images/banner_img/nightt.gif" alt="Nightt's retro art" /></a>
+        <a title="Alice In Wonderland Syndrome" href="https://volta.neocities.org"><img loading="lazy" src="/images/banner_img/aiws.png" alt="Alice In Wonderland Syndrome" /></a>
+        <a title="Jake's thoughts" href="https://blog.jjakke.com"><img loading="lazy" src="/images/banner_img/jakesthoughts.gif" alt="Jake's thoughts" /></a>
+        <a title="Jake's mail" href="https://jakes-mail.top"><img loading="lazy" src="/images/banner_img/jakes-mail.gif" alt="Jake's mail" /></a>
+        <a title="davidgebski.nl" href="https://www.davidgebski.nl"><img loading="lazy" src="/images/banner_img/davidgebski.png" alt="davidgebski.nl" /></a>
+        <a title="MayVaneDay Studios" href="https://mayvaneday.org"><img loading="lazy" src="/images/banner_img/mayvaneday-org.png" alt="MayVaneDay Studios" /></a>
+        <a title="lich's website" href="https://dataswamp.org/~lich"><img loading="lazy" src="/images/banner_img/lich.png" alt="lich's website" /></a>
+        <a title="Underground Web Cyberpunk Community Project" href="https://uwcur.neocities.org"><img loading="lazy" src="/images/banner_img/uwcur.png" alt="Underground Web Cyberpunk Community Project" /></a>
+        <a title="Saltorn" href="https://saltorn.neocities.org"><img loading="lazy" src="/images/banner_img/saltorn.png" alt="Saltorn" /></a>
+        <a title="J. Frank Parnell" href="https://tilde.club/~parnell"><img loading="lazy" src="/images/banner_img/parnell.png" alt="J. Frank Parnell" /></a>
+        <a title="Urist" href="https://deurist.neocities.org"><img loading="lazy" src="/images/banner_img/deurist.png" alt="Urist" /></a>
+        <a title="saturnexplorers" href="https://tohya.net"><img loading="lazy" src="/images/banner_img/tohya.png" alt="saturnexplorers" /></a>
+        <a title="Strings From The Network" href="https://sftn.github.io"><img loading="lazy" src="/images/banner_img/sftn.png" alt="Strings From The Network" /></a>
+        <a title="Lilibyte" href="https://lilibyte.net"><img loading="lazy" src="/images/banner_img/lilibyte.gif" alt="Lilibyte" /></a>
+        <a title="satorialistic" href="https://strlst.myogaya.jp"><img loading="lazy" src="/images/banner_img/strlst.png" alt="satorialistic" /></a>
+        <a title="Slime-Net" href="https://skumsoft.ltd/slimenet"><img loading="lazy" src="/images/banner_img/slime-net.gif" alt="Slime-Net" /></a>
+        <a title="Bendersteed" href="https://bendersteed.tech"><img loading="lazy" src="/images/banner_img/bendersteed.jpg" alt="Bendersteed" /></a>
+        <a title="Hellish Chemicals" href="https://hellishchemicals.neocities.org"><img loading="lazy" src="/images/banner_img/hellish-chemicals.png" alt="Hellish Chemicals" /></a>
+        <a title="The Swiss Bay" href="https://theswissbay.ch/pdf"><img loading="lazy" src="/images/banner_img/the-swiss-bay.jpg" alt="The Swiss Bay" /></a>
+        <a title="Freetext" href="http://freetext.wz.cz"><img loading="lazy" src="/images/banner_img/freetext.png" alt="Freetext" /></a>
+        <a title="J@ck#91" href="https://jack---91.neocities.org"><img loading="lazy" src="/images/banner_img/jack91.gif" alt="J@ck#91" /></a>
+        <a title="Xenobyte" href="https://xenobyte.xyz"><img loading="lazy" src="/images/banner_img/xenobyte.jpg" alt="Xenobyte" /></a>
+        <a title="Flammable Duck" href="https://flammableduck.xyz"><img loading="lazy" src="/images/banner_img/flammable-duck.png" alt="Flammable Duck" /></a>
+        <a title="Blaise Haskell" href="https://tildezero.xyz/~goat/#rigmarole"><img loading="lazy" src="/images/banner_img/blaise-haskell.jpg" alt="Blaise Haskell" /></a>
+        <a title="Gap and friends" href="https://gapandfriends.neocities.org"><img loading="lazy" src="/images/banner_img/gap-and-friends.png" alt="Gap and friends" /></a>
+        <a title="purplevoid" href="https://purplevoid.neocities.org"><img loading="lazy" src="/images/banner_img/purplevoid.png" alt="purplevoid" /></a>
+        <a title="sizeof(cat)" href="https://sizeof.cat"><img loading="lazy" src="/images/banner_img/sizeofcat.gif" alt="sizeof(cat)" /></a>
+        <a title="The Extramundane" href="https://extramundane.xyz"><img loading="lazy" src="/images/banner_img/extramundane.jpg" alt="The Extramundane" /></a>
+        <a title="Cosmica" href="https://321cosmica.neocities.org"><img loading="lazy" src="/images/banner_img/cosmica.png" alt="Cosmica" /></a>
+        <a title="Omicron Setup" href="https://omicronsetup.eu"><img loading="lazy" src="/images/banner_img/omicron-setup.gif" alt="Omicron Setup" /></a>
+        <a title="WorkingSea" href="https://workingsea.neocities.org"><img loading="lazy" src="/images/banner_img/workingsea.png" alt="WorkingSea" /></a>
+        <a title="Luke's Cabin" href="https://lukescabin.neocities.org"><img loading="lazy" src="/images/banner_img/lukes-cabin.png" alt="Luke's Cabin" /></a>
+        <a title="Protocol 7" href="https://protocol7.xyz"><img loading="lazy" src="/images/banner_img/protocol7.png" alt="Protocol 7" /></a>
+        <a title="Beedge" href="https://beedge.neocities.org"><img loading="lazy" src="/images/banner_img/beedge.png" alt="Beedge" /></a>
+        <a title="Dead End Shrine Online" href="https://deadendshrine.online"><img loading="lazy" src="/images/banner_img/dead-end-shrine.png" alt="Dead End Shrine Online" /></a>
+        <a title="Digilord" href="https://digilord.neocities.org"><img loading="lazy" src="/images/banner_img/digilord.gif" alt="Digilord" /></a>
+        <a title="Godcock" href="https://godcock.neocities.org"><img loading="lazy" src="/images/banner_img/godcock.jpg" alt="Godcock" /></a>
+        <a title="Karar" href="https://karar.neocities.org"><img loading="lazy" src="/images/banner_img/karar.png" alt="Karar" /></a>
+        <a title="No Sleep" href="https://nosleepforme.neocities.org"><img loading="lazy" src="/images/banner_img/no-sleep.png" alt="No Sleep" /></a>
+        <a title="Room 4" href="https://room4.neocities.org"><img loading="lazy" src="/images/banner_img/room-4.jpg" alt="Room 4" /></a>
+        <a title="hen6003" href="https://hen6003.xyz"><img loading="lazy" src="/images/banner_img/hen6003.png" alt="hen6003" /></a>
+        <a title="diskmagvp" href="https://diskmagvp.neocities.org"><img loading="lazy" src="/images/banner_img/diskmagvp.png" alt="diskmagvp" /></a>
+        <a title="thephilosopherslibrary" href="https://thephilosopherslibrary.neocities.org"><img loading="lazy" src="/images/banner_img/thephilosopherslibrary.png" alt="thephilosopherslibrary" /></a>
+        <a title="mm4rk3t" href="https://mm4rk3t.neocities.org"><img loading="lazy" src="/images/banner_img/mm4rk3t.gif" alt="mm4rk3t" /></a>
+        <a title="kassy" href="https://kassy.neocities.org"><img loading="lazy" src="/images/banner_img/kassy.jpg" alt="kassy" /></a>
+        <a title="Cabbage Sorter" href="https://cabbagesorter.neocities.org"><img loading="lazy" src="/images/banner_img/cabbage-sorter.png" alt="Cabbage Sorter" /></a>
+        <a title="xiixiixii" href="https://xiixiixii.xyz"><img loading="lazy" src="/images/banner_img/xiixiixii.gif" alt="xiixiixii" /></a>
+        <a title="oedo808" href="https://oedo808.neocities.org"><img loading="lazy" src="/images/banner_img/oedo808.gif" alt="oedo808" /></a>
+        <a title="xn-neko" href="https://xn--z7x.xn--6frz82g"><img loading="lazy" src="/images/banner_img/xn-neko.gif" alt="xn-neko" /></a>
+        <a title="jole" href="https://jole.xyz"><img loading="lazy" src="/images/banner_img/jole.png" alt="jole" /></a>
+        <a title="Confusion's Blog" href="https://confusion.codeberg.page"><img loading="lazy" src="/images/banner_img/confusion.png" alt="Confusion's Blog" /></a>
+        <a title="Morituri Te Salutant" href="https://morituritesalutant.neocities.org"><img loading="lazy" src="/images/banner_img/morituri-te-salutant.jpg" alt="Morituri Te Salutant" /></a>
+        <a title="Agora Road" href="https://forum.agoraroad.com"><img loading="lazy" src="/images/banner_img/agoraroad.gif" alt="Agora Road" /></a>
+        <a title="lain.la" href="https://lain.la"><img loading="lazy" src="/images/banner_img/lain-la.png" alt="lain.la" /></a>
+        <a title="Unpop" href="https://unpop.neocities.org"><img loading="lazy" src="/images/banner_img/unpop.gif" alt="Unpop" /></a>
+        <a title="Driftt" href="https://driftt.neocities.org"><img loading="lazy" src="/images/banner_img/driftt.png" alt="Driftt" /></a>
+        <a title="Chaox" href="https://chaox.ro"><img loading="lazy" src="/images/banner_img/chaox.gif" alt="Chaox" /></a>
+        <a title="Evergreen" href="https://itsevergreen.rip"><img loading="lazy" src="/images/banner_img/evergreen.png" alt="Evergreen" /></a>
+        <a title="Mazak" href="https://mazak.neocities.org"><img loading="lazy" src="/images/banner_img/mazak.png" alt="Mazak" /></a>
+        <a title="Small Thoughts" href="https://smolthots.neocities.org"><img loading="lazy" src="/images/banner_img/small-thoughts.jpg" alt="Small Thoughts" /></a>
+        <a title="Spectrum of Consciousness" href="https://spectrum-of-consciousness.neocities.org"><img loading="lazy" src="/images/banner_img/spectrum-of-consciousness.gif" alt="Spectrum of Consciousness" /></a>
+        <a title="Liberty Witch" href="https://libertywitch.com"><img loading="lazy" src="/images/banner_img/liberty-witch.png" alt="Liberty Witch" /></a>
+        <a title="Ty3r0x" href="https://ty3r0x.chaox.ro"><img loading="lazy" src="/images/banner_img/ty3r0x.png" alt="Ty3r0x" /></a>
+        <a title="lckdscl" href="https://lckdscl.xyz"><img loading="lazy" src="/images/banner_img/lckdscl.png" alt="lckdscl" /></a>
+        <a title="qmaury" href="https://qmaury.com"><img loading="lazy" src="/images/banner_img/qmaury.jpg" alt="qmaury" /></a>
+        <a title="galladite" href="https://galladite.net/~galladite/"><img loading="lazy" src="/images/banner_img/galladite.png" alt="galladite" /></a>
+        <a title="halogen stars" href="https://halogenstars.neocities.org"><img loading="lazy" src="/images/banner_img/halogen-stars.png" alt="halogen stars" /></a>
+        <a title="Kirillov" href="https://kirillov.neocities.org"><img loading="lazy" src="/images/banner_img/kirillov.png" alt="Kirillov" /></a>
+        <a title="nerdbox" href="https://nerdbox.neocities.org"><img loading="lazy" src="/images/banner_img/nerdbox.png" alt="nerdbox" /></a>
+        <a title="TheCrypt" href="https://thecrypt.neocities.org"><img loading="lazy" src="/images/banner_img/thecrypt.gif" alt="TheCrypt" /></a>
+        <a title="orizuru" href="https://orizuru.neocities.org"><img loading="lazy" src="/images/banner_img/orizuru.png" alt="orizuru" /></a>
+        <a title="rain" href="https://rainisnot.neocities.org"><img loading="lazy" src="/images/banner_img/rain.png" alt="rain" /></a>
+        <a title="tocxjo" href="https://tilde.team/~lemon"><img loading="lazy" src="/images/banner_img/tocxjo.gif" alt="tocxjo" /></a>
+        <a title="New Digital Era" href="https://newdigitalera.org"><img loading="lazy" src="/images/banner_img/newdigitalera.png" alt="New Digital Era" /></a>
+        <a title="Nomadalgia" href="https://nomadalgia.xyz"><img loading="lazy" src="/images/banner_img/nomadalgia.gif" alt="Nomadalgia" /></a>
+        <a title="S-Config" href="https://www.s-config.com"><img loading="lazy" src="/images/banner_img/s-config.png" alt="S-Config" /></a>
+        <a title="Grafo Zone" href="https://grafo.zone"><img loading="lazy" src="/images/banner_img/grafo-zone.gif" alt="Grafo Zone" /></a>
+        <a title="interloper minimalist services" href="https://intr.cx"><img loading="lazy" src="/images/banner_img/interloper.png" alt="interloper minimalist services" /></a>
+        <a title="cool-website.xyz" href="https://cool-website.xyz"><img loading="lazy" src="/images/banner_img/cool-website.png" alt="cool-website.xyz" /></a>
+        <a title="czar's blog" href="https://czar.kalli.st"><img loading="lazy" src="/images/banner_img/czar.png" alt="czar's blog" /></a>
+        <a title="foreverliketh.is" href="https://foreverliketh.is"><img loading="lazy" src="/images/banner_img/foreverliketh.gif" alt="foreverliketh.is" /></a>
+        <a title="vd1r" href="https://vd1r.neocities.org"><img loading="lazy" src="/images/banner_img/vd1r.png" alt="vd1r" /></a>
+        <a title="Neet Ventures" href="https://www.neetventures.com"><img loading="lazy" src="/images/banner_img/neet-ventures.gif" alt="Neet Ventures" /></a>
+        <a title="The Arcade" href="https://articexploit.xyz"><img loading="lazy" src="/images/banner_img/artic.gif" alt="The Arcade" /></a>
+        <a title="CozyNet" href="https://www.cozynet.org"><img loading="lazy" src="/images/banner_img/cozynet.gif" alt="CozyNet" /></a>
+        <a title="SCIO" href="https://scio.icu"><img loading="lazy" src="/images/banner_img/主站.png" alt="SCIO" /></a>
+        <a title="Navy Joe's Homepage" href="https://navyjoecomics.neocities.org"><img loading="lazy" src="/images/banner_img/navy-joe-comics.gif" alt="Navy Joe's Homepage" /></a>
+        <a title="SillyLaird" href="https://www.sillylaird.info"><img loading="lazy" src="/images/banner_img/sillylaird.png" alt="SillyLaird" /></a>
+        <a title="Home of Swindles" href="https://swindlesmccoop.xyz"><img loading="lazy" src="/images/banner_img/swindlesmccoop.png" alt="Home of Swindles" /></a>
+        <a title="Present Day, Present Time" href="https://present-time.neocities.org"><img loading="lazy" src="/images/banner_img/present-time.jpg" alt="Present Day, Present Time" /></a>
+        <a title="torchan" href="https://torchan.neocities.org"><img loading="lazy" src="/images/banner_img/torchan.gif" alt="torchan" /></a>
+        <a title="andrei.xyz" href="https://andrei.xyz"><img loading="lazy" src="/images/banner_img/andrei-xyz.gif" alt="andrei.xyz" /></a>
+        <a title="varchar()" href="https://varchar.neocities.org"><img loading="lazy" src="/images/banner_img/varchar.gif" alt="varchar()" /></a>
+        <a title="Nick's Place" href="https://bass2nick.com"><img loading="lazy" src="/images/banner_img/bass2nick.gif" alt="Nick's Place" /></a>
+        <a title="0x19.org" href="https://0x19.org"><img loading="lazy" src="/images/banner_img/0x19.png" alt="0x19.org" /></a>
+        <a title="Jahan's site" href="https://jahanrashidi.com"><img loading="lazy" src="/images/banner_img/jahanrashidi.png" alt="Jahan's site" /></a>
+        <a title="Homepage of a Mad Man" href="https://theminuteman.neocities.org"><img loading="lazy" src="/images/banner_img/theminuteman.png" alt="Homepage of a Mad Man" /></a>
+        <a title="yo252yo" href="https://www.yo252yo.com"><img loading="lazy" src="/images/banner_img/yo252yo.gif" alt="yo252yo" /></a>
+        <a title="a7'th Layer" href="https://mouse.services"><img loading="lazy" src="/images/banner_img/mouse.services.png" alt="a7'th Layer" /></a>
+        <a title="n1l webspace" href="https://n1l7.neocities.org"><img loading="lazy" src="/images/banner_img/n1l.gif" alt="n1l webspace" /></a>
+        <a title="Angels Are Mathematical" href="https://angelsaremathematical.neocities.org"><img loading="lazy" src="/images/banner_img/angels-are-mathematical.png" alt="Angels Are Mathematical" /></a>
+        <a title="Άνδρος" href="https://andresz.xyz"><img loading="lazy" src="/images/banner_img/andros.png" alt="Άνδρος" /></a>
+        <a title="Giggles Cave" href="https://ctrl-c.club/~giggles/"><img loading="lazy" src="/images/banner_img/giggles.png" alt="Giggles Cave" /></a>
+        <a title="shrapnelnet" href="https://blog.shr4pnel.com"><img loading="lazy" src="/images/banner_img/shr4pnel.gif" alt="shrapnelnet" /></a>
+        <a title="Microbyte" href="https://microbyte.neocities.org"><img loading="lazy" src="/images/banner_img/microbyte.png" alt="Microbyte" /></a>
+        <a title="gamajun" href="https://gamajun.neocities.org"><img loading="lazy" src="/images/banner_img/gamajun.png" alt="gamajun" /></a>
+        <a title="REDchanit" href="https://redchanit.xyz"><img loading="lazy" src="/images/banner_img/redchanit.png" alt="REDchanit" /></a>
+        <a title="Crystal Website" href="https://crystal.tilde.institute"><img loading="lazy" src="/images/banner_img/crystal-tilde-institute.gif" alt="Crystal Website" /></a>
+        <a title="Kalokagathia" href="https://kalokagathia.neocities.org"><img loading="lazy" src="/images/banner_img/kalokagathia.png" alt="Kalokagathia" /></a>
+        <a title="RisingThumb.xyz" href="https://risingthumb.xyz"><img loading="lazy" src="/images/banner_img/risingthumb.png" alt="RisingThumb.xyz" /></a>
+        <a title="MkUltraVictim" href="http://mkultravict.im"><img loading="lazy" src="/images/banner_img/mkultravictim.jpg" alt="MkUltraVictim" /></a>
+        <a title="Hor32" href="https://antekgort200.github.io"><img loading="lazy" src="/images/banner_img/antekgort200.gif" alt="Hor32" /></a>
+        <a title="maerk.xyz" href="https://maerk.xyz"><img loading="lazy" src="/images/banner_img/maerk.png" alt="maerk.xyz" /></a>
+        <a title="LainNet" href="https://lainnet.superglobalmegacorp.com"><img loading="lazy" src="/images/banner_img/lainnet.png" alt="LainNet" /></a>
+        <a title="mauwQ" href="https://mauwq.neocities.org"><img loading="lazy" src="/images/banner_img/mauwq.gif" alt="mauwQ" /></a>
+        <a title="goodboyjojo" href="https://www.goodboyjojo.com"><img loading="lazy" src="/images/banner_img/goodboyjojo.gif" alt="goodboyjojo" /></a>
+        <a title="Idelides" href="https://idelides.xyz"><img loading="lazy" src="/images/banner_img/idelides.png" alt="Idelides" /></a>
+        <a title="Psychool" href="https://psychcool.neocities.org"><img loading="lazy" src="/images/banner_img/psychool.gif" alt="Psychool" /></a>
+        <a title="Vendell" href="https://vendell.online"><img loading="lazy" src="/images/banner_img/vendell.gif" alt="Vendell" /></a>
+        <a title="SLUSHBIN" href="https://slushbin.net"><img loading="lazy" src="/images/banner_img/slushbin.gif" alt="SLUSHBIN" /></a>
+        <a title="nauxnam" href="https://nauxnam.net"><img loading="lazy" src="/images/banner_img/nauxnam.gif" alt="nauxnam" /></a>
+        <a title="Black OR White" href="https://blackorwhite.neocities.org"><img loading="lazy" src="/images/banner_img/blackorwhite.png" alt="Black OR White" /></a>
+        
+        
+        <h3 id="tor" >Tor</h3>
+        <a
+            class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="https://www.torproject.org/"
+        >
+            Tor</a
+        >
+        or The Onion Router is a networking protocol with the aim of anonamyzing it's users. By protecting them against surveilance and allowing for their freedom and their ability to communicate.
+        <br>
+        <a title="getimiskon's space" href="http://6dpjae254fbchoa53e2ypxh6noqjgjkz5iadwy6hlar6egb76m3uihid.onion"><img loading="lazy" src="/images/banner_img/getimiskon.png" alt="getimiskon's space" /></a>
+        <a title="tinfoil-hat" href="http://x3zf5cyqvutslx6yfdwip3nb2xo4kaevhk6bbeas74ky7cvgr36bf6yd.onion"><img loading="lazy" src="/images/banner_img/tinfoil-hat.png" alt="tinfoil-hat" /></a>
+        <a title="Jake's thoughts" href="http://y5wnzw4e6i7srm2gqadlow5anhlaj5avdkzbwzbmrxwkygxdp7ffieqd.onion"><img loading="lazy" src="/images/banner_img/jakesthoughts.gif" alt="Jake's thoughts" /></a>
+        <a title="MayVaneDay Studios" href="http://meynethaffeecapsvfphrcnfrx44w2nskgls2juwitibvqctk2plvhqd.onion"><img loading="lazy" src="/images/banner_img/mayvaneday-org.png" alt="MayVaneDay Studios" /></a>
+        <a title="Lilibyte" href="http://23xyglk2g4y2fdtrpm4wo3rvrq2gt2ar7f3pyyt7ikeywdq5kpbheuyd.onion"><img loading="lazy" src="/images/banner_img/lilibyte.gif" alt="Lilibyte" /></a>
+        <a title="The Swiss Bay" href="http://swissbaync5d7ykaz7dh7v4qjrb4gmen5aj3bogxrcgbb43ij34bjuyd.onion/pdf"><img loading="lazy" src="/images/banner_img/the-swiss-bay.jpg" alt="The Swiss Bay" /></a>
+        <a title="sizeof(cat)" href="http://sizeofaex6zgovemvemn2g3jfmgujievmxxxbcgnbrnmgcjcjpiiprqd.onion"><img loading="lazy" src="/images/banner_img/sizeofcat.gif" alt="sizeof(cat)" /></a>
+        <a title="Dead End Shrine Online" href="http://blapi36sowfyuwzp4ag24xb3d4zdrzgtafez3g3lkp2rj4ho7lxhceid.onion"><img loading="lazy" src="/images/banner_img/dead-end-shrine.png" alt="Dead End Shrine Online" /></a>
+        <a title="Chaox" href="http://chaoxuo7g4tqdyeikjo6jaa6dmk34vmdp3s577hgeusuntmcfd4xaxqd.onion"><img loading="lazy" src="/images/banner_img/chaox.gif" alt="Chaox" /></a>
+        <a title="Liberty Witch" href="http://mlucvtipzluwceniyzwxt52a3wdvu3t3ahdshht3sctc6hs4o2umqjad.onion"><img loading="lazy" src="/images/banner_img/liberty-witch.png" alt="Liberty Witch" /></a>
+        <a title="S-Config" href="http://xjfbpuj56rdazx4iolylxplbvyft2onuerjeimlcqwaihp3s6r4xebqd.onion"><img loading="lazy" src="/images/banner_img/s-config.png" alt="S-Config" /></a>
+        <a title="interloper minimalist services" href="http://intrcxv4fa72e5ovler5dpfwsiyuo34tkcwfy5snzstxkhec75okowqd.onion"><img loading="lazy" src="/images/banner_img/interloper.png" alt="interloper minimalist services" /></a>
+        <a title="SillyLaird" href="http://silly7vgbgbejjrsl2mqgcljvz5ui2ryvuqe3rjbrg5ylysv7zyhdwad.onion"><img loading="lazy" src="/images/banner_img/sillylaird.png" alt="SillyLaird" /></a>
+        <a title="andrei.xyz" href="http://andrei3ufgijpzogyai6ejcrdwevzediyzubgqiltc2k42c2zyeakhid.onion"><img loading="lazy" src="/images/banner_img/andrei-xyz.gif" alt="andrei.xyz" /></a>
+        <a title="0x19.org" href="http://ilsstfnqt4vpykd2bqc7ntxf2tqupqzi6d5zmk767qtingw2vp2hawyd.onion:8080"><img loading="lazy" src="/images/banner_img/0x19.png" alt="0x19.org" /></a>
+        
+        
+        <h3 id="i2p" >I2P</h3>
+
+        The Invisible Internet Project 
+        <a
+            class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="https://geti2p.net/">
+            (I2P)</a
+        >
+        is an anonymous network layer that has been implemented due to the increasing concerns of majority stake holders inside of Tor's exit nodes. And now creating a distributed network topology should decrease such accumulation of exit nodes. That would otherwise threaten the anonymity of its users.
+        <br>
+        <a title="getimiskon's space" href="http://wjh66n7sdq4drpvs6qlucsmohc33eix2japrcwyhpxyanywdgy4q.b32.i2p"><img loading="lazy" src="/images/banner_img/getimiskon.png" alt="getimiskon's space" /></a>
+        <a title="MayVaneDay Studios" href="http://zli2qsg54w7y42vgw4xxlnj4nktcpg7xp33yjxkp33sjafvznbwa.b32.i2p"><img loading="lazy" src="/images/banner_img/mayvaneday-org.png" alt="MayVaneDay Studios" /></a>
+        <a title="Dead End Shrine Online" href="http://2a55el42cobuxtls7iv6eoimejocybdekwnnaefcn4u2f5eydela.b32.i2p"><img loading="lazy" src="/images/banner_img/dead-end-shrine.png" alt="Dead End Shrine Online" /></a>
+        <a title="Chaox" href="http://6bcqgkedaq2krrhvidjlmdsoltmzuwaqtrafycfzbc56h5swumoq.b32.i2p"><img loading="lazy" src="/images/banner_img/chaox.gif" alt="Chaox" /></a>
+        <a title="galladite" href="http://gallap5oyvl3kum6pck2sxnmofojogkg2c4xpilpshpejfchtrvq.b32.i2p"><img loading="lazy" src="/images/banner_img/galladite.png" alt="galladite" /></a>
+        <a title="interloper minimalist services" href="http://6jaqgde66kdsqct4ptzdj2vd32kblnk5scgwoprtmcreqbhobuhq.b32.i2p"><img loading="lazy" src="/images/banner_img/interloper.png" alt="interloper minimalist services" /></a>
+        <a title="0x19.org" href="http://xzh77mcyknkkghfqpwgzosukbshxq3nwwe2cg3dtla7oqoaqknia.b32.i2p:9090"><img loading="lazy" src="/images/banner_img/0x19.png" alt="0x19.org" /></a>
+
+        <hr>
+        <a id="bottom"
+            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="#top">
+            [Top]
+        </a>
+    </div>
+</body>

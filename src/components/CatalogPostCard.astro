@@ -1,0 +1,47 @@
+---
+import type { Post } from '@/types'
+import '@styles/css.css'
+import type { Image } from '@/types'
+interface Props {
+    image: Image
+}
+const { image } = Astro.props
+
+const { details } = Astro.props as Record<string, Post>
+
+let cardColor = 'bg-black'
+let borderColor = 'border-white'
+
+if (details.author === 'nathan') {
+    cardColor = 'bg-cyan-950'
+    borderColor = 'border-green-900'
+}
+if (details.author === 'natalie') {
+    cardColor = 'bg-neutral-800'
+    borderColor = 'border-nat-white-c01'
+}
+
+const showImg = details.globbedImgs.length > 0
+---
+
+<div
+    class={`hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 ${cardColor} ${borderColor}`}
+>
+    {
+        showImg && (
+            <a  href={details.absoluteUrl}>
+            <div class="p-5">
+                image/{image.ext.split('.').pop()}
+            </div>
+            </a>
+        )
+    }
+
+    <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
+    <span class="">{' '}-{' '}</span>
+    <span class="">{details.title}</span>
+
+    <div class="max-h-10 overflow-clip text-ellipsis font-ibmplexserif">
+        <slot />
+    </div>
+</div>
