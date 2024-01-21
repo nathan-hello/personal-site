@@ -9,6 +9,7 @@ import {
 import { extractMetadata, formatBytes, parseAuthorName } from "./parseMetadata";
 import fs from "fs";
 import path from "path";
+import { insertBlog, selectBlogById, selectBlogs } from "./supabase";
 
 export const globImages = async (
   imgs: string[],
@@ -37,9 +38,10 @@ export const globImages = async (
 
     if (!aria || !aria[img]) {
       console.log(`\n=====\nNo aria for the image ${img}. Consider adding one.\n=====\n`);
-    } else {
-      console.log(`aria for ${img}:\n  ${JSON.stringify(aria[img])}`);
     }
+    // else {
+    // console.log(`aria for ${img}:\n  ${JSON.stringify(aria[img])}`);
+    // }
 
     const defaultAria = { [img]: { alt: "" } };
     const accessibility = { ...defaultAria, ...aria }[img];
@@ -128,12 +130,16 @@ export async function globBlogs(
       Component: p.component,
       dateObj: p.dateObj,
       relativeUrl: href,
-      absoluteUrl: `${p.details.author}/${href}`,
+      absoluteUrl: `/${p.details.author}/${href}`,
       globbedImgs: imgs,
     });
   }
 
+
   combined = combined.sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
+
+  // removed so natalie doesn't need envs
+  // combined.map((c) => pushBlogToDb(c));
 
   if (author) {
     combined = combined.filter((c) => parseAuthorName(c.author) === author);
@@ -152,3 +158,11 @@ export async function globBlogs(
     };
   });
 }
+
+export async function pushBlogToDb(p: Post) {
+  const inDb = await selectBlogById(p.id);
+  if (inDb !== null) {
+    return;
+  }
+  await insertBlog(p);
+};
