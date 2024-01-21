@@ -1,19 +1,19 @@
 ---
-import type { BlogDetails } from '@/types'
-import Code from '@components/Code.astro'
+import type { BlogDetails } from "@/types";
+import Code from "@components/Code.astro";
 
 export const details: BlogDetails = {
-    title: 'Images-in-the-terminal',
-    date: '2024-Jan-01',
-    author: 'natalie',
-    image: ['LainLaugh.gif', 'ncmpcpp.png'],
-    aria: {
-        'LainLaugh.gif': { alt: 'an animated girl laughing' },
-        'ncmpcpp.png': {
-            alt: 'a terminal window with a music playing program open, complete with song picker and audio visualizer',
-        },
+  title: "Images-in-the-terminal",
+  date: "2024-Jan-01",
+  author: "natalie",
+  image: ["LainLaugh.gif", "ncmpcpp.png"],
+  aria: {
+    "LainLaugh.gif": { alt: "an animated girl laughing" },
+    "ncmpcpp.png": {
+      alt: "a terminal window with a music playing program open, complete with song picker and audio visualizer",
     },
-}
+  },
+};
 const code = String.raw`
 #!/bin/bash
 export PS1=''
@@ -42,28 +42,27 @@ while (true) do
     fi
     sleep 1
 done
-`
+`;
 ---
 
 <div class="">
-    If you have looked around any ricing/unixporn esque forums you will likely have
-    encountered someone's fetch or other utility that is showing their favrouite anime
-    girl.
-    <br />
-    As great of a technology as this is, it remains fundamentally a hack, this isn't a negative
-    in in of itself however it makes portability, and the maintaining of such projects that
-    incorporate these really difficult. Currently there seems to be an implementation done
-    by every major terminal emulator, such as kitty or alacritty. The original implementation,
-    namely uberzug (now reimplemented as ueberzupp) uses a daemon to create an X window confined
-    to the terminal, rather than paticular escape sequences. However it seems as if this is
-    no longer the default option, though in my opinion, it's the best, purely because none
-    of these implementations work in plain tty and as such doing away with it as it 'requires
-    you to be in a X' to function is here nor there. The fact that it also supports gifs just
-    makes it all in all the best, aside from the slightly higher resource usage.
-    <br />
-    I've made some scripts myself that make use of this, such as displaying coverart of music
-    playing in ncmpcpp. And I will say that it's much more unwieldy to use ueberzug in place
-    of alternatives. But for my aformentioned reasons I still continue to use it.
+  If you have looked around any ricing/unixporn esque forums you will likely have
+  encountered someone's fetch or other utility that is showing their favrouite anime girl.
+  <br />
+  As great of a technology as this is, it remains fundamentally a hack, this isn't a negative
+  in in of itself however it makes portability, and the maintaining of such projects that incorporate
+  these really difficult. Currently there seems to be an implementation done by every major
+  terminal emulator, such as kitty or alacritty. The original implementation, namely uberzug
+  (now reimplemented as ueberzupp) uses a daemon to create an X window confined to the terminal,
+  rather than paticular escape sequences. However it seems as if this is no longer the default
+  option, though in my opinion, it's the best, purely because none of these implementations
+  work in plain tty and as such doing away with it as it 'requires you to be in a X' to function
+  is here nor there. The fact that it also supports gifs just makes it all in all the best,
+  aside from the slightly higher resource usage.
+  <br />
+  I've made some scripts myself that make use of this, such as displaying coverart of music
+  playing in ncmpcpp. And I will say that it's much more unwieldy to use ueberzug in place
+  of alternatives. But for my aformentioned reasons I still continue to use it.
 </div>
 <br />
 <Code code={code} lang="bash" filename="asdf.sh" />

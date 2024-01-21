@@ -1,18 +1,18 @@
-import type { PossibleAuthors } from '@/consts';
-import { possibleAuthors } from '@/consts';
-import type { BlogAstro, BlogDetails, BlogMdx } from '@/types';
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import type { PossibleAuthors } from "@/consts";
+import { possibleAuthors } from "@/consts";
+import type { BlogAstro, BlogDetails, BlogMdx } from "@/types";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 export function formatBytes(bytes: number, decimals = 2) {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
 
 export function parseAuthorName(s: string): PossibleAuthors {
@@ -25,7 +25,7 @@ export function parseAuthorName(s: string): PossibleAuthors {
   throw Error(`Author of name: ${s} not found`);
 }
 
-function parseDateString(s: string): { dateStr: string, dateObj: Date; } {
+function parseDateString(s: string): { dateStr: string; dateObj: Date } {
   const d = new Date(s);
 
   if (!d) {
@@ -33,8 +33,8 @@ function parseDateString(s: string): { dateStr: string, dateObj: Date; } {
   }
 
   const year = d.getFullYear();
-  const month = (d.getMonth() + 1).toString().padStart(2, '0');
-  const day = d.getDate().toString().padStart(2, '0');
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const day = d.getDate().toString().padStart(2, "0");
 
   return { dateStr: `${year}/${month}/${day}`, dateObj: d };
 }
@@ -44,11 +44,19 @@ export function extractMetadata(i: BlogAstro | BlogMdx): {
   component: AstroComponentFactory;
   dateObj: Date;
 } {
-  if ('details' in i) {
-    return { details: i.details, component: i.default, dateObj: parseDateString(i.details.date).dateObj };
+  if ("details" in i) {
+    return {
+      details: i.details,
+      component: i.default,
+      dateObj: parseDateString(i.details.date).dateObj,
+    };
   }
-  if ('frontmatter' in i) {
-    return { details: i.frontmatter, component: i.Content, dateObj: parseDateString(i.frontmatter.date).dateObj };
+  if ("frontmatter" in i) {
+    return {
+      details: i.frontmatter,
+      component: i.Content,
+      dateObj: parseDateString(i.frontmatter.date).dateObj,
+    };
   }
 
   throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`);

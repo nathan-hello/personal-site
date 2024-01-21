@@ -1,20 +1,19 @@
 ---
 interface Props {
-  dateObj: Date
-  className?: string
+  dateObj: Date;
+  className?: string;
 }
 
-const {dateObj, className ="" } = Astro.props
+const { dateObj, className = "" } = Astro.props;
 
 function toLocaleStringWithoutMidnightTime(dateObj: Date) {
   if (dateObj.getHours() === 0 && dateObj.getMinutes() === 0) {
-    return dateObj.toLocaleDateString('en-GB');
+    return dateObj.toLocaleDateString("en-GB");
   } else {
-    return dateObj.toLocaleString('en-GB');
+    return dateObj.toLocaleString("en-GB");
   }
 }
-const dateStr = toLocaleStringWithoutMidnightTime(dateObj)
+const dateStr = toLocaleStringWithoutMidnightTime(dateObj);
 ---
 
 <span class={className}>{dateStr}</span>
-

@@ -1,27 +1,27 @@
 ---
-import Meta from '@components/Meta.astro'
-const { bgImg = '/images/carpark.png' } = Astro.props
+import Meta from "@components/Meta.astro";
+const { bgImg = "/images/carpark.png" } = Astro.props;
 ---
 
 <html lang="en">
-    <img
-        class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover "
-        style=`background-image: url(${bgImg});`
-        role="presentation"
-    >
-    </img>
-    <head>
-        <title>Nat/e</title>
-        <Meta
-            title="Nat/e"
-            description="Nathan & Natalie really cool blog site :)"
-            image={bgImg}
-        />
-    </head>
-    <body>
-        <div class="mx-auto w-min bg-nat-black-c01 text-nat-white-c01 px-3 mb-2">
-          <a href="/" class="no-underline text-nat-white-c01 visited:text-nat-white-c01 "> 
-            <pre>
+  <img
+    class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"
+    style=`background-image: url(${bgImg});`
+    role="presentation"
+  />
+
+  <head>
+    <title>Nat/e</title>
+    <Meta
+      title="Nat/e"
+      description="Nathan & Natalie really cool blog site :)"
+      image={bgImg}
+    />
+  </head>
+  <body>
+    <div class="mx-auto w-min bg-nat-black-c01 text-nat-white-c01 px-3 mb-2">
+      <a href="/" class="no-underline text-nat-white-c01 visited:text-nat-white-c01">
+        <pre>
  _   _       _       __   
 | \ | |     | |     / /   
 |  \| | __ _| |_   / /__  
@@ -29,35 +29,34 @@ const { bgImg = '/images/carpark.png' } = Astro.props
 | |\  | (_| | |_ / /  __/ 
 |_| \_|\__,_|\__/_/ \___| "We are Boingus"
             </pre>
-          </a>
-            <b>
-            <a
-                class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-                href="/"
-            >
-                /Home/
-            </a>
-                <a
-                    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-                    href="/natalie"
-                >
-                    /Natzone/</a
-                >
-                <a
-                    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-                    href="/nathan"
-                >
-                    /Natecorner/</a
-                >
-                <a
-                    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-                    href="https://github.com/nathan-hello"
-                >
-                    /gh/</a
-                >
-            </b>
-        </div>
-        <slot />
-    </body>
-
+      </a>
+      <b>
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="/"
+        >
+          /Home/
+        </a>
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="/natalie"
+        >
+          /Natzone/</a
+        >
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="/nathan"
+        >
+          /Natecorner/</a
+        >
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="https://github.com/nathan-hello"
+        >
+          /gh/</a
+        >
+      </b>
+    </div>
+    <slot />
+  </body>
 </html>

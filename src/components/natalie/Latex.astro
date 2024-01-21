@@ -1,10 +1,10 @@
 ---
-import katex from 'katex'
+import katex from "katex";
 
-const { formula = '', className = 'latex-default' } = Astro.props
-const renderedLatex = katex.renderToString(formula, { throwOnError: false })
+const { formula = "", className = "latex-default" } = Astro.props;
+const renderedLatex = katex.renderToString(formula, { throwOnError: false });
 ---
 
 <div class={className}>
-    <span set:html={renderedLatex} class="" />
+  <span set:html={renderedLatex} class="" />
 </div>

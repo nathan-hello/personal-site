@@ -1,19 +1,19 @@
 ---
-import Layout from '@layouts/Root.astro'
-import ForumPostCard from '@components/ForumPostCard.astro'
-import { globBlogs } from '@utils/glob'
+import Layout from "@layouts/Root.astro";
+import ForumPostCard from "@components/ForumPostCard.astro";
+import { globBlogs } from "@utils/glob";
 
-const recents = await globBlogs(10, 'nathan', true)
+const recents = await globBlogs(10, "nathan", true);
 ---
 
 <Layout>
-    <div style="margin-left: 10%;margin-right: 10%;">
+  <div style="margin-left: 10%;margin-right: 10%;">
     {
-        recents.map((a) => (
-            <ForumPostCard details={a.props.c}>
-                <a.props.c.Component />
-            </ForumPostCard>
-        ))
+      recents.map((a) => (
+        <ForumPostCard details={a.props.c}>
+          <a.props.c.Component />
+        </ForumPostCard>
+      ))
     }
-    </div>
+  </div>
 </Layout>

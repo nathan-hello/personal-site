@@ -4,21 +4,34 @@ date: 2024-01-18T12:40
 author: natalie
 image: Spectral.png
 aria:
-    Spectral.png:
-        alt: The Adams spectral sequence for p=3, t-s <= 45
+  Spectral.png:
+    alt: The Adams spectral sequence for p=3, t-s <= 45
 ---
-Back at it again with the gooberism and this time it's equivalence relations!!! Apparenty mardown
-has native maths support so I'm going to see how thhat works. Feels like we're back in algebra
-but it's just making sure you paid attention to the definition of a homotopy. But lest I forget,
-the actual question:
 
-**3. (a)** Show that the composition of homotopy equivalences $X\rightarrow Y$ and $Y \rightarrow Z$ is a homotopy equivalence $X \rightarrow Z$. Deduce that homotopy equivalence is an equivalence relation.
+Back at it again with the gooberism and this time it's equivalence relations!!! Apparenty
+mardown has native maths support so I'm going to see how thhat works. Feels like we're
+back in algebra but it's just making sure you paid attention to the definition of a
+homotopy. But lest I forget, the actual question:
 
-A map $f:X \to Y$ is called a homotopy equivalence if there is a map $g:Y \rightarrow X$ such that $fg \simeq 1$ and $gf \simeq 1$. And another (I said it was just memory recall) two maps $f_0,f_1:X \to Y$ are homotopic if there exists a homotopy $f_t$ connecting $f_0$ to $f_1$. Here, one writes $f_0 \simeq f_1$.
+**3. (a)** Show that the composition of homotopy equivalences $X\rightarrow Y$ and
+$Y \rightarrow Z$ is a homotopy equivalence $X \rightarrow Z$. Deduce that homotopy
+equivalence is an equivalence relation.
 
-In this question we are asked to prove if homotopy is **transitive**, which then implies it's an equivalnce relation as $1_X : X \to X$ is a homotopy equivalence, and X is homotopy equivalent iff Y is also to X.
+A map $f:X \to Y$ is called a homotopy equivalence if there is a map $g:Y \rightarrow X$
+such that $fg \simeq 1$ and $gf \simeq 1$. And another (I said it was just memory recall)
+two maps $f_0,f_1:X \to Y$ are homotopic if there exists a homotopy $f_t$ connecting $f_0$
+to $f_1$. Here, one writes $f_0 \simeq f_1$.
 
-To that end, suppose that $X,Y,Z$ are topological spaces and that $f_1:X \to Y$, $f_2:Y\to Z$ are homotopy equivalences with homotopy inverses $g_1,g_2$, respectively. By definition, then, $f_1g_1 \simeq 1_X$, $g_1f_1\simeq 1_Y$ and $f_2g_2\simeq 1_Y$, $g_2f_2\simeq 1_Z$. It suffices to show that the map $f_2f_1:X\to Z$ is a homotopy equivalence, which is immediate due to the fact that it’s continuous (the composition of continuous maps is continuous) and that $g_1g_2:Z\to X$ is a map for which
+In this question we are asked to prove if homotopy is **transitive**, which then implies
+it's an equivalnce relation as $1_X : X \to X$ is a homotopy equivalence, and X is
+homotopy equivalent iff Y is also to X.
+
+To that end, suppose that $X,Y,Z$ are topological spaces and that $f_1:X \to Y$,
+$f_2:Y\to Z$ are homotopy equivalences with homotopy inverses $g_1,g_2$, respectively. By
+definition, then, $f_1g_1 \simeq 1_X$, $g_1f_1\simeq 1_Y$ and $f_2g_2\simeq 1_Y$,
+$g_2f_2\simeq 1_Z$. It suffices to show that the map $f_2f_1:X\to Z$ is a homotopy
+equivalence, which is immediate due to the fact that it’s continuous (the composition of
+continuous maps is continuous) and that $g_1g_2:Z\to X$ is a map for which
 
 $$(f_2f_1) \circ (g_1g_2) = f_2 \circ (f_1g_1) \circ g_2 \simeq f_2 \circ 1_Y \circ g_2 = f_2g_2 \simeq 1_Z$$
 
@@ -26,10 +39,19 @@ $$(g_1g_2) \circ (f_2f_1) = g_1 \circ (g_2f_2) \circ f_1 \simeq g_1 \circ 1_Z \c
 
 Which gives us whhat we wished for.
 
-**(b).** Show that the relation of homotopy among maps $X \rightarrow Y$ is an equivalence relation.
+**(b).** Show that the relation of homotopy among maps $X \rightarrow Y$ is an equivalence
+relation.
 
-For it to a complete equivalence relation we also need to show the reflexive and symmetric properties, however, these are very easy. As $f,g:X \to Y$ are homotopic maps under a homotopy $\phi_t$, then $f \simeq f$ by identity and $g \simeq f$ by the inverse $\phi_t^{-1}$. So we again need to show transitivity.
+For it to a complete equivalence relation we also need to show the reflexive and symmetric
+properties, however, these are very easy. As $f,g:X \to Y$ are homotopic maps under a
+homotopy $\phi_t$, then $f \simeq f$ by identity and $g \simeq f$ by the inverse
+$\phi_t^{-1}$. So we again need to show transitivity.
 
-Suppose that $F:X\times I\to Y$ is a homotopy connecting $f$ to $g$ and that $G:X\times I\to Y$ is a homotopy connecting $g$ to $h$, where $f,g,h:X\to Y$. Define, then, a map $H:X\times I\to Y$ which takes on the value $F(x,2t)$ for $0\leq t\leq 1/2$ and the value $G(x,2t-1)$ for $1/2< t \leq 1$. Continuity of $H$ is immediate due to the fact that $H$ is made continuous at $t=1/2$ (the only point of concern), whereby it follows that $f\simeq h$.
+Suppose that $F:X\times I\to Y$ is a homotopy connecting $f$ to $g$ and that
+$G:X\times I\to Y$ is a homotopy connecting $g$ to $h$, where $f,g,h:X\to Y$. Define,
+then, a map $H:X\times I\to Y$ which takes on the value $F(x,2t)$ for $0\leq t\leq 1/2$
+and the value $G(x,2t-1)$ for $1/2< t \leq 1$. Continuity of $H$ is immediate due to the
+fact that $H$ is made continuous at $t=1/2$ (the only point of concern), whereby it
+follows that $f\simeq h$.
 
 I'm not doing c, quote laziness.

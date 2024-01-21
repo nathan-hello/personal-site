@@ -1,17 +1,17 @@
 ---
-import { globBlogs, type RGlobBlogs } from '@utils/glob'
-import type { GetStaticPaths } from 'astro'
-import NathanLayout from '@layouts/nathan/Root.astro'
+import { globBlogs, type RGlobBlogs } from "@utils/glob";
+import type { GetStaticPaths } from "astro";
+import NathanLayout from "@layouts/nathan/Root.astro";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const g = await globBlogs(undefined, 'nathan', false)
-    // console.log(g)
-    return g
-}
+  const g = await globBlogs(undefined, "nathan", false);
+  // console.log(g)
+  return g;
+};
 
-const props = Astro.props as RGlobBlogs['props']
+const props = Astro.props as RGlobBlogs["props"];
 ---
 
 <NathanLayout details={props.c}>
-    <props.c.Component />
+  <props.c.Component />
 </NathanLayout>

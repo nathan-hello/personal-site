@@ -1,22 +1,22 @@
-import { type PossibleAuthors } from '@/consts';
+import { type PossibleAuthors } from "@/consts";
 import {
   type BlogAstro,
   type BlogMdx,
   type BlogDetails,
   type Post,
   type Image,
-} from '@/types';
-import {
-  extractMetadata,
-  formatBytes,
-  parseAuthorName,
-} from './parseMetadata';
-import fs from 'fs';
-import path from 'path';
+} from "@/types";
+import { extractMetadata, formatBytes, parseAuthorName } from "./parseMetadata";
+import fs from "fs";
+import path from "path";
 
-export const globImages = async (imgs: string[], year: string, aria: BlogDetails["aria"]): Promise<Image[]> => {
-  const globber = import.meta.glob('/public/**/*.{jpg,gif,png,jpeg,bmp,webp}', {
-    as: 'url',
+export const globImages = async (
+  imgs: string[],
+  year: string,
+  aria: BlogDetails["aria"]
+): Promise<Image[]> => {
+  const globber = import.meta.glob("/public/**/*.{jpg,gif,png,jpeg,bmp,webp}", {
+    as: "url",
   });
 
   let images: Image[] = [];
@@ -29,7 +29,7 @@ export const globImages = async (imgs: string[], year: string, aria: BlogDetails
     const size = fs.statSync(fsPath).size;
     const ext = path.extname(fsPath);
     const file = path.basename(fsPath, path.extname(fsPath));
-    const urlNoPublic = url.slice('/public'.length);
+    const urlNoPublic = url.slice("/public".length);
 
     if (!url || !urlNoPublic) {
       throw new Error(`ERROR: ${url} undefined from ${imgs}`);
@@ -50,7 +50,7 @@ export const globImages = async (imgs: string[], year: string, aria: BlogDetails
       url: url,
       filename: file,
       fullname: `${file}${ext}`,
-      accessibility: accessibility
+      accessibility: accessibility,
     });
   }
   return images;
@@ -72,7 +72,7 @@ export async function globBlogs(
 ): Promise<RGlobBlogs[]> {
   let combined: Post[] = [];
   const interim: ReturnType<typeof extractMetadata>[] = [];
-  const blogs = import.meta.glob<BlogAstro>('/src/blog/**/*.astro');
+  const blogs = import.meta.glob<BlogAstro>("/src/blog/**/*.astro");
 
   let count = 100001;
 
@@ -82,7 +82,7 @@ export async function globBlogs(
     interim.push(g);
   }
 
-  const mdxs = import.meta.glob<BlogMdx>('/src/blog/**/*.mdx');
+  const mdxs = import.meta.glob<BlogMdx>("/src/blog/**/*.mdx");
 
   for (const post in mdxs) {
     const f = await mdxs[post]();
@@ -90,7 +90,9 @@ export async function globBlogs(
     interim.push(g);
   }
 
-  interim.sort((a, b) => { return a.dateObj.getTime() - b.dateObj.getTime(); });
+  interim.sort((a, b) => {
+    return a.dateObj.getTime() - b.dateObj.getTime();
+  });
 
   for (const p of interim) {
     const id = count;
@@ -104,12 +106,20 @@ export async function globBlogs(
     }
 
     let imgs: Image[] = [];
-    if (typeof p.details.image === 'string') {
-      imgs = await globImages([p.details.image], p.dateObj.getFullYear().toString(), p.details.aria);
+    if (typeof p.details.image === "string") {
+      imgs = await globImages(
+        [p.details.image],
+        p.dateObj.getFullYear().toString(),
+        p.details.aria
+      );
     }
 
     if (Array.isArray(p.details.image)) {
-      imgs = await globImages(p.details.image, p.dateObj.getFullYear().toString(), p.details.aria);
+      imgs = await globImages(
+        p.details.image,
+        p.dateObj.getFullYear().toString(),
+        p.details.aria
+      );
     }
 
     combined.push({
@@ -120,7 +130,6 @@ export async function globBlogs(
       relativeUrl: href,
       absoluteUrl: `${p.details.author}/${href}`,
       globbedImgs: imgs,
-
     });
   }
 

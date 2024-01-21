@@ -1,21 +1,21 @@
 ---
-import ForumPostCard from '@/components/ForumPostCard.astro'
-import { globBlogs } from '@utils/glob'
-import DefaultLayout from '@layouts/Root.astro'
+import ForumPostCard from "@/components/ForumPostCard.astro";
+import { globBlogs } from "@utils/glob";
+import DefaultLayout from "@layouts/Root.astro";
 
-const bothRecents = await globBlogs(100, undefined, true)
+const bothRecents = await globBlogs(100, undefined, true);
 ---
 
 <DefaultLayout>
-    <div style="margin-left: 10%;margin-right: 10%;">
+  <div style="margin-left: 10%;margin-right: 10%;">
     {
-        bothRecents.map((b) => {
-            return (
-                <ForumPostCard details={b.props.c}>
-                    <b.props.c.Component />
-                </ForumPostCard>
-            )
-        })
+      bothRecents.map((b) => {
+        return (
+          <ForumPostCard details={b.props.c}>
+            <b.props.c.Component />
+          </ForumPostCard>
+        );
+      })
     }
-    </div>
+  </div>
 </DefaultLayout>

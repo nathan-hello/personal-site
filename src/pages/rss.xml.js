@@ -8,11 +8,11 @@
 //   const rssPostsasdf: RSSFeedItem = {
 //     author:"",
 //     source: "",
-//     
+//
 //
 //   }
 //   const rssPosts: RSSFeedItem = posts.map((p) => {return {
-//      
+//
 //   }})
 //   return rss({
 //     title: 'Nathan & Natalie',

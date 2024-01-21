@@ -1,55 +1,55 @@
 ---
-import type { Post } from '@/types'
-import ForumImageCard from '@components/ForumImageCard.astro'
-import '@styles/css.css'
-import FormattedDate from "@components/FormattedDate.astro"
+import type { Post } from "@/types";
+import ForumImageCard from "@components/ForumImageCard.astro";
+import "@styles/css.css";
+import FormattedDate from "@components/FormattedDate.astro";
 
-const { details } = Astro.props as Record<string, Post>
+const { details } = Astro.props as Record<string, Post>;
 
-let cardColor = 'bg-black'
-let borderColor = 'border-white'
+let cardColor = "bg-black";
+let borderColor = "border-white";
 
-if (details.author === 'nathan') {
-    cardColor = 'bg-cyan-950'
-    borderColor = 'border-green-900'
+if (details.author === "nathan") {
+  cardColor = "bg-cyan-950";
+  borderColor = "border-green-900";
 }
-if (details.author === 'natalie') {
-    cardColor = 'bg-neutral-800'
-    borderColor = 'border-nat-white-c01'
+if (details.author === "natalie") {
+  cardColor = "bg-neutral-800";
+  borderColor = "border-nat-white-c01";
 }
-const showImg = details.globbedImgs.length > 0
+const showImg = details.globbedImgs.length > 0;
 ---
 
 <style>
-    input:checked + span {
+  input:checked + span {
     display: none;
-    }
+  }
 </style>
 
 <div
-    class={`hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 ${cardColor} ${borderColor}`}
+  class={`hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 ${cardColor} ${borderColor}`}
 >
-    <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
-    <span class="">{' '}-{' '}</span>
-    <span class="">{details.title} - <FormattedDate dateObj={details.dateObj}/></span>
-    <input type="checkbox" />
-    <span>
-    <div/>
+  <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
+  <span class="">{" "}-{" "}</span>
+  <span class="">{details.title} - <FormattedDate dateObj={details.dateObj} /></span>
+  <input type="checkbox" />
+  <span>
+    <div></div>
 
     {
-        showImg && (
-            <div class="float-left mr-10 mt-2">
-                <ForumImageCard image={details.globbedImgs.at(0)!} />
-            </div>
-        )
+      showImg && (
+        <div class="float-left mr-10 mt-2">
+          <ForumImageCard image={details.globbedImgs.at(0)!} />
+        </div>
+      )
     }
 
     <div class="max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
-        <slot />
+      <slot />
     </div>
     <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01 font-semibold"
-        href={details.absoluteUrl}>[See full post]</a
+      class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01 font-semibold"
+      href={details.absoluteUrl}>[See full post]</a
     >
-    </span>
+  </span>
 </div>
