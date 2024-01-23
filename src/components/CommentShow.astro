@@ -1,20 +1,22 @@
 ---
-import {selectCommentsFromBlogId} from "@utils/supabase"
+import { selectCommentsFromBlogId } from "@utils/supabase";
 
-interface Props  {
-    id: number
-    }
+interface Props {
+  id: number;
+}
 
-const {id} = Astro.props
+const { id } = Astro.props;
 
-const comments = await selectCommentsFromBlogId(id)
+const comments = await selectCommentsFromBlogId(id);
 ---
 
-{comments && comments.map((c) => {
-return (
-<div class="w-64 bg-red-500">
-  <span class="">{c.body}</span>
-</div>
-)
-}}
-
+{
+  comments &&
+    comments.map((c) => {
+      return (
+        <div class="w-64 bg-red-500">
+          <span class="">{c.body}</span>
+        </div>
+      );
+    })
+}
