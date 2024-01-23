@@ -3,14 +3,11 @@ import "dotenv/config";
 import type { Database } from "./supabase.types";
 import type { Post } from "@/types";
 
-let s: ReturnType<typeof createClient<Database>>
 if (!process.env.DB_URL || !process.env.DB_KEY) {
-  // throw new Error(`No URL or key provided: ${JSON.stringify(process.env)}`);
-  console.error((`No URL or key provided: ${JSON.stringify(process.env)}`))
+   throw new Error((`No URL or key provided: ${JSON.stringify({DB_URL: process.env.DB_URL, DB_KEY: process.env.key})}`))
 
-} else {
-  s = createClient<Database>(process.env.DB_URL, process.env.DB_KEY);
 }
+const s = createClient<Database>(process.env.DB_URL, process.env.DB_KEY);
 
 export async function selectBlogById(id: number) {
   const { data, error } = await s.from("blogs").select().eq("id", id).limit(1).single();
