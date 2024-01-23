@@ -42,15 +42,6 @@ export async function selectBlogs() {
   return data;
 }
 
-
-export async function createComment({ author, blogId, body }: { author: string, body: string; blogId: number; }) {
-  const { data, error } = await s.from("comments").insert({ author: author, blog_id: blogId, body: body }).select().maybeSingle();
-  if (error !== null) {
-    console.error(error);
-  }
-  return data;
-}
-
 export async function selectCommentsFromBlogId(id: number) {
   const { data, error } = await s.from('comments').select('author, body, created_at').eq('blog_id', id);
   if (error !== null) {
@@ -58,6 +49,7 @@ export async function selectCommentsFromBlogId(id: number) {
   }
   return data;
 }
+
 
 export async function insertComment(body: string, author: string, blogId: number) {
   const { data, error } = await s.from("comments").insert({ blog_id: blogId, body: body, author: author }).limit(1).select().single();
