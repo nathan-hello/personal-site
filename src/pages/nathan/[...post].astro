@@ -2,6 +2,8 @@
 import { globBlogs, type RGlobBlogs } from "@utils/glob";
 import type { GetStaticPaths } from "astro";
 import NathanLayout from "@layouts/nathan/Root.astro";
+import CommentCreate from "@components/CommentCreate.astro"
+import CommentShow from "@components/CommentShow.astro"
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const g = await globBlogs(undefined, "nathan", false);
@@ -14,4 +16,7 @@ const props = Astro.props as RGlobBlogs["props"];
 
 <NathanLayout details={props.c}>
   <props.c.Component />
+  <CommentCreate id={props.c.id}
+  <CommentShow id={props.c.id}
 </NathanLayout>
+

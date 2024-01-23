@@ -138,8 +138,7 @@ export async function globBlogs(
 
   combined = combined.sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
 
-  // removed so natalie doesn't need envs
-  // combined.map((c) => pushBlogToDb(c));
+  combined.map((c) => pushBlogToDb(c));
 
   if (author) {
     combined = combined.filter((c) => parseAuthorName(c.author) === author);
