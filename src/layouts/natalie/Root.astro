@@ -3,6 +3,8 @@ import type { Post } from "@/types";
 import ForumImageCard from "@components/ForumImageCard.astro";
 import DefaultLayout from "@layouts/Root.astro";
 import FormattedDate from "@components/FormattedDate.astro";
+import CommentCreate from "@components/CommentCreate.astro";
+import CommentShow from "@components/CommentShow.astro";
 interface Props {
   details: Post;
 }
@@ -10,18 +12,145 @@ interface Props {
 const { details } = Astro.props;
 ---
 
-<DefaultLayout>
-  <div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
-    <div class="text-lg pt-6 mx-auto pl-10">
-      <span class="text-[#a47996] font-bold">{details.author}</span>
-      <span class="">{" "}-{" "}</span>
-      <span class="">{details.title} - <FormattedDate dateObj={details.dateObj} /></span>
+<head>
+  <style>
+    b {
+      font-weight: bold;
+      color: #eeeeee;
+    }
+    body {
+      background-image: url("/images/cyber.jpg");
+      background-attachment: fixed;
+    }
+
+    .floaty {
+      margin-left: 10%;
+      margin-right: 10%;
+      background-color: #171717;
+      color: #b3b8c3;
+      border-style: ridge;
+      border: solid 2px #1e1e1e;
+      padding: 10px;
+      box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
+    }
+
+    input:checked + div {
+      display: none;
+    }
+    .fixed {
+      padding: 4px;
+      position: fixed;
+      bottom: 0px;
+      right: 0px;
+    }
+  </style>
+</head>
+<body>
+  <div id="top" class="floaty">
+    <div>
+      <b>
+      <pre> 
+      __                                         __ 
+     / /_   __      __                          / / 
+    / // | / /___ _/ /_____  ____  ____  ___   / /  
+   / //  |/ / __ `/ __/_  / / __ \/ __ \/ _ \ / /   
+  / // /|  / /_/ / /_  / /_/ /_/ / / / /  __// /    
+ /_//_/ |_/\__,_/\__/ /___/\____/_/ /_/\___//_/     
+            </pre>
+    </b>
     </div>
-    <div class="float-left flex px-10 gap-x-2">
-      {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
-    </div>
-    <div class="p-10">
-      <slot />
-    </div>
+    <b>
+      <a
+        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+        href="/"
+      >
+        /Home/
+      </a>
+      <a
+        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+        href="natalie"
+      >
+        /Natzone/</a
+      >
+      <a
+        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+        href="nathan"
+      >
+        /Natecorner/</a
+      >
+      <a
+        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+        href="https://github.com/nathan-hello"
+      >
+        /gh/</a
+      >
+      <a
+        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+        href="natalie/links"
+      >
+        /links/</a
+      >
+      <a
+        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+        href="natalie/webring"
+      >
+        /webring/<a>
+          <a
+            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+            href="natalie/tv"
+          >
+            /tv/</a
+          >
+        </a>
+        <hr />
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="natalie/catalog"
+        >
+          [catalog]
+        </a>
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="#bottom"
+        >
+          [bottom]
+        </a>
+        </b>
+        <br>
+          <div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
+            <div class="text-lg pt-6 mx-auto pl-10">
+              <span class="text-[#a47996] font-bold">{details.author}</span>
+              <span class="">{" "}-{" "}</span>
+              <span class="">{details.title} - <FormattedDate dateObj={details.dateObj} /></span>
+            </div>
+            <div class="float-left flex px-10 gap-x-2">
+              {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
+            </div>
+            <div class="p-10">
+              <slot />
+            </div>
+          </div>
+        <b>
+        <div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
+          <div class="text-lg pt-6 mx-auto pl-10">
+          
+          </div>
+        </div>
+
+        <hr>
+        <a
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="natalie/catalog"
+        >
+          [catalog]
+        </a>
+        <a
+          id="bottom"
+          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+          href="#top"
+        >
+          [top]
+        </a>
+        </b>
   </div>
-</DefaultLayout>
+</body>
