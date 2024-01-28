@@ -11,12 +11,12 @@ import fs from "fs";
 import path from "path";
 import { insertBlog, selectBlogById, selectBlogs } from "./supabase";
 
-export const globImages = async (
+export async function globImages(
   imgs: string[],
   year: string,
   aria: BlogDetails["aria"]
-): Promise<Image[]> => {
-  const globber = import.meta.glob("/public/**/*.{jpg,gif,png,jpeg,bmp,webp}", {
+): Promise<Image[]> {
+  const globber = import.meta.glob("/public/**/*.{jpg,gif,png,jpeg,bmp,webp,svg}", {
     as: "url",
   });
 
@@ -76,7 +76,6 @@ export async function globBlogs(
   const interim: ReturnType<typeof extractMetadata>[] = [];
   const blogs = import.meta.glob<BlogAstro>("/src/blog/**/*.astro");
 
-  let count = 100001;
 
   for (const post in blogs) {
     const f = await blogs[post]();
@@ -96,6 +95,7 @@ export async function globBlogs(
     return a.dateObj.getTime() - b.dateObj.getTime();
   });
 
+  let count = 100001;
   for (const p of interim) {
     const id = count;
     count++;
@@ -103,7 +103,6 @@ export async function globBlogs(
     if (p.details.overrideHref) {
       href = p.details.overrideHref;
     } else {
-      // href = generateHref(p.details.date, id)
       href = `p/${id}`;
     }
 
