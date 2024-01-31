@@ -16,7 +16,7 @@ export default defineConfig({
     assets: "a",
   },
   adapter: vercel({
-    webAnalytics: false,
+    webAnalytics: true,
   }),
   integrations: [
     tailwind(),
