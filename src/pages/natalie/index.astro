@@ -2,9 +2,10 @@
 import { globBlogs } from "@utils/glob";
 
 import ForumPostCard from "@components/ForumPostCard.astro";
+import Meta from "@components/Meta.astro";
 const recents = await globBlogs(50, "natalie", true);
 ---
-
+<Meta title="Natzone" description="Natalie's home page"/>
 <head>
   <style>
     b {

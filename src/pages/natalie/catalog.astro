@@ -2,9 +2,10 @@
 import { globBlogs } from "@utils/glob";
 
 import CatalogPostCard from "@components/CatalogPostCard.astro";
+import Meta from "@components/Meta.astro";
 const recents = await globBlogs(50, "natalie", true);
 ---
-
+<Meta title="catalog" description="Natalie's catalog"/>
 <head>
   <style>
     b {
