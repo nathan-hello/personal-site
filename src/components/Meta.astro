@@ -47,4 +47,10 @@ const { title, description, image = "/images/banner.gif" } = Astro.props;
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
+
+ <!-- // @ts-ignore-next-line -->
+ <script>
+  console.log("inline script")
+ </script>
+ <script is:inline src="/public/js/test.js"/>
 <SpeedInsights />
