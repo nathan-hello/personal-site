@@ -1,0 +1,45 @@
+---
+title: IRC and instant messaging
+date: 2024-02-27T23:49
+author: natalie
+image: weechat.gif
+aria:
+  weechat.gif:
+    alt: A glitchy image of weechat, an irc client.
+---
+With the advent of networking we were suddenly able to send each other messages
+via telegrams in digitised forms almost instantly, though the likelyhood you
+were a part of a BBS network as they were called (were you connected to a large
+mainframe). Where you had an account of your own, and could communicate(?) with
+others. These rather primitive methods slowly gave way to optical telegrams
+or 'terminals'. This whole series of events has quite an interesting recounting
+by one Stephenson Neal in his book 'In the beginning was the command line'. I 
+won't link to it as it's a text file and one can find it quite easily.
+
+But with the advent of these bbs networks, came the creation of the first IRC
+servers. Internet relay chat or IRC as I shall now refer to it, is a 
+standardised federated instant messagin service with only enough bandwidth to
+support text. I would argue that the advent of anyhting additional could be 
+made up with ftp and dcc just fine, but alas. 
+
+The IRC of today looks a little different today then it did 40 years ago. With
+quite a few nicities that only the most staunch networks don't follow, namely
+bouncers, ssl/tls/sasl and cloaks, the first is a proxy by which one can stay
+continually connected to a server without missing any of the messages the
+people in the channels you wish to read are talking about. Though these days 
+it is also possible to implement sql databses to keep track of conversations
+that is by no means the norm. The second actually allows for encrypted
+connections and my server only allows ssl/tls connections. For the security
+of everyone connected, as any one person not using it will be transmitting 
+all messages unencrypted. (You needn't worry though as it's simply a
+toggalable option on most modern irc clients). Finally cloaks allow your ip
+to stay hidden to anyone else inside the server apart from the hosting server.
+
+I could drone on about the multitude of clients forever, but the following
+[guide](https://landchad.net/irc/) is very informative on setting up your own clients and even servers if
+you were so inclined.
+
+Honestly it's a great protocol, and I would recommend everyone try it, the
+little bit of reading and application does everyone's brains some good. But for
+those interested our server can be found at tv.reluekiss.com:6697 (we might buy a
+new subdomain for it, but we really have no need).
