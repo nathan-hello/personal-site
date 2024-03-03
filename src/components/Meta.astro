@@ -1,5 +1,4 @@
 ---
-import SpeedInsights from "@vercel/speed-insights/astro"
 interface Props {
   title: string;
   description?: string;
@@ -46,12 +45,3 @@ const { title, description, image = "/images/banner.gif" } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
-
-
- <script>
-  import { inject } from "@vercel/analytics";
-  inject()
-</script>
-{/* TS thinks that SpeedInsights isn't a good component for Astro */}
-{/* @ts-expect-error */}
-<SpeedInsights />
