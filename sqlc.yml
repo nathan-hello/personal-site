@@ -1,0 +1,12 @@
+version: '2'
+sql:
+- schema: src/db/input/schema.sql
+  queries: src/db/input/queries.sql
+  engine: sqlite
+  database:
+    uri: ${DB_URI}
+  gen:
+    go:
+      package: db
+      out: src/db/
+
