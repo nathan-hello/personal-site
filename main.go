@@ -9,6 +9,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = db.InitDb()
+	err = db.InitDb()
 
 }

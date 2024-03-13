@@ -23,7 +23,8 @@ var (
 	ErrHashPassword = errors.New("internal Server Error - 19283")
 )
 
-// TODO: all of these should be ErrBadLogin to prevent telling hostiles what is going on
+// WARN: all of these should be ErrBadLogin to prevent telling hostiles what is going on
+// WARN: they are unqiue identifiers now for debugging purposes
 var (
 	ErrParsingJwt       = errors.New("internal Server Error - 11001")
 	ErrInvalidToken     = errors.New("internal Server Error - 11002")

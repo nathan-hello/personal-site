@@ -50,7 +50,7 @@ func NewTokenPair(j *JwtParams) (string, string, error) {
 	rc := jwt.MapClaims{
 		"exp":      time.Now().Add(utils.Env().REFRESH_EXPIRY_TIME).Unix(),
 		"iat":      time.Now().Unix(),
-		"iss":      "no-magic-stack-example",
+		"iss":      "reluekiss.com",
 		"sub":      j.UserId,
 		"username": j.Username,
 		"jwt_type": "refresh_token",
@@ -153,12 +153,8 @@ func InsertNewToken(t string, jwt_type string) error {
 		return err
 	}
 	ctx := context.Background()
-	f, err := utils.Db()
-	if err != nil {
-		return ErrDbConnection
-	}
 
-	tokenId, err := f.InsertToken(ctx, db.InsertTokenParams{JwtType: jwt_type, Jwt: t, Valid: true, Family: claims.Family.String()})
+	tokenId, err := db.Conn().InsertToken(ctx, db.InsertTokenParams{JwtType: jwt_type, Jwt: t, Valid: true, Family: claims.Family.String()})
 	if err != nil {
 		return ErrDbInsertToken
 	}

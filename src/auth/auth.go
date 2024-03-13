@@ -52,7 +52,7 @@ type SignInCredentials struct {
 	Pass string
 }
 
-func (c *SignUpCredentials) validateStrings() *[]AuthError {
+func (c *SignUpCredentials) validateStrings() []AuthError {
 	errs := []AuthError{}
 	ok := true
 
@@ -79,13 +79,13 @@ func (c *SignUpCredentials) validateStrings() *[]AuthError {
 	}
 
 	if !ok {
-		return &errs
+		return errs
 	} else {
 		return nil
 	}
 }
 
-func (c *SignUpCredentials) SignUp() (string, string, *[]AuthError) {
+func (c *SignUpCredentials) SignUp() (string, string, []AuthError) {
 	strErrs := c.validateStrings()
 	if strErrs != nil {
 		return "", "", strErrs
@@ -93,20 +93,14 @@ func (c *SignUpCredentials) SignUp() (string, string, *[]AuthError) {
 	ctx := context.Background()
 	errs := []AuthError{}
 
-	conn, err := utils.Db()
-	if err != nil {
-		errs = append(errs, AuthError{Field: "", Err: err, Value: ""})
-		return "", "", &errs
-	}
-
 	email := sql.NullString{String: c.Email, Valid: c.Email != ""}
 	pass, err := bcrypt.GenerateFromPassword([]byte(c.Password), bcrypt.DefaultCost)
 	if err != nil {
 		errs = append(errs, AuthError{Field: "", Err: ErrHashPassword, Value: ""})
-		return "", "", &errs
+		return "", "", errs
 	}
 
-	newUser, err := conn.InsertUser(
+	newUser, err := db.Conn().InsertUser(
 		ctx,
 		db.InsertUserParams{
 			Email:             email,
@@ -117,39 +111,35 @@ func (c *SignUpCredentials) SignUp() (string, string, *[]AuthError) {
 
 	if err != nil {
 		errs = append(errs, AuthError{Field: "", Err: ErrDbInsertUser, Value: ""})
-		return "", "", &errs
+		return "", "", errs
 	}
 
 	return newUser.Username, newUser.ID, nil
 
 }
 
-func (c *SignInCredentials) SignIn() (*db.User, *[]AuthError) {
+func (c *SignInCredentials) SignIn() (*db.User, []AuthError) {
 	errs := []AuthError{}
 	if c.User == "" || c.Pass == "" {
 		errs = append(errs, AuthError{Field: FieldUser, Err: ErrBadLogin, Value: c.User})
-		return nil, &errs
+		return nil, errs
 	}
 
 	var user db.User
 	ctx := context.Background()
-	conn, err := utils.Db()
-	if err != nil {
-		errs = append(errs, AuthError{Err: ErrDbConnection})
-		return nil, &errs
-	}
 
-	if _, err := mail.ParseAddress(c.User); err == nil {
-		user, err = conn.SelectUserByEmail(ctx, sql.NullString{String: c.User, Valid: err == nil})
+	_, err := mail.ParseAddress(c.User) // TODO: verify this is the correct parser
+	if err == nil {
+		user, err = db.Conn().SelectUserByEmail(ctx, sql.NullString{String: c.User, Valid: err == nil})
 		if err != nil {
 			errs = append(errs, AuthError{Field: FieldUser, Err: ErrBadLogin, Value: c.User})
-			return nil, &errs
+			return nil, errs
 		}
 	} else {
-		user, err = conn.SelectUserByUsername(ctx, c.User)
 		if err != nil {
+			user, err = db.Conn().SelectUserByUsername(ctx, c.User)
 			errs = append(errs, AuthError{Field: FieldUser, Err: ErrBadLogin, Value: c.User})
-			return nil, &errs
+			return nil, errs
 		}
 	}
 
@@ -157,7 +147,7 @@ func (c *SignInCredentials) SignIn() (*db.User, *[]AuthError) {
 
 	if err != nil {
 		errs = append(errs, AuthError{Err: ErrHashPassword})
-		return nil, &errs
+		return nil, errs
 	}
 
 	user.EncryptedPassword = ""
