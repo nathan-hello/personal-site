@@ -1,5 +1,5 @@
 
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     jwt_type TEXT NOT NULL,
     jwt TEXT NOT NULL UNIQUE, 
@@ -7,7 +7,7 @@ CREATE TABLE tokens (
     family TEXT NOT NULL
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     created_at TEXT DEFAULT (datetime('now')) NOT NULL,
     username TEXT NOT NULL UNIQUE,
     email TEXT UNIQUE, 
@@ -16,7 +16,7 @@ CREATE TABLE users (
     id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16)))
 );
 
-CREATE TABLE users_tokens (
+CREATE TABLE IF NOT EXISTS users_tokens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id TEXT NOT NULL,
     token_id INTEGER NOT NULL,

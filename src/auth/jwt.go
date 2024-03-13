@@ -127,7 +127,7 @@ func ValidateJwt(t string) error {
 	}
 
 	ctx := context.Background()
-	f, err := utils.Db()
+	f := db.Conn()
 	if err != nil {
 		return ErrDbConnection
 	}
@@ -154,7 +154,9 @@ func InsertNewToken(t string, jwt_type string) error {
 	}
 	ctx := context.Background()
 
-	tokenId, err := db.Conn().InsertToken(ctx, db.InsertTokenParams{JwtType: jwt_type, Jwt: t, Valid: true, Family: claims.Family.String()})
+	f := db.Conn()
+
+	tokenId, err := f.InsertToken(ctx, db.InsertTokenParams{JwtType: jwt_type, Jwt: t, Valid: true, Family: claims.Family.String()})
 	if err != nil {
 		return ErrDbInsertToken
 	}
@@ -169,10 +171,7 @@ func InsertNewToken(t string, jwt_type string) error {
 func InvalidateJwtFamily(t string) error {
 
 	ctx := context.Background()
-	f, err := utils.Db()
-	if err != nil {
-		return ErrDbConnection
-	}
+	f := db.Conn()
 
 	token, err := f.SelectTokenFromJwtString(ctx, t)
 	if err != nil {

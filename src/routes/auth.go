@@ -6,18 +6,17 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/nathan-hello/personal-site/src/auth"
-	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
-	claims, ok := r.Context().Value(utils.ClaimsContextKey).(auth.CustomClaims)
+	claims, ok := r.Context().Value(auth.ClaimsContextKey).(auth.CustomClaims)
 	if ok {
 		HandleRedirect(w, r, fmt.Sprintf("/profile/%s", claims.Username), nil)
 		return
 	}
 
-	returnFormWithErrors := func(errs *[]auth.AuthError) {
-		fmt.Printf("%#v\n", *errs)
+	returnFormWithErrors := func(errs []auth.AuthError) {
+		fmt.Printf("%#v\n", errs)
 		w.WriteHeader(401)
 		// components.SignUpForm(components.RenderAuthError(errs)).Render(r.Context(), w)
 		errs = nil
@@ -26,7 +25,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		err := r.ParseForm()
 		if err != nil {
-			returnFormWithErrors(&[]auth.AuthError{
+			returnFormWithErrors([]auth.AuthError{
 				{Err: auth.ErrParseForm},
 			})
 		}
@@ -53,7 +52,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			})
 
 		if err != nil {
-			returnFormWithErrors(&[]auth.AuthError{
+			returnFormWithErrors([]auth.AuthError{
 				{Err: err},
 			})
 		}
@@ -72,7 +71,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
-	claims, ok := r.Context().Value(utils.ClaimsContextKey).(auth.CustomClaims)
+	claims, ok := r.Context().Value(auth.ClaimsContextKey).(auth.CustomClaims)
 	if ok {
 		HandleRedirect(w, r, fmt.Sprintf("/profile/%s", claims.Username), nil)
 		return

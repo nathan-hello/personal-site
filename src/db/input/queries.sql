@@ -1,4 +1,6 @@
 -- table: users
+-- name: SelectAllUsers :many
+SELECT * FROM users;
 -- name: InsertUser :one
 INSERT INTO users ( email, username, encrypted_password, password_created_at)
 values (?, ?, ?, ?)

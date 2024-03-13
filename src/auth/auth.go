@@ -10,13 +10,8 @@ import (
 	"time"
 
 	"github.com/nathan-hello/personal-site/src/db"
-	"github.com/nathan-hello/personal-site/src/utils"
 	"golang.org/x/crypto/bcrypt"
 )
-
-type ContextClaimType string
-
-const ClaimsContextKey ContextClaimType = "claims"
 
 const (
 	FieldUsername = "username"
