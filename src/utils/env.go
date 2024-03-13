@@ -7,12 +7,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/nathan-hello/personal-site/src/db"
 )
-
-type ContextClaimType string
-
-const ClaimsContextKey ContextClaimType = "claims"
 
 type Dotenv struct {
 	DB_URI     string
@@ -26,78 +21,32 @@ type FullConfig struct {
 	ACCESS_EXPIRY_TIME  time.Duration
 }
 
-func parseConfigStruct(s interface{}) []string {
-	var fieldNames []string
-	v := reflect.ValueOf(s)
-	if v.Kind() == reflect.Struct {
-		t := v.Type()
-		for i := 0; i < v.NumField(); i++ {
-			if t.Field(i).Type.Kind() != reflect.String {
-				panic(fmt.Sprintf("%v must instead be of type string", t.Field(i).Name))
-			}
-			if t.Field(i).Type.Kind() == reflect.String {
-				fieldNames = append(fieldNames, t.Field(i).Name)
-			}
-		}
-	}
-	return fieldNames
-}
-
-func parseRequiredEnvVars(dotenv map[string]string, fields []string) Dotenv {
-	var c Dotenv
-	v := reflect.ValueOf(&c).Elem()
-	for _, field := range fields {
-		if value, ok := dotenv[field]; ok {
-			f := v.FieldByName(field)
-			if f.IsValid() && f.CanSet() && f.Kind() == reflect.String {
-				f.SetString(value)
-			}
-		}
-	}
-	return c
-
-}
-
-func NewEnv() (Dotenv, error) {
-	requiredEnvVars := parseConfigStruct(Dotenv{})
-
-	dotenv, err := godotenv.Read(".env")
-	if err != nil {
-		return Dotenv{}, err
-	}
-
-	return parseRequiredEnvVars(dotenv, requiredEnvVars), nil
-
-}
-
 var g Dotenv
 
-func InitEnv() error {
-	g, err = NewEnv()
-	if err != nil {
-		return err
+func InitEnv(override *Dotenv) error {
+	if override {
+		g.DB_URI = override.DB_URI
+		g.JWT_SECRET = override.JWT_SECRET
+	} else {
+		dotenv, err := godotenv.Read(".env")
+		if err != nil {
+			return err
+		}
+		g.DB_URI = dotenv["DB_URI"]
+		g.JWT_SECRET = dotenv["JWT_SECRET"]
 	}
+
+	if g.DB_URI == "" ||
+		g.JWT_SECRET == "" {
+		return errors.New("DB_URI or JWT_SECRET not provided")
+	}
+
 	return nil
 }
 
-var C = FullConfig{
+var Env = &FullConfig{
 	DB_URI:              g.DB_URI,
 	JWT_SECRET:          g.JWT_SECRET,
 	REFRESH_EXPIRY_TIME: time.Hour * 72,
 	ACCESS_EXPIRY_TIME:  time.Hour * 24,
 }
-
-func Env() *FullConfig {
-	return &C
-}
-
-var d, err = sql.Open("postgres", Env().DB_URI)
-
-func Db() (*db.Queries, error) {
-	if err != nil {
-		return nil, err
-	}
-	return db.New(d), nil
-}
-
-

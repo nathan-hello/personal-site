@@ -12,6 +12,7 @@ import (
 )
 
 type ContextClaimType string
+
 const ClaimsContextKey ContextClaimType = "claims"
 
 type JwtParams struct {
@@ -22,7 +23,7 @@ type JwtParams struct {
 
 type CustomClaims struct {
 	jwt.RegisteredClaims
-	UserId   string `json:"sub"`
+	UserId   string    `json:"sub"`
 	Username string    `json:"username"`
 	Jwt_type string    `json:"jwt_type"`
 	Family   uuid.UUID `json:"family"`
@@ -235,4 +236,3 @@ func ValidatePairOrRefresh(a string, r string) (string, string, error) {
 
 	return access, refresh, nil
 }
-

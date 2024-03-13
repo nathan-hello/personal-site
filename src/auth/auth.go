@@ -14,6 +14,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type ContextClaimType string
+
+const ClaimsContextKey ContextClaimType = "claims"
+
 const (
 	FieldUsername = "username"
 	FieldPassword = "password"

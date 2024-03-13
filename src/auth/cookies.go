@@ -84,4 +84,3 @@ func ValidateJwtOrDelete(w http.ResponseWriter, r *http.Request) (string, bool) 
 	SetTokenCookies(w, vAccess, vRefresh)
 	return vAccess, true
 }
-

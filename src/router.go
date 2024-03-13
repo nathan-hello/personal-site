@@ -116,4 +116,3 @@ func StaticRouter(files []Static) error {
 	return nil
 
 }
-

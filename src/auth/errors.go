@@ -47,4 +47,3 @@ var (
 	ErrDbUpdateTokensInvalid = errors.New("internal Server Error - 12412")
 	ErrDbSelectTodosByUser   = errors.New("internal Server Error - 12413")
 )
-

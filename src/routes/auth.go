@@ -127,4 +127,3 @@ func SignOut(w http.ResponseWriter, r *http.Request) {
 	auth.DeleteJwtCookies(w)
 	HandleRedirect(w, r, "/", auth.ErrUserSignedOut)
 }
-
