@@ -5,7 +5,6 @@ import NatalieLayout from "@layouts/natalie/Root.astro";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const g = await globBlogs(undefined, "natalie", false);
-  // console.log(g)
   return g;
 };
 
