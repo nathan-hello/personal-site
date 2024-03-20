@@ -1,7 +1,11 @@
 ---
+import { eq } from "astro:db";
+import { db, Comment } from "astro:db";
 import { globBlogs, type RGlobBlogs } from "@utils/glob";
 import type { GetStaticPaths } from "astro";
 import NathanLayout from "@layouts/nathan/Root.astro";
+import FormattedDate from "@components/FormattedDate.astro";
+import { NOW } from "astro:db";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const g = await globBlogs(undefined, "nathan", false);
@@ -9,8 +13,61 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const props = Astro.props as RGlobBlogs["props"];
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const author = formData.get("author")?.toString() || "Anonymous";
+  const body = formData.get("body");
+  if (typeof body === "string") {
+    await db
+      .insert(Comment)
+      .values({ author, body, created_at: NOW, parentId: props.c.id });
+  }
+}
+
+const commentsFromDb = await db
+  .select()
+  .from(Comment)
+  .limit(200)
+  .where(eq(Comment.parentId, props.c.id));
+
+const comments = commentsFromDb.sort(
+  (a, b) => b.created_at.getTime() - a.created_at.getTime()
+);
 ---
 
 <NathanLayout details={props.c}>
   <props.c.Component />
+
+  <h2>Comments</h2>
+  <hr />
+
+  <div class="grid grid-cols-2">
+    <div class="max-h-screen overflow-auto">
+      {
+        comments.map(({ author, body, created_at }) => (
+          <article class="bg-slate-800 text-white w-fit px-2 py-1 my-2">
+            <p class="text-green-600 text-md">
+              {author} - <FormattedDate dateObj={created_at} />
+            </p>
+            <p>{body}</p>
+          </article>
+        ))
+      }
+    </div>
+    <form method="POST" class="flex-col">
+      <div>
+        <label class="">Leave a comment</label>
+        <br />
+        <label for="author" class="text-sm">Author (optional)</label>
+        <br />
+        <input id="author" name="author" placeholder="Anonymous" />
+      </div>
+      <label for="body" class="text-sm min-w-0">Body (not optional)</label>
+      <br />
+      <textarea id="body" name="body" class="w-[75%] h-[20%]"></textarea>
+      <br />
+      <button type="submit">Submit</button>
+      <br />
+    </form>
+  </div>
 </NathanLayout>

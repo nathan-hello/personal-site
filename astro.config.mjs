@@ -6,6 +6,7 @@ import MDXCodeBlocks, { mdxCodeBlockAutoImport } from "astro-mdx-code-blocks";
 import AutoImport from "astro-auto-import";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
+import db from "@astrojs/db";
 
 // https://astro.build/config
 export default defineConfig({
@@ -28,6 +29,7 @@ export default defineConfig({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
     }),
+    db(),
   ],
   server: { port: 3000, host: "127.0.0.1" },
 });

@@ -21,6 +21,7 @@ export async function globImages(
 
         let images: Image[] = [];
 
+
         for (const img of imgs) {
                 const i = `/public/images/covers/${year}/${img}`;
                 const url = await globber[i]();
