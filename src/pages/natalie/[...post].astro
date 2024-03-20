@@ -2,6 +2,7 @@
 import { globBlogs, type RGlobBlogs } from "@utils/glob";
 import type { GetStaticPaths } from "astro";
 import NatalieLayout from "@layouts/natalie/Root.astro";
+import CommentSection from "@components/CommentSection.astro";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const g = await globBlogs(undefined, "natalie", false);
@@ -11,41 +12,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const props = Astro.props as RGlobBlogs["props"];
 ---
 
-<script
-  is:inline
-  src="https://unpkg.com/htmx.org@1.9.11"
-  integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"
-  crossorigin="anonymous"></script>
 <NatalieLayout details={props.c}>
   <props.c.Component />
-
-  <h2>Comments</h2>
-  <hr />
-
-  <div class="grid grid-cols-2 gap-x-4">
-    <div
-      class="max-h-screen overflow-auto"
-      hx-get=`/api/comments/${props.c.id}`
-      hx-target="this"
-      hx-trigger="load"
-    >
-      <div></div>
-    </div>
-    <div>
-      <form hx-post=`/api/comments/${props.c.id}` class="flex-col">
-        <label class="">Leave a comment</label>
-        <br />
-        <label for="author" class="text-sm">Author (optional)</label>
-        <br />
-        <input id="author" name="author" placeholder="Anonymous" />
-        <br />
-        <label for="body" class="text-sm min-w-0">Body (not optional)</label>
-        <br />
-        <textarea id="body" name="body" class="w-[75%] h-[20%]"></textarea>
-        <br />
-        <button type="submit">Submit</button>
-        <br />
-      </form>
-    </div>
-  </div>
+  <CommentSection id={props.c.id} />
 </NatalieLayout>

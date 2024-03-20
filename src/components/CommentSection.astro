@@ -1,0 +1,38 @@
+---
+interface Props {
+  id: number;
+}
+const { id } = Astro.props;
+---
+
+<h2>Comments</h2>
+<hr />
+
+<div class="grid grid-cols-2 gap-x-4">
+  <div
+    class="max-h-screen overflow-auto"
+    hx-get=`/api/comments/${id}`
+    hx-target="this"
+    hx-trigger="load"
+  >
+  </div>
+  <form
+    hx-post=`/api/comments/${id}`
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex-col"
+  >
+    <label class="">Leave a comment</label>
+    <br />
+    <label for="author" class="text-sm">Author (optional)</label>
+    <br />
+    <input id="author" name="author" placeholder="Anonymous" />
+    <br />
+    <label for="body" class="text-sm min-w-0">Body (not optional)</label>
+    <br />
+    <textarea id="body" name="body" class="w-[75%] h-[20%]"></textarea>
+    <br />
+    <button type="submit">Submit</button>
+    <br />
+  </form>
+</div>
