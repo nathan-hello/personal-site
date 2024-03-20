@@ -4,6 +4,13 @@ import { db, Comment, eq, NOW } from 'astro:db';
 
 export const prerender = false;
 
+function escapeHTML(str: string) {
+    return str.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
 export const POST: APIRoute = async (ctx) => {
     try {
         const formData = await ctx.request.formData();
@@ -20,8 +27,8 @@ export const POST: APIRoute = async (ctx) => {
         await db
             .insert(Comment)
             .values({
-                author,
-                body,
+                author: escapeHTML(author),
+                body: escapeHTML(body),
                 created_at: NOW,
                 parentId: id
             });
