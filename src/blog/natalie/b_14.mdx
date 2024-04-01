@@ -2,7 +2,7 @@
 title: Encoding standards and slow adoption in torrenting
 date: 2024-04-01T14:17
 author: natalie
-image: weechat.gif
+image: [ghost.png, encoderchart.png]
 aria:
   ghost.png:
     alt: A puddle reflecting a dark metropolis with neon lights as well as an overlay with video/audio encoding information.
@@ -11,7 +11,8 @@ With the adoption of AV1 encoding taking place in both youtube and potentially t
 
 For the meet of it though we should discuss then, if AV1 is so good, why is this so. In the paper by [Esakki et al.](https://www.researchgate.net/publication/343302953) did an analyses of VVC, H.265, AV1 and VP9.  With the main metrics being used, the ones I have already mentioned. My one gripe with the paper is the focus on video streaming. However as this is the most common method of video content delivery this is not entirely unsurprising. But it should be noted that some of these encoders perform significantly better then others are very low bitrates, namely VP9 and AV1 which won't be as representative in this data. 
 
-Table 7(a) HEVC 1920x1080p BD-PSNR
+```
+Table 7(a) HEVC 1920x1080p BD-PSNR\
 |         | Bitrate Savings relative to |
 | :-----: | :-----: | :-----: | :-----: |
 |         | SVT-AV1 | X265    | VP9     |
@@ -26,6 +27,9 @@ Table 7(b) HEVC 1920x1080p BD-VMAF
 | VVC     | 54.2%   | 59.8%   | 67.8%   |
 | SVT-AV1 | -       | 13.73%  | 26.77%  |
 | X265    | -       | -       | 17.84%  |
+```
+
+For those with a more visual inclanation I have also included a graph from the paper which shows basically the same information in the second image.
 
 I only highlight the 1080p recordings here as it's the most commonly used pixel format as well as enough of a representation of the trend in the data to understand that VVC there is a fairly clear heirachy in quality preservation (fixed VMAF and PSNR) with significantly lower bitrates.
 
