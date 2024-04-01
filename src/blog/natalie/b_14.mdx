@@ -1,0 +1,50 @@
+---
+title: Encoding standards and slow adoption in torrenting
+date: 2024-04-01T14:17
+author: natalie
+image: weechat.gif
+aria:
+  ghost.png:
+    alt: A puddle reflecting a dark metropolis with neon lights as well as an overlay with video/audio encoding information.
+---
+With the adoption of AV1 encoding taking place in both youtube and potentially twitch. Two platforms with vastly different interests and performance metrics it brings into question of what video encoders one should use. To highlight, youtube has an interest in displaying as high a possible bitrate to compression ratio as possible whilst still adhering to good psnr (30+) and vmaf (90+) fidelity. Contrasting this with twitch who much prefer the usage of constant bitrates as opposed to variable due to wishing to minimise latency and package drops. Which can arise when there is a paticularly still frame with little bitrate, when set to vbr.
+
+For the meet of it though we should discuss then, if AV1 is so good, why is this so. In the paper by [Esakki et al.](https://www.researchgate.net/publication/343302953) did an analyses of VVC, H.265, AV1 and VP9.  With the main metrics being used, the ones I have already mentioned. My one gripe with the paper is the focus on video streaming. However as this is the most common method of video content delivery this is not entirely unsurprising. But it should be noted that some of these encoders perform significantly better then others are very low bitrates, namely VP9 and AV1 which won't be as representative in this data. 
+
+Table 7(a) HEVC 1920x1080p BD-PSNR
+|         | Bitrate Savings relative to |
+| :-----: | :-----: | :-----: | :-----: |
+|         | SVT-AV1 | X265    | VP9     |
+| VVC     | 49.8%   | 67%     | 75.8%   |
+| SVT-AV1 | -       | 32.6%   | 51%     |
+| X265    | -       | -       | 27.6%   |
+
+Table 7(b) HEVC 1920x1080p BD-VMAF
+|         | Bitrate Savings relative to |
+| :-----: | :-----: | :-----: | :-----: |
+|         | SVT-AV1 | X265    | VP9     |
+| VVC     | 54.2%   | 59.8%   | 67.8%   |
+| SVT-AV1 | -       | 13.73%  | 26.77%  |
+| X265    | -       | -       | 17.84%  |
+
+I only highlight the 1080p recordings here as it's the most commonly used pixel format as well as enough of a representation of the trend in the data to understand that VVC there is a fairly clear heirachy in quality preservation (fixed VMAF and PSNR) with significantly lower bitrates.
+
+The two main questions one now needs to ask are between adoption is liscensing and encoding complexity. The former mainly affects larger platforms such as youtube and twitch. Which have stuck with VP9 and H.264 respectively, due to the inherent liscensing issues presented by HEVC. I won't harp on about it. However for these platforms it is the main barrier for implementation. With torrenting however it has far more to do with encoding complexity. Which has unfortunately trended upwards with almost every new video encoder. As an extreme example VVC is about 9x the encoding complexity of VP9. Which puts an ever greater burden on decoders as well as end user hardware. Which for community driven sources is less tolerable. With the community still being slow to adopt HEVC with only fringe usage of AV1, it's interesting to see how adoption rates change moving forward.
+
+I personally don't have the hardware capabilities to do accelerated AV1 encoding nor a paticularly good cpu to use SVT-AV1 with. As such I haven't much experimented with the available options. What I will say however is that currently, the ffmpeg implementations (which are not the be all and end all of video encoding but by far the most ubiquotous tool) are lacking the options one commonly expects. To give two examples:
+
+libvpx-vp9
+```
+ffmpeg -i input.mkv -c:v libvpx-vp9 -pix_fmt yuv420p10le -pass 1 -quality good -threads 4 -profile:v 2 -lag-in-frames 25 -crf 25 -b:v 0 -g 240 -cpu-used 4 -auto-alt-ref 1 -arnr-maxframes 7 -arnr-strength 4 -aq-mode 0 -tile-rows 0 -tile-columns 1 -enable-tpl 1 -row-mt 1 -f null -
+ffmpeg -i input.mkv -c:v libvpx-vp9 -pix_fmt yuv420p10le -pass 2 -quality good -threads 4 -profile:v 2 -lag-in-frames 25 -crf 25 -b:v 0 -g 240 -cpu-used 4 -auto-alt-ref 1 -arnr-maxframes 7 -arnr-strength 4 -aq-mode 0 -tile-rows 0 -tile-columns 1 -enable-tpl 1 -row-mt 1 output.mkv
+```
+
+libsvtav1
+```
+ffmpeg -i input.mkv -c:a copy -c:v libsvtav1  -pix_fmt yuv420p10le -pass 1 -preset 5 -crf 26 -g 240 -pix_fmt yuv420p10le -svtav1-params -tile_columns 1 -tile_rows 0 tune=0 -f null -
+ffmpeg -i input.mkv -c:a copy -c:v libsvtav1  -pix_fmt yuv420p10le -pass 1 -preset 5 -crf 26 -g 240 -pix_fmt yuv420p10le -svtav1-params -tile_columns 1 -tile_rows 0 tune=0 output.mkv
+```
+
+If one is not paticularly familiar with the voodoo which is ffmpeg, don't worry about the specifics, more just that when going for the highest quality (without constrained vmaf or psnr) with the smallest file size possible for both I ended up with something like this (alongside having reasonable encoding times).
+
+TEST
