@@ -1,5 +1,6 @@
 ---
 import Meta from "@components/Meta.astro";
+import PageHeader from "@components/PageHeader.astro";
 const { bgImg = "/images/carpark.png" } = Astro.props;
 ---
 
@@ -19,8 +20,8 @@ const { bgImg = "/images/carpark.png" } = Astro.props;
     />
   </head>
   <body>
-    <div class="mx-auto w-min bg-nat-black-c01 text-nat-white-c01 px-3 mb-2">
-      <a href="/" class="no-underline text-nat-white-c01 visited:text-nat-white-c01">
+    <div class="bg-black w-min mx-auto">
+      <PageHeader>
         <pre>
  _   _       _       __   
 | \ | |     | |     / /   
@@ -28,60 +29,12 @@ const { bgImg = "/images/carpark.png" } = Astro.props;
 | . ` |/ _` | __| / / _ \ 
 | |\  | (_| | |_ / /  __/ 
 |_| \_|\__,_|\__/_/ \___| "We are Boingus"
-            </pre>
-      </a>
-      <b>
-        <a
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="/"
-        >
-          /Home/
-        </a>
-        <a
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="/natalie"
-        >
-          /Natzone/</a
-        >
-        <a
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="/nathan"
-        >
-          /Natecorner/</a
-        >
-        <a
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="https://github.com/nathan-hello"
-        >
-          /gh/</a
-        >
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="natalie/links"
-      >
-        /links/</a
-      >
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="natalie/webring"
-      >
-        /webring/<a>
-          <a
-            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-            href="natalie/tv"
-          >
-            /tv/</a
-          >
-        </a>
-          <a
-            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-            href="irc://irc.reluekiss.com"
-          >
-            /irc/</a
-          >
-        </a>
-      </b>
+  </pre>
+      </PageHeader>
     </div>
+    <br />
     <slot />
   </body>
+
+
 </html>

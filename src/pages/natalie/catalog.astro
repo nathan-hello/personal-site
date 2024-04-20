@@ -1,11 +1,10 @@
 ---
-import { globBlogs } from "@utils/glob";
-
-import CatalogPostCard from "@components/CatalogPostCard.astro";
 import Meta from "@components/Meta.astro";
-const recents = await globBlogs(50, "natalie", true);
+
+import PageHeader from "@components/PageHeader.astro";
 ---
-<Meta title="catalog" description="Natalie's catalog"/>
+
+<Meta title="catalog" description="Natalie's catalog" />
 <head>
   <style>
     b {
@@ -41,9 +40,9 @@ const recents = await globBlogs(50, "natalie", true);
 </head>
 <body>
   <div id="top" class="floaty">
-    <div>
-    <b>
-      <pre>
+    <PageHeader>
+      <b>
+        <pre>
                                                             _______         .--.    
       __                                         __       _ \______ -      |o_o |
      / /_   __      __                          / /      | \  ___  \ |     |:_/ |
@@ -52,96 +51,7 @@ const recents = await globBlogs(50, "natalie", true);
   / // /|  / /_/ / /_  / /_/ /_/ / / / /  __// /         | \______ \_|  /'|_   _/'\
  /_//_/ |_/\__,_/\__/ /___/\____/_/ /_/\___//_/           -_______\     \___)=(___/
             </pre>
-    </b>
-    </div>
-    <b>
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="/"
-      >
-        /Home/
-      </a>
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="../natalie"
-      >
-        /Natzone/
-      </a>
-
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="../../nathan"
-      >
-        /Natecorner/
-      </a>
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="https://github.com/nathan-hello"
-      >
-        /gh/
-      </a>
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="../natalie/links"
-      >
-        /links/
-      </a>
-      <a
-        class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-        href="../natalie/webring"
-      >
-        /webring/<a>
-          <a
-            class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-            href="../natalie/tv"
-          >
-            /tv/
-          </a>
-        </a>
-        <hr />
-        <a
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="#bottom"
-        >
-          [Bottom]
-        </a>
-        <pre>
-      _________________________________________________
-     | Under construction, thank you for your patience |
-      -------------------------------------------------
-           /
-    (\ /) /
-    ( . .)
-   c(")(")        
-        </pre>
-        <div class="flex flex-col">
-          <div class="flex flex-row">
-            <!-- {
-                    recents.map((a) => {
-                        return (
-                            <CatalogPostCard details={a.props.c}>
-                                <a.props.c.Component />
-                            </CatalogPostCard>
-                        )
-                    })
-                } -->
-          </div>
-        </div>
-        <hr />
-        <a
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="../natalie"
-        >
-          [Index]
-        </a>
-        <a
-          id="bottom"
-          class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-          href="#top"
-        >
-          [Top]
-        </a>
-      </a>
-    </b>
+      </b>
+    </PageHeader>
   </div>
 </body>
