@@ -2,24 +2,15 @@
 import ForumPostCard from "@/components/ForumPostCard.astro";
 import { globBlogs } from "@utils/glob";
 import DefaultLayout from "@layouts/Root.astro";
-import PageHeader from "@components/PageHeader.astro";
+import PageHeaderDefault from "@components/PageHeaderDefault.astro";
+import Meta from "@components/Meta.astro";
 
 const bothRecents = await globBlogs(100, undefined, true);
 ---
 
 <DefaultLayout>
-  <div class="bg-black w-min mx-auto">
-    <PageHeader slot="header">
-      <pre>
- _   _       _       __   
-| \ | |     | |     / /   
-|  \| | __ _| |_   / /__  
-| . ` |/ _` | __| / / _ \ 
-| |\  | (_| | |_ / /  __/ 
-|_| \_|\__,_|\__/_/ \___| "We are Boingus"
-  </pre>
-    </PageHeader>
-  </div>
+  <Meta slot="meta" title="Nat/e" description="Nathan and Natalie's Blog Site" />
+  <PageHeaderDefault slot="header" />
   <br />
   <div style="margin-left: 10%;margin-right: 10%;">
     {
