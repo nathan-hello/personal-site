@@ -10,12 +10,10 @@ let cardColor = "bg-black";
 let borderColor = "border-white";
 
 if (details.author === "nathan") {
-  cardColor = "bg-cyan-950";
-  borderColor = "border-green-900";
+  cardColor = "bg-nat-green-c01";
 }
 if (details.author === "natalie") {
-  cardColor = "bg-neutral-800";
-  borderColor = "border-nat-white-c01";
+  cardColor = "bg-[#261c4a]";
 }
 const showImg = details.globbedImgs.length > 0;
 ---
@@ -27,7 +25,7 @@ const showImg = details.globbedImgs.length > 0;
 </style>
 
 <div
-  class={`hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 ${cardColor} ${borderColor}`}
+  class={`hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 border-nat-white-c01 ${cardColor}`}
 >
   <span class="text-[#a47996] font-bold font-vcrosdmono">{details.author}</span>
   <span class="">{" "}-{" "}</span>

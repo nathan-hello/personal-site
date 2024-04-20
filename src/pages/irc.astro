@@ -1,7 +1,44 @@
 ---
-import DefaultLayout from "@layouts/Root.astro";
+import NatalieBigPage from "@layouts/natalie/BigPage.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Meta from "@components/Meta.astro";
+import Code from "@components/Code.astro";
 ---
 
-<DefaultLayout>
-  <div></div>
-</DefaultLayout>
+<NatalieBigPage>
+  <Meta title="Nat/e's IRC server" />
+  <PageHeader slot="header">
+    <b>
+      <pre>
+     __                    __
+    / / ________  ______  / /
+   / / /  _/ __ \/ ____/ / /
+  / /  / // /_/ / /     / / 
+ / / _/ // _, _/ /___  / /
+/_/ /___/_/ |_|\____/ /_/ 
+            </pre>
+    </b>
+  </PageHeader>
+  <br />
+  <p class="text-xl">
+    Join our IRC server by connecting to <b>irc.reluekiss.com</b>
+  </p>
+  <p>
+    If your client doesn't connect already, try enabling TLS. The server is over port
+    6697.
+  </p>
+  <p>
+    Natalie likes to use WeeChat because it's in the terminal. I don't go on it too much,
+    so you're more likely to find her there.
+  </p>
+  <p class="text-lg">Small ramble bramble:</p>
+  <p class="md:w-96">
+    I have this idea for an IRC to HTTP conversion layer. Such that you point your this
+    service to an IRC server, and you can have a nice interface for serving those messages
+    over the IRC protocol, but from an HTTP (read: website) service. If anyone knows that
+    this already exists (and I've looked far and wide), please do let myself or Natalie
+    know. Otherwise, it sounds like a cool project that would allow for more web clients
+    to exist for IRC. My ultimate goal for this is to make a fully featured twitch-style
+    chat that uses IRC as the backend (just like twitch does!).
+  </p>
+</NatalieBigPage>

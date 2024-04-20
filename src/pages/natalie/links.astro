@@ -1,47 +1,14 @@
 ---
 import Meta from "@components/Meta.astro";
 import PageHeader from "@components/PageHeader.astro";
+import NatalieBigPage from "@layouts/natalie/BigPage.astro";
 ---
 
-<Meta title="links" description="Natalie's links" />
-<head>
-  <style>
-    b {
-      font-weight: bold;
-      color: #eeeeee;
-    }
-    body {
-      background-image: url("/images/cyber.jpg");
-      background-attachment: fixed;
-    }
-
-    .floaty {
-      margin-left: 10%;
-      margin-right: 10%;
-      background-color: #171717;
-      color: #b3b8c3;
-      border-style: ridge;
-      border: solid 2px #1e1e1e;
-      padding: 10px;
-      box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
-    }
-
-    input:checked + div {
-      display: none;
-    }
-    .fixed {
-      padding: 4px;
-      position: fixed;
-      bottom: 0px;
-      right: 0px;
-    }
-  </style>
-</head>
-<body>
-  <div id="top" class="floaty">
-    <PageHeader>
-      <b>
-        <pre>
+<NatalieBigPage>
+  <Meta title="Natalie's Links" slot="meta" />
+  <PageHeader slot="header">
+    <b>
+      <pre>
       __                        __
      / / ___       __          / /
     / / / (_)___  / /_______  / / 
@@ -49,17 +16,17 @@ import PageHeader from "@components/PageHeader.astro";
   / / / / / / / / , (__  )  / /   
  /_/ /_/_/_/ /_/_/|_/____/ /_/      
             </pre>
-      </b>
-    </PageHeader>
+    </b>
+  </PageHeader>
 
-    <hr />
-    <a
-      class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-      href="#bottom"
-    >
-      [Bottom]
-    </a>
-    <pre>
+  <hr />
+  <a
+    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+    href="#bottom"
+  >
+    [Bottom]
+  </a>
+  <pre>
       _________________________________________________
      | Under construction, thank you for your patience |
       -------------------------------------------------
@@ -68,13 +35,12 @@ import PageHeader from "@components/PageHeader.astro";
     ( . .)
    c(")(")        
         </pre>
-    <hr />
-    <a
-      id="bottom"
-      class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-      href="#top"
-    >
-      [Top]
-    </a>
-  </div>
-</body>
+  <hr />
+  <a
+    id="bottom"
+    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+    href="#top"
+  >
+    [Top]
+  </a>
+</NatalieBigPage>

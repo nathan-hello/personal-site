@@ -1,6 +1,5 @@
 ---
 import Meta from "@components/Meta.astro";
-import PageHeader from "@components/PageHeader.astro";
 const { bgImg = "/images/carpark.png" } = Astro.props;
 ---
 
@@ -12,26 +11,10 @@ const { bgImg = "/images/carpark.png" } = Astro.props;
   />
 
   <head>
-    <title>Nat/e</title>
-    <Meta
-      title="Nat/e"
-      description="Nathan & Natalie really cool blog site :)"
-      image={bgImg}
-    />
+    <slot name="meta" />
   </head>
   <body>
-    <div class="bg-black w-min mx-auto">
-      <PageHeader>
-        <pre>
- _   _       _       __   
-| \ | |     | |     / /   
-|  \| | __ _| |_   / /__  
-| . ` |/ _` | __| / / _ \ 
-| |\  | (_| | |_ / /  __/ 
-|_| \_|\__,_|\__/_/ \___| "We are Boingus"
-  </pre>
-      </PageHeader>
-    </div>
+    <slot name="header" />
     <br />
     <slot />
   </body>

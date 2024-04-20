@@ -4,25 +4,34 @@ import ForumImageCard from "@components/ForumImageCard.astro";
 import DefaultLayout from "@layouts/Root.astro";
 import FormattedDate from "@components/FormattedDate.astro";
 import Meta from "@components/Meta.astro";
+import PageHeaderDefault from "@components/PageHeaderDefault.astro";
 interface Props {
   details: Post;
 }
-
 const { details } = Astro.props;
 ---
 
 <DefaultLayout>
-  <Meta title={details.title} description={details.description} image={details.globbedImgs && details.globbedImgs.length > 1 ? details.globbedImgs[0].url : ""}/>
-  <div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
-    <div class="text-lg pt-6 mx-auto pl-10">
+  <Meta
+    slot="meta"
+    title={details.title}
+    description={details.description}
+    image={details.globbedImgs && details.globbedImgs.length > 1 ?
+      details.globbedImgs[0].url
+    : ""}
+  />
+  <PageHeaderDefault slot="header" />
+  <div class="max-w-7xl min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
+    <div class="text-lg pt-6 pl-10 mx-auto">
       <span class="text-[#a47996] font-bold">{details.author}</span>
       <span class="">{" "}-{" "}</span>
       <span class="">{details.title} - <FormattedDate dateObj={details.dateObj} /></span>
+      <br />
     </div>
-    <div class="float-left flex px-10 gap-x-2">
+    <div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
       {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
     </div>
-    <div class="p-10">
+    <div class="p-10 text-xl">
       <slot />
     </div>
   </div>

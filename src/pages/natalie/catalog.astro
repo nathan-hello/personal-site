@@ -1,48 +1,14 @@
 ---
 import Meta from "@components/Meta.astro";
-
+import NatalieBigPage from "@layouts/natalie/BigPage.astro";
 import PageHeader from "@components/PageHeader.astro";
 ---
 
-<Meta title="catalog" description="Natalie's catalog" />
-<head>
-  <style>
-    b {
-      font-weight: bold;
-      color: #eeeeee;
-    }
-    body {
-      background-image: url("/images/cyber.jpg");
-      background-attachment: fixed;
-    }
-
-    .floaty {
-      margin-left: 10%;
-      margin-right: 10%;
-      background-color: #171717;
-      color: #b3b8c3;
-      border-style: ridge;
-      border: solid 2px #1e1e1e;
-      padding: 10px;
-      box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
-    }
-
-    input:checked + div {
-      display: none;
-    }
-    .fixed {
-      padding: 4px;
-      position: fixed;
-      bottom: 0px;
-      right: 0px;
-    }
-  </style>
-</head>
-<body>
-  <div id="top" class="floaty">
-    <PageHeader>
-      <b>
-        <pre>
+<NatalieBigPage>
+  <Meta title="catalog" description="Natalie's catalog" slot="meta" />
+  <PageHeader slot="header">
+    <b>
+      <pre>
                                                             _______         .--.    
       __                                         __       _ \______ -      |o_o |
      / /_   __      __                          / /      | \  ___  \ |     |:_/ |
@@ -51,7 +17,6 @@ import PageHeader from "@components/PageHeader.astro";
   / // /|  / /_/ / /_  / /_/ /_/ / / / /  __// /         | \______ \_|  /'|_   _/'\
  /_//_/ |_/\__,_/\__/ /___/\____/_/ /_/\___//_/           -_______\     \___)=(___/
             </pre>
-      </b>
-    </PageHeader>
-  </div>
-</body>
+    </b>
+  </PageHeader>
+</NatalieBigPage>

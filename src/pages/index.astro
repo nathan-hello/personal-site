@@ -2,11 +2,25 @@
 import ForumPostCard from "@/components/ForumPostCard.astro";
 import { globBlogs } from "@utils/glob";
 import DefaultLayout from "@layouts/Root.astro";
+import PageHeader from "@components/PageHeader.astro";
 
 const bothRecents = await globBlogs(100, undefined, true);
 ---
 
 <DefaultLayout>
+  <div class="bg-black w-min mx-auto">
+    <PageHeader slot="header">
+      <pre>
+ _   _       _       __   
+| \ | |     | |     / /   
+|  \| | __ _| |_   / /__  
+| . ` |/ _` | __| / / _ \ 
+| |\  | (_| | |_ / /  __/ 
+|_| \_|\__,_|\__/_/ \___| "We are Boingus"
+  </pre>
+    </PageHeader>
+  </div>
+  <br />
   <div style="margin-left: 10%;margin-right: 10%;">
     {
       bothRecents.map((b) => {
