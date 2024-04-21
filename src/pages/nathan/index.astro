@@ -2,11 +2,19 @@
 import Layout from "@layouts/Root.astro";
 import ForumPostCard from "@components/ForumPostCard.astro";
 import { globBlogs } from "@utils/glob";
+import PageHeaderDefault from "@components/PageHeaderDefault.astro";
+import Meta from "@components/Meta.astro";
 
 const recents = await globBlogs(10, "nathan", true);
 ---
 
 <Layout>
+  <Meta
+    title="Nate's Corner"
+    description="Blog posts and ramblings by Nate"
+    slot="meta"
+  />
+  <PageHeaderDefault slot="header" />
   <div style="margin-left: 10%;margin-right: 10%;">
     {
       recents.map((a) => (

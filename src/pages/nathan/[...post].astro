@@ -1,7 +1,7 @@
 ---
 import { globBlogs, type RGlobBlogs } from "@utils/glob";
 import type { GetStaticPaths } from "astro";
-import NathanLayout from "@layouts/nathan/BlogPost.astro";
+import NathanBlogPost from "@layouts/nathan/BlogPost.astro";
 import CommentSection from "@components/CommentSection.astro";
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -12,7 +12,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const props = Astro.props as RGlobBlogs["props"];
 ---
 
-<NathanLayout details={props.c}>
+<NathanBlogPost details={props.c}>
   <props.c.Component />
   <CommentSection id={props.c.id} />
-</NathanLayout>
+</NathanBlogPost>

@@ -1,0 +1,52 @@
+---
+import NatalieBigPage from "@layouts/natalie/BigPage.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Meta from "@components/Meta.astro";
+---
+
+<NatalieBigPage>
+  <Meta title="Nat/e's IRC server" />
+  <PageHeader slot="header">
+    <b>
+      <pre>
+ _   _       _       __   
+| \ | |     | |     / /   
+|  \| | __ _| |_   / /__  
+| . ` |/ _` | __| / / _ \ 
+| |\  | (_| | |_ / /  __/ 
+|_| \_|\__,_|\__/_/ \___| "We are Boingus"
+            </pre>
+    </b>
+  </PageHeader>
+  <br />
+  <div class="md:w-[50vw] mx-auto text-xl">
+    <p class="text-3xl">
+      This website has some amounts of javascript. This page tells you where.
+    </p>
+    <p>
+      Natalie cares a lot about keeping JS to an absolute bare minimum. This said, a
+      statically generated site like ours has inherent limitations. Namely, there isn't a
+      server running code available to run per-request renders.
+    </p>
+    <p>
+      This isn't meant to be a scary list of things you can't do without JS on our site,
+      just an explanation. We're really happy with how little our site needs JS.
+    </p>
+    <p>
+      Here are the areas that have JS:
+      <ul class="text-xl">
+        <li>
+          On each blog post, we use htmx to grab the comments from the server, and then
+          place the server-rendered html in the dom. Disabling JS means you won't see
+          comments.
+        </li>
+        <li>
+          On /natalie/tv there is a video player that will stream video if Natalie is
+          serving content via our (other, non-web) server. The iframe that she uses to get
+          the stream working in the browser uses JS. Disabling JS would mean you can't see
+          this video.
+        </li>
+      </ul>
+    </p>
+  </div>
+</NatalieBigPage>

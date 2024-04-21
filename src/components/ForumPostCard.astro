@@ -7,7 +7,6 @@ import FormattedDate from "@components/FormattedDate.astro";
 const { details } = Astro.props as Record<string, Post>;
 
 let cardColor = "bg-black";
-let borderColor = "border-white";
 
 if (details.author === "nathan") {
   cardColor = "bg-nat-green-c01";
