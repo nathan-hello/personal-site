@@ -30,7 +30,7 @@ export const POST: APIRoute = async (ctx) => {
             .insert(Comment)
             .values({
                 author: escapeHTML(author),
-                body: escapeHTML(body),
+                body: escapeHTML(body).replace(/\n/g, '<br>'),
                 created_at: NOW,
                 parentId: id
             });
