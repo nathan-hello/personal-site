@@ -13,57 +13,62 @@ const { id } = Astro.props;
 
 <head>
   <style>
-body {
-  background: #1d1f21;
-  color: #c5c8c6;
-  }
-  table>tbody>tr>td:first-child {
-    background-color: #282a2e;
-    color: #c5c8c6;
-    font-weight: 700;
-    border: 1px solid #111;
-    padding: 5px;
-}
-</style>
+    body {
+      background: #1d1f21;
+      color: #c5c8c6;
+    }
+
+    table > tbody > tr > td:first-child {
+      background-color: #282a2e;
+      color: #c5c8c6;
+      font-weight: 700;
+      border: 1px solid #111;
+      padding: 5px;
+    }
+  </style>
 </head>
 
 <h2>Comments</h2>
 <hr />
 
-  <form
-    hx-post=`/api/comments/${id}`
-    hx-target="this"
-    hx-swap="outerHTML"
-    class="flex-col"
-  >
-    <table id="postForm">
+<form hx-post=`/api/comments/${id}` hx-target="this" hx-swap="outerHTML" class="flex-col">
+  <table id="postForm">
     <tbody>
-    <tr data-type="Author">
+      <tr data-type="Author">
         <td>Author (optional)</td>
         <td>
-          <input id="author" name="author" type="text" tabindex="1" placeholder="Anonymous" />
+          <input
+            id="author"
+            name="author"
+            type="text"
+            tabindex="1"
+            placeholder="Anonymous"
+          />
           <input type="submit" value="Post" tabindex="10" />
         </td>
-    </tr>
-    <tr data-type="body">
+      </tr>
+      <tr data-type="body">
         <td>Body</td>
         <td>
-          <textarea id="body" name="body" cols="48" rows="4" wrap="soft" tabindex="4"></textarea>
+          <textarea id="body" name="body" cols="48" rows="4" wrap="soft" tabindex="4"
+          ></textarea>
         </td>
-    </tr>
-    <tr data-type="file">
+      </tr>
+      <tr data-type="file">
         <td>File</td>
         <td>
-          <input id="postFile" name="upfile" type="file" tabindex="8">
+          <input id="postFile" name="upfile" type="file" tabindex="8" />
         </td>
-    </tr>
-  </form>
+      </tr>
+    </tbody>
     <div class="gap-x-4">
-    <div
-      class="max-h-screen"
-      hx-get=`/api/comments/${id}`
-      hx-target="this"
-      hx-trigger="load"
-    >
+      <div
+        class="max-h-screen"
+        hx-get=`/api/comments/${id}`
+        hx-target="this"
+        hx-trigger="load"
+      >
+      </div>
     </div>
-</div>
+  </table>
+</form>

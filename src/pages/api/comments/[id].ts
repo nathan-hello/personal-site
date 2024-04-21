@@ -1,19 +1,64 @@
 import type { APIRoute } from "astro";
-import { db, Comment, eq, NOW } from 'astro:db';
+import { db, Comment, eq, NOW } from "astro:db";
 
 export const prerender = false;
 
 function escapeHTML(str: string) {
     return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function renderRefrences(str: string): string {
+    let ref = "";
+    for (let i = 8; i < str.length; i++) {
+        if (str[i] === " ") {
+            break;
+        }
+        ref += str[i];
+    }
+    let num = Number(ref);
+    if (Number.isNaN(num) || num === 0) {
+        return str;
+    }
+    let reference = `<a href="#${num}" class="reply">&gt;&gt;${num}</a>`;
+    let result = reference + str.substring(8 + num.toString().length);
+
+    return result;
+}
+
+function renderGreentext(str: string): string {
+    let text = str.substring(4);
+    if (str.at(5) === " ") {
+        return str;
+    }
+    let result = `<span class="greentext">&gt;${text}</span>`;
+    return result;
+}
+
+function renderComment(str: string): string {
+    str = escapeHTML(str);
+    let lines = str.split("\n");
+    let renderedLines = [];
+
+    for (const l of lines) {
+        let currentLine = l;
+        if (l.substring(0, 8) === "&gt;&gt;") {
+            currentLine = renderRefrences(l);
+        } else if (l.substring(0, 4) === "&gt;") {
+            currentLine = renderGreentext(l);
+        }
+        renderedLines.push(currentLine);
+    }
+
+    return renderedLines.join("<br/>");
 }
 
 export const POST: APIRoute = async (ctx) => {
-    const referer = ctx.request.headers.get("Referer") || '/';
+    const referer = ctx.request.headers.get("Referer") || "/";
     try {
         const formData = await ctx.request.formData();
         const author = formData.get("author")?.toString() || "Anonymous";
@@ -30,7 +75,7 @@ export const POST: APIRoute = async (ctx) => {
             .insert(Comment)
             .values({
                 author: escapeHTML(author),
-                body: escapeHTML(body).replace(/\n/g, '<br>'),
+                body: renderComment(body),
                 created_at: NOW,
                 parentId: id
             });
@@ -38,7 +83,7 @@ export const POST: APIRoute = async (ctx) => {
         return new Response(null, {
             status: 204,
             headers: {
-                'HX-Redirect': referer,
+                "HX-Redirect": referer,
             },
         });
     } catch (error) {
@@ -62,7 +107,7 @@ export const GET: APIRoute = async (ctx) => {
     }
     const comments = await db.select().from(Comment).where(eq(Comment.parentId, id));
     const divs = comments
-        .sort((a, b) => b.created_at.getTime() - a.created_at.getTime())
+        .sort((a, b) => a.created_at.getTime() - b.created_at.getTime()) // sorted from oldest -> newest
         .map((c) => {
             return `
         <head>
@@ -76,10 +121,16 @@ export const GET: APIRoute = async (ctx) => {
         input:checked + span {
             display: none;
         }
+        .greentext {
+            color: #789922;
+        }
+        .reply {
+            color: #d00;
+        }
         </style>
         </head>
         <div>
-        <article class="w-fit">
+        <article id="${c.id}" class="w-fit">
             <label for="remover" class="text-md">
               ${c.author} - ${c.created_at.toLocaleString("en-GB")} - id: ${c.id}
             </label>
