@@ -65,12 +65,31 @@ export const GET: APIRoute = async (ctx) => {
         .sort((a, b) => b.created_at.getTime() - a.created_at.getTime())
         .map((c) => {
             return `
-          <article class="bg-slate-800 text-white w-fit px-2 py-1 my-2">
-            <p class="text-green-600 text-md">
+        <head>
+        <style>
+        article {
+            background-color: #282a2e;
+            color: #c5c8c6;
+            border: 1px solid #111;
+            padding: 5px;
+        }
+        input:checked + span {
+            display: none;
+        }
+        </style>
+        </head>
+        <div>
+        <article class="w-fit">
+            <label for="remover" class="text-md">
               ${c.author} - ${c.created_at.toLocaleString("en-GB")} - id: ${c.id}
-            </p>
-            <p>${c.body}</p>
+            </label>
+            <input id="remover" type="checkbox" />
+            <span>
+            <p style="padding-left: 10px; padding-right: 10px; word-wrap: break-word; word-break: break-all;">${c.body}</p>
+            </span>
           </article>
+        <br/>
+        </div>
         `;
         }).join("\n");
     return new Response(divs, { status: 200, headers: { "Content-Type": "text/html" } },);

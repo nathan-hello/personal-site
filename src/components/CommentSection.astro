@@ -11,34 +11,59 @@ const { id } = Astro.props;
   integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"
   crossorigin="anonymous"></script>
 
+<head>
+  <style>
+body {
+  background: #1d1f21;
+  color: #c5c8c6;
+  }
+  table>tbody>tr>td:first-child {
+    background-color: #282a2e;
+    color: #c5c8c6;
+    font-weight: 700;
+    border: 1px solid #111;
+    padding: 5px;
+}
+</style>
+</head>
+
 <h2>Comments</h2>
 <hr />
 
-<div class="grid grid-cols-2 gap-x-4">
-  <div
-    class="max-h-screen overflow-auto"
-    hx-get=`/api/comments/${id}`
-    hx-target="this"
-    hx-trigger="load"
-  >
-  </div>
   <form
     hx-post=`/api/comments/${id}`
     hx-target="this"
     hx-swap="outerHTML"
     class="flex-col"
   >
-    <label class="">Leave a comment</label>
-    <br />
-    <label for="author" class="text-sm">Author (optional)</label>
-    <br />
-    <input id="author" name="author" placeholder="Anonymous" />
-    <br />
-    <label for="body" class="text-sm min-w-0">Body (not optional)</label>
-    <br />
-    <textarea id="body" name="body" class="w-[75%] h-[20%]"></textarea>
-    <br />
-    <button type="submit">Submit</button>
-    <br />
+    <table id="postForm">
+    <tbody>
+    <tr data-type="Author">
+        <td>Author (optional)</td>
+        <td>
+          <input id="author" name="author" type="text" tabindex="1" placeholder="Anonymous" />
+          <input type="submit" value="Post" tabindex="10" />
+        </td>
+    </tr>
+    <tr data-type="body">
+        <td>Body</td>
+        <td>
+          <textarea id="body" name="body" cols="48" rows="4" wrap="soft" tabindex="4"></textarea>
+        </td>
+    </tr>
+    <tr data-type="file">
+        <td>File</td>
+        <td>
+          <input id="postFile" name="upfile" type="file" tabindex="8">
+        </td>
+    </tr>
   </form>
+    <div class="gap-x-4">
+    <div
+      class="max-h-screen"
+      hx-get=`/api/comments/${id}`
+      hx-target="this"
+      hx-trigger="load"
+    >
+    </div>
 </div>
