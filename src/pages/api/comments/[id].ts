@@ -1,5 +1,4 @@
-import { globBlogs } from "@utils/glob";
-import type { APIRoute, GetStaticPaths } from "astro";
+import type { APIRoute } from "astro";
 import { db, Comment, eq, NOW } from 'astro:db';
 
 export const prerender = false;

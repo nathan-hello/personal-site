@@ -3,19 +3,17 @@ const { bgImg = "/images/carpark.png" } = Astro.props;
 ---
 
 <html lang="en">
-  <img
-    class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"
-    style={`background-image: url(${bgImg});`}
-    role="presentation"
-  />
-
   <head>
     <slot name="meta" />
   </head>
-  <body>
+  <body class="">
+    <img
+      class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"
+      style={`background-image: url(${bgImg});`}
+      role="presentation"
+    />
     <slot name="header" />
     <br />
     <slot />
   </body>
-
 </html>
