@@ -20,13 +20,12 @@ const { details } = Astro.props;
       details.globbedImgs[0].url
     : ""}
   />
-  <PageHeaderDefault slot="header" />
+<PageHeaderDefault slot="header" />
   <div class="max-w-7xl min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
     <div class="text-lg pt-6 pl-10 mx-auto">
       <span class="text-[#a47996] font-bold">{details.author}</span>
       <span class="">{" "}-{" "}</span>
       <span class="">{details.title} - <FormattedDate dateObj={details.dateObj} /></span>
-      <br />
     </div>
     <div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
       {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}

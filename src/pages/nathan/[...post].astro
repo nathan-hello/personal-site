@@ -11,7 +11,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const props = Astro.props as RGlobBlogs["props"];
 ---
-
 <NathanBlogPost details={props.c}>
   <props.c.Component />
   <CommentSection id={props.c.id} />
