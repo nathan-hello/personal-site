@@ -23,8 +23,6 @@ export async function globImages(
 
 
         for (const img of imgs) {
-		console.log(JSON.stringify(img))
-
                 const i = `/public/images/covers/${year}/${img}`;
                 const url = await globber[i]();
 
