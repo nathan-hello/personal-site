@@ -1,0 +1,49 @@
+---
+title: AT-00-06
+date: 2024-05-03T08:15
+author: natalie
+image: [hopf-fibration.png]
+aria:
+  hopf-fibration.png:
+    alt: The sterographic projection of a hopf fibration from S3 to R3. The second figure is a compression of R3 to S2 with corresponding fibers with the same colour.
+---
+I apolagise that there will be no hopf fibration in this post, but maybe in the future :3
+
+*Exercise 0.0.6* (a). Let $X$ be a subspace of $\mathbb{R}^2$ consisting of the horizontal segment $[0, 1] \times \{0\}$ together with the vertical segments $\{r\} \times [0, 1 - r]$ for $r$ a rational number in $[0,1]$. Show that $X$ deformation retracts to any point in the segment $[0,1] \times \{0\}$, but not to any other point.
+
+**Solution**. Let $X$ be the subspace of $\mathbb{R}^2$ shown on the left of figure 1 consisting of horizontal segment $[0, 1] \times \{0\}$ together with the vertical segments $\{r\} \times [0, 1-r]$. First note that the segment $S = [0, 1] \times \{0\} \cong [0, 1]$ deformation retacts onto any point $x_0 \in S$ by way of the straight line homotopy $r_t$ which fixes $x_0 \forall t \in I$ and which gives $x_0$ asymptotic behaviour to the boundaries in the intervals $[0, x_0)$ and $(x_0, 1]$. $r_t$ can then be written as:
+
+$$[0, x_0) \to [(1-t)x_0,x_0)$$
+
+$$(x_0, 1] \to (x_0, x_0 + t(1- x_0)]$$
+
+Notice that $X$ deformation retract onto $S \cap \mathbb{Q}$ which has a similat family of maps $s_t$ over the segments $\{r\} \times [0, 1- r]$ to the point $(r, 0)$ continuously with respect to $t \in I$. Using the maps $s_t$ and $r_t$ we can create a composition $H_t$, where
+
+$$ H_t = \begin{cases} r_{1-2t}, & 0 \leq t \leq 1/2 \\ s_{2t-1}, & 1/2 \leq t \leq 1 \end{cases} $$
+
+To show that $X$ fails to deformation to retract onto any point in $X$ except on the segment $S$. Suppose that there **does** exist such an $x \in X \setminus S$ for which a deformation retraction $f_t : X \to \{x\}$ exists. It follows that every neighborhood $V \subset U$ of $x$ for which the inclusion $\iota : V \xhookrightarrow{} U$ is null-homotopic.
+
+To show that $X$ is path connected we do a case analysis. For $x \neq y \in X$ and $x, y \in S$ the result is obvious but for $x \in S$ and $ y \in \{r\} \times [0, 1 -r)$, then the path $y \mapsto (r, 0) \mapsto x$ is connected. And if $x \in \{r_1\} \times [0, 1 - r_1]$ and $y \in \{r_2\} \times [0, 1 - r_2]$, then $y \mapsto (r_2, 0) \mapsto (r_1, 0) \mapsto 0$ is also connected.
+
+$X \setminus S$ is clearly not path-connected. And neither would a neighbourhood $U$ of $x \in X \setminus S$. $U$ can be thought of as a ball in $\mathbb{R}^2$ which is disjoint from S, and intersecting an infinite number of line segments, all of which are disjoint. Thus $U$ and $V \subset U$ containing $x$ must also be path-disconnected. Hence $\iota : V \to U$
+
+(b). Let $Y$ be a subspace of $\mathbb{R}^2$ show in the rightmost part of figure 1 consisting of a union of an infinite number of copies of $X$ arranged as above. Show that $Y$ is contractible but does not deformation retract onto any point.
+
+**Solution**. 
+
+(c). Let $Z$ be the zigzag subspace of $Y$ homeomorphic to $\mathbb{R}$ indicated by the hheavier line. Show that there is a deformation retraction in the weak sense of $Y$ onto $Z$.
+
+**Solution**. Let $Z \cong \mathbb{Z}$ have a deformation retraction to a point (the constant map) this in combination with the result from (b) which shows that $Y$ is contractible to $Z$. Would contradict the result from (b) that $Y$ is cannot deformation retract to a point. Therefore to show that the contraction of $Y$ to $Z$ is rather a (weak) deformation retraction we let an $s_t$ be the family of maps defined by:
+
+$$s_t : \{r\}_i \times [0, 1 - r]_i \mapsto \{r\}_i \times [0, t (1 - r)]_i, \forall t \in I, i \in \mathbb{Z}$$
+
+Which maps the each $X_i$ where $\bigcup_{i \in \mathbb{Z}} X_i = Y$.
+
+I may put my attempt to part b on  here at some point but I got quite stuck so for now you can look at some other posts. These Hatcher ones take quite a bit more effort on my part to finish and even if they aren't paticularly popular I hope someone can glean something useful from them.
+I looked ahead and this question didn't seem too bad so I will just put this as an addendum.
+
+*Exercise 0.0.14*. Given positive integers $v,e,$ and $f$ satisfying $v - e + f = 2$, construct a cell structure on $S^2$ having $v$ 0-cells, $e$ 1-cells, and $f$ 2-cells.
+
+**Solution**. We do induction on $v$. Notice that $v$ is at least 1, and $f$ is at least 1 because $S^2$ is of dimension 2 for $v = 1$.
+
+I never mentioned it in my earlier posts but Hatchers books are all freely available at their website, [this](https://pi.math.cornell.edu/~hatcher/#ATI) is the link to his algebraic topology book which I am currently following.
