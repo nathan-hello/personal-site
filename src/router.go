@@ -68,12 +68,15 @@ func LoadStaticFiles() ([]Static, error) {
 	allowed := append(images, plain...)
 
 	err := filepath.Walk("public", func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if info.IsDir() {
 			return nil
 		}
 
 		ext := filepath.Ext(info.Name())
-		match := slices.Contains[[]string](allowed, ext)
+		match := slices.Contains(allowed, ext)
 		if !match {
 			fmt.Printf("file %v not in allow list", path)
 			return nil
@@ -100,7 +103,7 @@ func LoadStaticFiles() ([]Static, error) {
 		return nil, err
 	}
 	if len(files) == 0 {
-		return nil, fmt.Errorf("No static files: %#v\n", files)
+		return nil, fmt.Errorf("no static files: %#v", files)
 	}
 
 	return files, nil
@@ -108,10 +111,13 @@ func LoadStaticFiles() ([]Static, error) {
 
 func StaticRouter(files []Static) error {
 	for _, v := range files {
+		// closure shenanigans
+		file := v.filepath
+		route := v.route
+		contentType := v.contentType
 		middles := alice.New(Logging, AllowMethods("GET"), CreateHeader("Content-Type", v.contentType))
-		file := v.filepath // closure shanigans
 		http.Handle(v.route, middles.ThenFunc(func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, file) }))
-		log.Printf("Creating route: %v, for file: %v, with Content-Type %v\n", v.route, file, v.contentType)
+		log.Printf("Creating route: %v, for file: %v, with Content-Type %v\n", route, file, contentType)
 	}
 	return nil
 
