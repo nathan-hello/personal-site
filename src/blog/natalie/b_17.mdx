@@ -6,8 +6,10 @@ image: [K&R.png]
 aria:
   K&R.png:
     alt: The cover of 'The C programming language' by Kernighan and Ritchie.
-import { Image } from 'astro:assets';
 ---
+import { Image } from 'astro:assets';
+import myImage from '/public/images/covers/2024/asciibunny.webp';
+
 In the eternal quest for knowledge acquisition people will inevitably be led to programming and computer engineering. Due to the large part it plays in so many of our lives. As a person broadly interested in mathematics, the concepts in computer science are very intriguing for their application of many of the concepts I find familiar. There are many interesting languages out there and many more functional ones but for it's predominance and teaching of core principals I landed on learning C. As a quick aside for those of a mathematical inclination the book [Structure and Interpretation of computer programs](https://web.mit.edu/6.001/6.037/) or colloquially, 'The wizard book' gives good reasoning for a lot of common programming practises that often go unsaid. Aside from it's ubiquity, I personally run quite a bit of software which is written in C and for my comprehension it would be very useful for me to learn more about it.
 
 [This](https://github.com/reluekiss/C-learning.git) is where I am currently posting my attempts to the questions from the C programming book by Kernighan and Ritchie as well as some [leetcode](https://leetcode.com/problemset/) problems. Not all problems will be in a complete state or well commented, though for future I will endeavour to do so. For the benefit of myself and others.
@@ -20,4 +22,4 @@ Regardless of the 'politics' that surround the language it still teaches many of
 
 In any case, dear readers, I hope you all a very good morning, afternoon or evening. o/
 
-<Image src="/images/covers/2024/asciibunny.webp" alt="Ascii art of a bunny sleeping in a bed." />
+<Image src={myImage} alt="Ascii art of a bunny sleeping in a bed." />
