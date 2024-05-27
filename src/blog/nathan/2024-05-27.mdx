@@ -103,12 +103,12 @@ and it actually runs, yeah you have some security implications. Just sanitize yo
 with the comments and it's literally [one function](https://github.com/nathan-hello/personal-site/commit/fc066e0c1289f8febeedf27c03f07290f15e402d).
 
 Sqlc is really, really good. Upon the transition from postgres to sqlite3, I tried to do the classic abstraction
-thing where the application calls my `db` package, and that `db` package wraps both the sqlite3 and postgres
-calls. The application doesn't know whether it's using postgres or sqlite3, it just gives the data to `db`,
-and `db` figures out what to do with this. The problem otherwise is that postgres and sqlite3 have different types.
+thing where the application calls my db package, and that db package wraps both the sqlite3 and postgres
+calls. The application doesn't know whether it's using postgres or sqlite3, it just gives the data to db,
+and db figures out what to do with this. The problem otherwise is that postgres and sqlite3 have different types.
 For example, postgres has a proper uuid type. This means that sqlc gives that field a `uuid.UUID` type. But sqlite3
-does not have such a type, it only has `text`. So, my `db` package would wrap both of these calls and the application
-would give whatever is most convenient (in this case, a `uuid.New()`) and `db` would disperse this information to
+does not have such a type, it only has `text`. So, my db package would wrap both of these calls and the application
+would give whatever is most convenient (in this case, a `uuid.New()`) and db would disperse this information to
 what's correct for the database. The problem with this is the synchronization and return types. Basically, the only
 way to make it all work is if I made everything in postgres whatever sqlite3 can handle, and from which database
 should I return? What if I was writing to them both at the same time? This issue is solvable, but as I was doing it

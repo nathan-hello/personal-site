@@ -2,8 +2,6 @@ import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
-import MDXCodeBlocks, { mdxCodeBlockAutoImport } from "astro-mdx-code-blocks";
-import AutoImport from "astro-auto-import";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import db from "@astrojs/db";
@@ -16,13 +14,9 @@ export default defineConfig({
     inlineStylesheets: "always",
     assets: "a",
   },
-  adapter: vercel({ }),
+  adapter: vercel(),
   integrations: [
     tailwind(),
-    AutoImport({
-      imports: [mdxCodeBlockAutoImport("src/components/Code.astro")],
-    }),
-    MDXCodeBlocks(),
     mdx({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
