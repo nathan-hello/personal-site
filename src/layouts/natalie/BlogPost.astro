@@ -31,7 +31,7 @@ const { details } = Astro.props;
     <div class="float-left flex px-10 gap-x-2">
       {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
     </div>
-    <div class="p-10">
+    <div id="blog-post-container" class="p-10">
       <slot />
     </div>
   </div>
