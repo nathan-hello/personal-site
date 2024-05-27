@@ -6,6 +6,15 @@ const { bgImg = "/images/carpark.png" } = Astro.props;
   <head>
     <slot name="meta" />
   </head>
+  <style is:global>
+    #blog-post-container a {
+      color: #93c5fd; /* Lighter blue */
+    }
+
+    #blog-post-container a:visited {
+      color: #9333ea; /* Lighter purple */
+    }
+  </style>
   <body class="">
     <img
       class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"

@@ -20,7 +20,7 @@ const { details } = Astro.props;
       details.globbedImgs[0].url
     : ""}
   />
-<PageHeaderDefault slot="header" />
+  <PageHeaderDefault slot="header" />
   <div class="min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto md:w-[90%] lg:w-[65%]">
     <div class="text-lg pt-6 pl-10 mx-auto">
       <span class="text-[#a47996] font-bold">{details.author}</span>
@@ -30,7 +30,7 @@ const { details } = Astro.props;
     <div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
       {details.globbedImgs.map((g) => <ForumImageCard image={g} />)}
     </div>
-    <div class="p-10 text-md leading-relaxed md:text-xl md:leading-8 ">
+    <div id="blog-post-container" class="p-10 text-md leading-relaxed md:text-xl md:leading-8">
       <slot />
     </div>
   </div>

@@ -16,9 +16,7 @@ export default defineConfig({
     inlineStylesheets: "always",
     assets: "a",
   },
-  adapter: vercel({
-    webAnalytics: true,
-  }),
+  adapter: vercel({ }),
   integrations: [
     tailwind(),
     AutoImport({
