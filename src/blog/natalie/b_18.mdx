@@ -51,7 +51,8 @@ USB2.0 HD UVC WebCam: USB2.0 HD (usb-0000:08:00.0-1):
         /dev/media0
         /dev/media1
 ```
-I would wish to use either /dev/video4 or /dev/video0 depending on my choice of camera. To then determine the available resolutions run ```
+I would wish to use either /dev/video4 or /dev/video0 depending on my choice of camera. To then determine the available resolutions run 
+```
 v4l2-ctl --device=/dev/video0 --list-formats-ext
 ```
 I would recommend using a hardware accelerated decoder for the camera as cameras can dump a lot of raw yuv data which can overwhelm your cpu and reduce your framerates. Run 
