@@ -1,4 +1,32 @@
 @font-face {
+  font-family: "Terminus";
+  src: url("/fonts/Terminus/TerminusTTF.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Terminus";
+  src: url("/fonts/Terminus/TerminusTTF-Italic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Terminus";
+  src: url("/fonts/Terminus/TerminusTTF-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Terminus";
+  src: url("/fonts/Terminus/TerminusTTF-Bold-Italic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
   font-family: "IBMPlexSerif";
   src: url("/fonts/IBMPlexSerif/IBMPlexSerif-BoldItalic.ttf") format("truetype");
   font-weight: 700;
