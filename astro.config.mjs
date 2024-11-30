@@ -14,7 +14,7 @@ export default defineConfig({
     inlineStylesheets: "always",
     assets: "a",
   },
-  // adapter: vercel(),
+  adapter: vercel(),
   integrations: [
     tailwind(),
     mdx({
