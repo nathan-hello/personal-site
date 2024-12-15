@@ -1,0 +1,225 @@
+---
+title: On customization and phones
+date: 12-Dec-2024
+author: nathan
+image: "bad-user-interface.png"
+aria:
+    bad-user-interface.png:
+        alt: "A screenshot of an old version MS Word as an example of allowing users to add too many buttons"
+---
+
+Opinions on phones these days feels like dream recountings. I will simply never care why someone prefers
+android vs ios. There is nothing anyone will ever say that would surprise me. Oh you like FaceTiming your
+dog? Wow… Oh you want to be able to make your homescreen look like the result of my 7th grade html class? Very cool!
+
+
+I used to know a whole lot about phones. Every release from every major manufacturer, I would watch the
+MKBHD video, the LTT video if they did one, and I would brag to myself (I think this is called pride) that
+I could recognize any phone by its rear face. It wasn't that hard a few years ago because there was less
+smartphones in use then. I think because post-2017 phones are actually good with decent cpus that means
+that there are more phones in circulation. 
+
+
+This is to say that I really enjoyed knowing about smartphones. I don't enjoy consumer electronics content
+as much anymore. Knowing things is not a hobby, much less if the subject knowledge only exists to answer
+the question “What X should I buy?”. Headphone nerds you're on watch too, by the way. Y'all only get away
+with it because to know about headphones you have to know about audio and to know about audio you need
+to know some kind of cool physics, electronics, and (probably minor) biology.  
+
+Since 2018, I've been whole hog into iOS. I don't care about the ecosystem. My iCloud has been broken since
+2021 because it says “not enough storage to backup” regardless of how little I ask it to back up. In fact
+I don't think the ecosystem exists. I have a couple categories of apple ecosystem features:
+- a gimmick (Universal Clipboard) 
+- something that exists just because apple restricts any other way of doing it (Sidecar)
+- something that should be an open standard, or use an open standard that already exists (AirDrop, iMessage/FaceTime, Health data)
+- something that is made complete obsolete by just using the filesystem (everything iCloud, AirDrop)
+
+
+I also have the watch, which to be fair has some kind of argument for being a good ecosystem moment. When
+I set an alarm or get a notification, my watch vibrates in tandem. This is a big deal to me because I snooze
+a lot and I don't like torturing my beautiful wife from her much needed rest. This is the only ecosystem
+feature that gives me pause for ditching my iPhone. Are there good watches that pair to androids? I remember
+LTT's Linus would wear an apple watch without an iPhone in protest because although he hates iPhones he
+hated the fact that there wasn't an equivalent watch for android. 
+
+
+The reason I'm taking pause and looking left and right for a reason to switch to android is because of
+my newfound resentment for non-free software. It's really, really bad actually.
+
+
+I'm an AV integration software developer by trade. This means I'm working with devices like microphones,
+cameras, displays, video matrix switchers, a bunch of random stuff from random manufacturers, some you
+have heard of and some you haven't. Each of these devices typically have an ascii protocol to talk to it
+and that's fine. Every manufacturer will make a different protocol for the various commands you can give
+it, and that's fine too. Standardizing the commands you can give to devices would be like standardizing
+the food given to animals at the zoo. And some of them are tricky, sometimes there are variables you have
+to embed within a command, typically just an identifier like `0x41` (ascii for 1), but other times it'
+ a bit worse like having a BCC where you XOR every byte in the message bytes, but not the header bytes
+because those are always the same and not the footer bytes because that's where the BCC goes! Like okay
+ sure, but with one device there wasn't even an ID which means that every possible command and its corresponding
+BCC is known ahead of time, so why not just include it in your docs? 
+
+
+Anyways, people have noticed this problem and make libraries for talking to devices. In this instance,
+there is a proprietary programming ecosystem (Crestron's Simpl Windows/+/#). The language itself is proprietary
+and written 25 years ago, but that's why they have Simpl# which is “just” a C# library. And what you might
+do is use that C# library and compile it for use in Simpl Windows for the ~~worse~~ more traditional AV
+programmers. The problem is, when people ship this they only distribute the compiled C#, no source. 
+
+
+This means that after a certain point, it's locked and you can't look into the library you're using. Reminder
+the only thing this library is doing is building a string. 
+
+
+This was a nexus event because I am sitting there, on site, with the customer hovering over my shoulder
+as I'm trying to get a device to be sent the correct string command from the processor, and it just won
+t send. I go into the module, goto definition a couple times, pull out a handy ctrl+f, and bam! Compiled
+C# library, do not pass go, do not collect $200. I'm sitting there dumbfounded why the function call isn't
+doing what I'm expecting and I have to sit there and say “I don't know and they won't tell me”. It was
+kind of humiliating, like I'm the horrible programmer that introduced a mismatched state condition that
+makes the function not work. Maybe they pessimistically made it to not send unless some other condition
+is met? (I love OOP by the way) 
+
+
+I resolved it by grabbing the API docs and sending the string myself. This begs the question why was I
+using a library if the solution was so simple, but this is a post about phones!
+
+
+I want to goto definition until I am at the top of the tree. This obviously doesn't apply to operating systems
+as much because you have to be using the post-compiled version, but it still stands. I will never understand
+the inner workings of the linux kernel or much of the coreutils to have this aspiration pay off. But by
+golly it is worth pursuing! 
+
+
+Android is a soup of poor technical decisions (JVM) made 15 years ago and a dozen manufacturers gluing
+their proprietary nonsense on top. It is not an open source platform and it infuriates me when people think
+it is. If you're using any major vendor, it is just as closed as iOS. And good luck disable google play
+services. It's just not tenable. If Google had GPL'd Android way back when we would be living in the space
+age by now, but in our reality it is just horrible. 
+
+
+Spotify and YouTube's APKs are closed, I get that and I'm not against it. It's a natural tension of commercial
+interests vs free software. But the OS being as technically and spiritually corrupted as it is, it's just
+not an option for the serious person using their phone for serious work. 
+
+
+I want to be convinced that the above two paragraphs are wrong. I want to get a 10 year phone that runs
+a properly open source operating system, even if its UX is a bit worse than iOS. And to be completely real
+with you, I started this questioning phase when iOS 18 rolled out and completely nuked the Control Center
+[1]. Everyone complains about iOS 18's Photos app, but the real victim is Control Center. A bastion of
+system controls that should be replicated everywhere has now been neutered by apple's desire to appeal
+to the worst and most annoying criticism Android users (not iOS users!!) have been making: the lack of
+customization. 
+
+
+I liked how iOS tells you to go fuck yourself when you want to make gaps in your home page. I liked how
+custom app icons are up to the app developer to give out. I liked how control center was there to say “
+hese are your system controls, changing audio source and wifi and such, and if you want some extra buttons
+like booting up Shazam or a timer shortcut, you can put it there and no where else”. This consistency is
+something to admire. It's a restriction that allows less neurons to fire when you need a simple task done
+ Anyone use uses vim bindings in their editor will understand what this means in practice. The buttons
+are there! Use it! If you want the button some place else, why? What value does this provide? It provides
+none and the detriment of adding buttons for the sake of it is tangible. 
+
+
+In my line of work, I set up a tablet for a user of the AV equipment to control the video/USB routing,
+camera controls, things like that. Imagine you're a professor in a large auditorium and there are 6 displays
+ What goes on them? What “mode” is the room in? What microphones are live? Some things we can assume with
+the 90% use-case of the room and some things we need input from the user to dictate what to do. 
+
+
+One of the most common requests frontend programmers will get is to add a button for X use case. Sure, you
+can do some action with five buttons but could you collapse that into one button? Please, I promise I just
+need a shortcut for the common use-case and there aren't others that I haven't considered. And it's a matter
+of judgement if this is actually better. Much of my time in design is spent making the system intuitive
+ Many times these systems will be used by someone who is using it for the first time, and over the course
+of a decade, statistically, someone will use the system without being trained and without someone to help
+ This means that buttons can't be scary. A button should not look as if it's if it could be a destructive
+action without proper counterweights to prevent perceived destruction. Is there a modal that will pop up
+to prevent me from breaking everything? And if so, do I know that beforehand? This is mostly a solved problem
+in the web world and I'm excited to bring these insights when I'm building custom software for a client
+ because they aren't used to it.
+
+
+But sometimes, a frontend programmer has to say no, you're wrong and that the fact you have to do it my
+way is important. The only one of these new iOS features I think is worthwhile is the fact that you can
+take a photo as your lock screen and blur the background to a custom color. I use this feature to have
+a picture of my beautiful wife holding a jar of pickles as my lock screen while omitting the fact it was
+taken at Walmart. 
+
+
+This opinion of mine extends to desktop, by the way. For consistency's sake I will specify that I don'
+ like how configurable linux is. I use dwm for my desktop environment (which means I don't really have
+a DE, just a window manager), but only with much begrudging and using a slightly modified config.h by Natalie
+ The customization on linux for me is really just adding features that should exist, like having dwm show
+the time with dwmblocks. If Windows had good UX like iOS does, I would be in this exact same dilemma but
+thankfully it's shit all around so I don't have to write a blog post about it. 
+
+
+I m asking for FOSS android options because I'm interested, though it's a little bad faith to say that I
+want to switch. There is a list of features that I would require before switching that is probably not
+feasible.
+
+
+First apple doesn't track you like google play services does. One company is in the phone business and the other
+is in the advertising and big data business. Natalie and I go back and forth on this, and I will absolutely
+admit that there is telemetry in iOS and perhaps some of it is personally identifiable. But with anything
+that google touches, that's literally all they do. All of its data that is useful for its advertising business
+will always be personally identifiable. How could it not? It is always cringe to compare giga tech giant
+vs other giga tech giant like “my monopolistic company is better than yours!”, but in the issue of privacy
+there just is a winner. And you can't downgrade to a clamshell because the Chinese government is in the
+telcom networks. There has to be some degree of trust in the current market. There is the option of only
+giving your data to networks of open source or p2p softwares but that's like the transition from twitter
+to blue sky. One is objectively better for the planet but it only works if the people you want to be on there, are. 
+
+
+Second, there are just so many UX wins on iOS that have nothing to do with ecosystem. I don't ever have
+to worry about drain. I don't have to worry about the 24gb of ram in my phone existing. I don't have to
+worry about apps running in the background. In fact, I don't ever have to close apps from the switcher
+thing. I'm sure this is a solved problem on android, but if so why do they require 6000mAh batteries to
+get 1.5 days of life? Why do they require 16gb of ram? Why do qualcomm cpus lag behind apple's by 2-4 years
+Why, in 2017 with the release of the iPhone X, did android copy iOS's home bar in the worst way possible?
+Why does nothing feel consistent? Does android have good password management yet? If so that's actually
+a huge win but I switched to an S21 when it released and my lastpass had to do an popup to insert passwords
+On iOS, it's a feature of the keyboard. 
+
+
+Oh, that reminds me, a few years ago apple conceded and allowed custom keyboards on the platform. Have
+you ever seen someone use a non-default keyboard on iOS? No, because they are all just worse. There isn
+t any magic to it, there's no API that apple's has that the others don't. They are just worse hands down
+and yet another example of customization just being a pursuit of openness with zero benefit. I get apple
+s attitude change, and I get why they want to give these little breadcrumbs so people tell their android
+friends “actually we can customize stuff”. The problem is that it will always fall short because until
+it's something significant, like what android calls the launcher, or the notification screen, core parts
+of the frontend, it will always be less than on android and therefore fall flat to the imaginary person
+who has a problem.
+
+
+I haven't mentioned encrypted texting because of course there is RCS. But… oh, what's this? End to end
+encryption isn't a part of the [RCS standard](https://en.wikipedia.org/wiki/Rich_Communication_Services#Encryption_support)? 
+The thing that every other messaging client, even Facebook Messenger, has figured
+out? I hate how the details don't matter anymore. The RCS discourse has concluded now that Apple supports
+it (something they did begrudgingly, potentially because of the Chinese government, and way too late),
+but while that was going on it was extremely annoying that the assumption was that it was as secure as
+iMessage/WhatsApp/Signal. It does have TLS as a part of the spec, which is a start to prevent the Chinese
+from reading those texts. Why can't the opposition get themselves together? Why can't OSS and standards
+based solutions be as good as the closed ones? Oh no don't tell me that the root cause is actually competition
+under capitalism…
+
+
+Thanks for reading, this post was brought to you by a five hour flight in the middle seat by the worst
+airline I have ever flown. Natalie, I love you and I'll be home in an hour or two (though I will have to
+post this after I get home… wait a second how to do I get this long of a note off of my phone and on my
+computer… why doesn't iOS have a decent filesystem…)
+
+
+[1] After writing this, I went to edit control center to get rid of the extra two pages they shipped by
+default. One was for your connections and the other was for media. These provide zero value because there
+s no difference between long pressing the wifi symbol to show that page, and the same for media. And it
+s worse because with multiple pages, swiping down means you go to the next page instead of closing the
+control center. Removing these erroneous pages brought back the close-by-swiping-up functionality that
+I have 6 years of muscle memory for. With the pages, you have to tap the outer bounds of the control center
+to close it. Just horrible. If I had thought to remove them before making this post I might not have made
+it, so thanks apple for having a major UX flub that inspired this post. 
+
+Image credit: https://amansinghblog.wordpress.com/2015/02/19/bad-user-experience-week-5/
