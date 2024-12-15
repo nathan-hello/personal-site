@@ -27,22 +27,7 @@ func SiteRouter() {
 			middlewares: alice.New(
 				RejectSubroute("/"),
 				Logging,
-				InjectClaimsOnValidToken,
 				AllowMethods("GET"),
-			)},
-		{route: "/signup",
-			hfunc: routes.SignUp,
-			middlewares: alice.New(
-				Logging,
-				InjectClaimsOnValidToken,
-				AllowMethods("GET", "POST"),
-			)},
-		{route: "/signin",
-			hfunc: routes.SignIn,
-			middlewares: alice.New(
-				Logging,
-				InjectClaimsOnValidToken,
-				AllowMethods("GET", "POST"),
 			)},
 	}
 

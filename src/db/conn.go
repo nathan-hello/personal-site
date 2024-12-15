@@ -5,14 +5,13 @@ import (
 	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 var conn *Queries
 
 func InitDb() error {
 
-	var d, err = sql.Open("sqlite3", utils.Env().DB_URI)
+	var d, err = sql.Open("sqlite3", "file://data.db")
 	if err != nil {
 		return err
 	}

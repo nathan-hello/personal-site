@@ -4,7 +4,7 @@ sql:
   queries: src/db/input/queries.sql
   engine: sqlite
   database:
-    uri: file://dev.db
+    uri: file://data.db
   gen:
     go:
       package: db

@@ -1,9 +1,0 @@
-{
-  "name": "personal-site",
-  "version": "1.0.0",
-  "description": "our site :)",
-  "license": "MIT",
-  "dependencies": {
-    "tailwindcss": "^3.4.1"
-  }
-}
