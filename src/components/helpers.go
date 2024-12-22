@@ -1,4 +1,4 @@
-package layouts
+package components
 
 func getBgUrl() string {
 	return ""

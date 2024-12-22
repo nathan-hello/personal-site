@@ -1,0 +1,111 @@
+package components
+
+templ Index() {
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Natzone</title>
+			<style>
+        body {
+            background: #2d302f;
+            color: #ffffff;
+            font-family: CM-sans-serif;
+            font-size: larger;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0px;
+        }
+
+        bingus {
+            color: #fe7879;
+            text-decoration: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        a:focus,
+        a:hover {
+            color: #fe7879;
+        }
+
+        nav {
+            display: grid;
+            grid-row-gap: 1em;
+            grid-template-columns: 1fr 1fr;
+            margin: 0 1em;
+            min-width: 24em;
+            padding: 1em 0;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 5px;
+            white-space: nowrap;
+        }
+
+        li:first-child {
+            text-align: center;
+        }
+
+        body>* {
+            margin: 15px;
+        }
+    </style>
+		</head>
+		<body>
+			<img src="/images/LainLaugh.gif" width="200" height="200"/>
+			<div id="sysinfo" style="float: right">
+				<nav>
+					<ul>
+						<li>nat@navi</li>
+						<hr/>
+						<li>
+							<bingus>OS:</bingus> Linux x86_64
+						</li>
+						<li>
+							<bingus>Resolution:</bingus> 1920x1080
+						</li>
+						<li>
+							<bingus>CPU:</bingus> 8 core processor
+						</li>
+						<li>
+							<bingus>RAM:</bingus> 8GB
+						</li>
+						<li>
+							<bingus>GPU:</bingus> Intel Mesa
+						</li>
+					</ul>
+					<ul>
+						<li>Links</li>
+						<hr/>
+						<li class="center">
+							<a href="https://boards.4channel.org/wsg/catalog">/wsg/</a>
+						</li>
+						<li class="center">
+							<a href="https://inv.tux.pizza/feed/popular">invidious</a>
+						</li>
+						<li class="center"><a href=":3">blackboard</a></li>
+						<li class="center">
+							<a
+								href="https://chat.openai.com/auth/login?next=%2Fc%2Fdc8e28c0-aea0-4b00-9fb3-7d85a9b0c9c8"
+							>chatgpt</a>
+						</li>
+						<li class="center"><a href="https://app.element.io/">Element</a></li>
+					</ul>
+				</nav>
+			</div>
+		</body>
+	</html>
+}
