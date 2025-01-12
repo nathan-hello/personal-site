@@ -1,0 +1,32 @@
+package layouts
+
+import (
+	"github.com/nathan-hello/personal-site/components"
+	"github.com/nathan-hello/personal-site/db"
+	"github.com/nathan-hello/personal-site/utils"
+)
+
+templ NataliePost(blog db.Blog, images []db.Image) {
+	@IndexLayout(components.Header(), components.Meta(blog.Title, blog.Description, blog.Url, &images[0])) {
+		<style>
+    * {
+        font-family: Terminus;
+    }
+    </style>
+		<div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
+			<div class="text-lg pt-6 mx-auto pl-10">
+				<span class="text-[#a47996] font-bold">{ blog.Author }</span>
+				<span class="">- </span>
+				<span class="">{ blog.Title } - { utils.FormatDate(blog.Date) } </span>
+			</div>
+			<div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
+				for _, v := range images {
+					@components.ImageCard(v)
+				}
+			</div>
+			<div id="blog-post-container" class="p-10">
+				@components.PostFull(blog)
+			</div>
+		</div>
+	}
+}

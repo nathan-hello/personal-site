@@ -53,3 +53,19 @@ li:first-child {
 body>* {
     margin: 15px;
 }
+
+code:not(.astro-code code) {
+  background-color: #131313;
+  color: #bdbfc2;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  font-size: 90%;
+}
+
+#blog-post-container a {
+  color: #93c5fd; /* Lighter blue */
+}
+
+#blog-post-container a:visited {
+  color: #9333ea; /* Lighter purple */
+}

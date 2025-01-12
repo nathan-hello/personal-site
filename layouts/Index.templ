@@ -1,0 +1,19 @@
+package layouts
+
+templ IndexLayout(header templ.Component, meta templ.Component) {
+	<html lang="en">
+		<head>
+			@meta
+		</head>
+		<body>
+			<img
+				class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"
+				style="background-image: url(/index-background.png);"
+				role="presentation"
+			/>
+			@header
+			<br/>
+			{ children... }
+		</body>
+	</html>
+}

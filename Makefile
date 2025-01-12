@@ -7,5 +7,8 @@ dev/air:
 dev/tailwind:
 	bunx tailwindcss -i ./public/css/tw-base.css -o ./public/css/tw-output.css --minify --watch
 
+dev/sqlc:
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0 generate
+
 dev: 
 	make -j3 dev/templ dev/air dev/tailwind

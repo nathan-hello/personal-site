@@ -1,0 +1,25 @@
+package components
+
+import "github.com/nathan-hello/personal-site/db"
+import "strings"
+
+templ ImageCard(image db.Image) {
+<div class="flex flex-col">
+  <span class="">
+    file:{" "}
+    <a href={templ.URL(image.Url)} class="underline text-[#b3b8c3] hover:text-[#0c090a]">
+      {image.Fullname}
+    </a>
+    <br />
+    ({image.Size}, image/{strings.Split(image.Ext, ".")[1]})
+    <hr />
+    <img
+      class="max-h-48 max-w-full"
+      alt={image.Alt}
+      src={image.Url}
+      loading="lazy"
+    />
+  </span>
+</div>
+}
+

@@ -1,0 +1,11 @@
+package components
+
+import (
+	"github.com/nathan-hello/personal-site/db"
+)
+
+
+templ PostFull(blog db.Blog) {
+      <div></div>  
+      @Comments(blog.ID)
+}

@@ -1,0 +1,153 @@
+
+<!--
+<ascii>
+                                                            _______         .--.    
+      __                                         __       _ \______ -      |o_o |
+     / /_   __      __                          / /      | \  ___  \ |     |:_/ |
+    / // | / /___ _/ /_____  ____  ____  ___   / /       | | /   \ | |    //   \ \
+   / //  |/ / __ `/ __/_  / / __ \/ __ \/ _ \ / /        | | \___/ | |   (|     | )
+  / // /|  / /_/ / /_  / /_/ /_/ / / / /  __// /         | \______ \_|  /'|_   _/'\
+ /_//_/ |_/\__,_/\__/ /___/\____/_/ /_/\___//_/           -_______\     \___)=(___/
+</ascii>
+<title>Natzone</title>
+<description>Natalie's home page</description>
+-->
+  <hr />
+  <br />
+
+  <div
+    class={`hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 bg-neutral-800`}
+  >
+    "Hey hi, welcome you goobers, this is my little hang out spot (watchout for Nate he
+    likes to invade, but he is just a silly). Aaaanyway, I'm nat, nice to meetcha, and
+    here you can find the paticular tidbits that are currently interesting me, get ready
+    for maths and computer stuff cause that's pretty much all I do [I joke, but sometimes
+    its a little :))]" - nat 11/01/24 - 01:24+0000 OH FUCK IT'S LATE, OK I'LL FINISH THIS
+    LATER\
+    <br />
+    Ok I'm back and I'm finishing it later tm, idk if this should be an about me or if I should
+    just do it here but for now it'll be here and if that changes I'll link to that page here.
+    <br />
+    But I guess, here we go, there's not much to say. I'm 20, doing a bsc in maths, I'm a bonger
+    and I spend most of my time on my computer, either fiddling with it cause my brain won't
+    leave me alone unless it's 'good'. But for my media consumption, I enjoy songs by
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://vid.puffyan.us/channel/UCg_wKAWDFHa24RjSuTTbm5Q"
+    >
+      Kino</a
+    >
+    and
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://yewtu.be/channel/UCOH7H-J4BAi-lR0c9MGwi7gd"
+    >
+      Egor Letov</a
+    >
+    and most other forms of post punk, russian or otherwise.
+    <br />
+    I haven't played many games as of recently but I would definitely put oblivion, AoE2, M&B
+    warband and HoMM 3 as my favrouites. Mainly cause I just play them a lot.
+    <br />
+    I really enjoy looking around at websites and I would like to make a page just full of
+    links, maybe something like
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://websitereview.neocities.org/"
+    >
+      this</a
+    >.
+    <br />
+    Ok so the big two are maths and computers, the former is far too long to write about here
+    but I have started a little mini series where I work through Allen Hatchers Introduction
+    to Algebraic Topology, just as a refresher for my brain
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://www.reluekiss.com/natalie/2024/01/15/100010"
+    >
+      here</a
+    >.
+    <br />
+    With computers, I guess I should explain mine, I use void with dwm, there's a lot of extreneous
+    software I use like
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://github.com/qutebrowser/qutebrowser"
+    >
+      qutebrowser</a
+    >
+    and
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://github.com/ncmpcpp/ncmpcpp"
+    >
+      ncmpcpp</a
+    >
+    , however all that you need to know is that I like to keep the software I use as simple
+    and unobtrusive as possible. I won't plague you with another rant on free software, there's
+    a million of those out there so
+    <a class="hover:text-nat-black-c01 hover:bg-nat-white-c01" href="">here</a>
+    and
+    <a
+      class="hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://archive.ph/21b4o"
+    >
+      here</a
+    >
+    is one. As that is not the main reason I use it, but just that it works for me.
+  </div>
+
+  <h1>Posts</h1>
+  <span>[</span><a
+    class="no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+    href="natalie/catalog">catalog</a
+  ><span>]</span>
+
+  <span>[</span><a
+    class="no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+    href="#bottom">bottom</a
+  ><span>]</span>
+  <hr />
+
+  <br />
+  <div class="py-2 gap-y-2">
+    {
+      recents.map((a) => {
+        return (
+          <ForumPostCard details={a.props.c}>
+            <a.props.c.Component />
+          </ForumPostCard>
+        );
+      })
+    }
+  </div>
+  <br />
+  <hr />
+  <a
+    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+    href="natalie/catalog"
+  >
+    [catalog]
+  </a>
+  <a
+    id="bottom"
+    class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+    href="#top"
+  >
+    [top]
+  </a>
+  <div class="fixed bg-neutral-800">
+    <label class="text-nat-white-c01" for="cb"> Click me to hide audio.</label>
+    <input type="checkbox" style="display: none" id="cb" />
+    <div id="audio">
+      <audio loop controls src="/audios/SadSvit-Небо.mp3"></audio>
+    </div>
+    <a
+      class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+      href="https://youtube.com/watch?v=cPzhNzqt9LA"
+    >
+      [SadSvit - Небо]
+    </a>
+  </div>
+
+

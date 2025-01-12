@@ -1,0 +1,53 @@
+package layouts
+
+templ NatalieFullPage(header templ.Component, meta templ.Component) {
+	<html lang="en">
+		<head>
+			<slot name="meta"></slot>
+			<style>
+    * {
+        font-family: Terminus;
+    }
+    b {
+        font-weight: bold;
+        color: #eeeeee;
+      }
+      body {
+        background-image: url("/images/cyber.jpg");
+        background-attachment: fixed;
+      }
+      a {
+        color: #81a2be;
+      }
+
+      .floaty {
+        margin-left: 10%;
+        margin-right: 10%;
+        background-color: #171717;
+        color: #b3b8c3;
+        border-style: ridge;
+        border: solid 2px #1e1e1e;
+        padding: 10px;
+        box-shadow: 0px 0px 55px 12px rgb(32, 0, 48);
+      }
+
+      input:checked + div {
+        display: none;
+      }
+      .fixed {
+        padding: 4px;
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+      }
+    </style>
+		</head>
+		<body>
+			<div id="top" class="floaty">
+				@header
+                                @meta
+				{ children... }
+			</div>
+		</body>
+	</html>
+}

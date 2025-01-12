@@ -1,0 +1,32 @@
+package components
+
+import "github.com/nathan-hello/personal-site/db"
+
+templ Meta(title, description, url string, image *db.Image) {
+	<link
+		rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.css"
+		integrity="sha384-WsHMgfkABRyG494OmuiNmkAOk8nhO1qE+Y6wns6v+EoNoTNxrWxYpl5ZYWFOLPCM"
+		crossorigin="anonymous"
+	/>
+	<script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1"/>
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+	<link rel="canonical" href={ url }/>
+	<title>{ title }</title>
+	<meta name="title" content={ title }/>
+	<meta name="description" content={ description }/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:url" content={ url }/>
+	<meta property="og:title" content={ title }/>
+	<meta property="og:description" content={ description }/>
+	<meta property="twitter:card" content="summary_large_image"/>
+	<meta property="twitter:url" content={ url }/>
+	<meta property="twitter:title" content={ title }/>
+	<meta property="twitter:description" content={ description }/>
+	if (image != nil) {
+		<meta property="og:image" content={ image.Url }/>
+		<meta property="twitter:image" content={ image.Url }/>
+	}
+}

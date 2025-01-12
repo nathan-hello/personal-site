@@ -1,12 +1,15 @@
 version: '2'
 sql:
-- schema: src/db/input/schema.sql
-  queries: src/db/input/queries.sql
+- schema: db/input/schema.sql
+  queries: db/input/queries.sql
   engine: sqlite
   database:
     uri: file://data.db
   gen:
     go:
       package: db
-      out: src/db/
+      out: db/
+      emit_pointers_for_null_types: true
+      emit_sql_as_comment: true
+
 
