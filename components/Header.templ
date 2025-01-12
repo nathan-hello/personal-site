@@ -1,31 +1,23 @@
 package components
 
-templ Header(s *string) {
+import "github.com/nathan-hello/personal-site/utils"
+
+templ Header(s string) {
 	<div
 		class="bg-[#171717] text-[#bcb8c3] border-2 border-[#1e1e1e] p-3 shadow-lg ml-[10%] mr-[10%]"
 	>
 		<div class="mx-auto text-nat-white-c01 px-3 mb-2 inline-block whitespace-nowrap">
 			@ascii(s)
+			<br/>
 			@links()
 		</div>
 	</div>
 }
 
-templ ascii(s *string) {
+templ ascii(s string) {
 	<a href="/" class="no-underline text-nat-white-c01 visited:text-nat-white-c01">
 		<b>
-			if (s != nil) {
-				<pre>{ *s }</pre>
-			} else {
-				<pre>
-					_   _       _       __   
-					| \ | |     | |     / /   
-					|  \| | __ _| |_   / /__  
-					| . ` |/ _` | __| / / _ \ 
-					| |\  | (_| | |_ / /  __/ 
-					|_| \_|\__,_|\__/_/ \___| "We are Boingus"
-				</pre>
-			}
+			<pre>{ utils.AsciiRender(s) }</pre>
 		</b>
 	</a>
 }

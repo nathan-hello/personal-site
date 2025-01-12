@@ -1,11 +1,11 @@
 dev/templ:
-	templ generate -path src/components --watch
+	templ generate --watch
 
 dev/air:
 	go run github.com/cosmtrek/air@v1.52.0
 
 dev/tailwind:
-	bunx tailwindcss -i ./public/css/tw-base.css -o ./public/css/tw-output.css --minify --watch
+	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
 
 dev/sqlc:
 	go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0 generate

@@ -7,7 +7,7 @@ import (
 )
 
 templ NataliePost(blog db.Blog, images []db.Image) {
-	@IndexLayout(components.Header(), components.Meta(blog.Title, blog.Description, blog.Url, &images[0])) {
+	@IndexLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Title, blog.Description, blog.Url, &images[0])) {
 		<style>
     * {
         font-family: Terminus;

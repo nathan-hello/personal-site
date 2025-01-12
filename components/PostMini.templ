@@ -3,7 +3,7 @@ package components
 import "github.com/nathan-hello/personal-site/db"
 import "github.com/nathan-hello/personal-site/utils"
 
-templ HomePagePostCard(blog *db.Blog, image *db.Image) {
+templ PostMini(blog *db.Blog, image db.Image) {
 	<div
 		class={ `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 border-nat-white-c01 ${cardColor}` }
 	>
@@ -18,9 +18,9 @@ templ HomePagePostCard(blog *db.Blog, image *db.Image) {
 		<input type="checkbox"/>
 		<span>
 			<div></div>
-			if (image != nil) {
+			if (image.Url != "") {
 				<div class="float-left mr-10 mt-2">
-					@ImageCard(*image)
+					@ImageCard(image)
 				</div>
 			}
 			<div id="blog-post-container" class="max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
@@ -34,6 +34,6 @@ templ HomePagePostCard(blog *db.Blog, image *db.Image) {
 	</div>
 }
 
-templ homePagePostPreview(markdown string) {
+templ postPreview(markdown string) {
 	<div></div>
 }

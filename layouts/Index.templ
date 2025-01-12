@@ -1,6 +1,7 @@
 package layouts
 
 templ IndexLayout(header templ.Component, meta templ.Component) {
+	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			@meta
@@ -8,7 +9,7 @@ templ IndexLayout(header templ.Component, meta templ.Component) {
 		<body>
 			<img
 				class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"
-				style="background-image: url(/index-background.png);"
+				style="background-image: url(/images/carpark.png);"
 				role="presentation"
 			/>
 			@header

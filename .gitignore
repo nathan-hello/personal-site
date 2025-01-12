@@ -1,5 +1,8 @@
 tmp
 
+*_templ.txt
+*_templ.go
+
 # build output
 dist/
 # generated types
