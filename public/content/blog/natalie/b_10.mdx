@@ -1,0 +1,46 @@
+---
+title: AT-00-05
+date: 2024-01-20T20:40
+author: natalie
+image: EEEE.png
+aria:
+  EEEE.png:
+    alt: Neighbourhoods U and V of x in X.
+---
+
+Ok something a bit more interesting, and which is a bit more topological in nature.
+
+**5.** Show that if a space $X$ deformation retracts to a point $x\in X$, then for each
+neighborhood $U$ of $x \in X \exists$, a neighborhood $V \subset U$ of $x$ such that the
+inclusion map $V\hookrightarrow U$ is nullhomotopic.
+
+Strap in, cause this is gonna be a long one. We're gonna start off with an idea from point
+set topology, namely, if a space $X$ is contractible $\Longleftrightarrow$ $1_X$ is null
+homotopic.
+
+Let us define a set of maps $f_t : X \to X$ be a deformation retraction. Such that
+$f_t(\{x\}) = \{x\}, \forall t, f_1(X) = \{x\}$. We shall take for face value the result
+of question 4 even if we didn't prove it, we can define a map $\iota : \{x\} \to X$ such
+that $f_1 \iota : \{x\} \to \{x\} \simeq 1_{\{x\}}, \iota f_1 : X \to X \simeq 1_X$. Now,
+if we have a map $g_t : X \to X$ such that $g_1 = \iota f_1 : X \to X$ and $g_0 = 1_X$ and
+let U be a neighbourhood of x. Since $g_t$ is continuous in $t$,
+$\exists t_0 \in I : t> t_0, g^{-1}_t(U) \subset U$ and for $t<t_0,g^{-1}_t(U) = U$. Now
+let $V=g^{-1}_t$ and construct a normalised coordinate, $s = \frac{t}{t_0}$,
+$t \in [0, t_0]$ and define $h:U \times I \to V$, $h(x,s) = g_{st_0}|_U(x)$.
+
+Gosh that was a headache, but rephrasing all that in terms of $h_t$ means that since $f_t$
+is a deformation retraction in the strong sense, implies that $h$ is a deformation
+retraction in the weak sense from $V$ to $\{x\}$. So the equivalent
+$\widetilde{\iota}: \{x\} \to V$ is a homotopy equivalence and
+$h_1 \widetilde{\iota} \simeq 1_{\{x\}}$ (ie null homotopic). Whooooooo!! Theres a diagram
+below for easier visualisation.
+
+$$U \underset{\iota}{\overset{g_{t_0}}{\rightleftarrows}} V \underset{\widetilde{\iota}}{\overset{h_1}{\rightleftarrows}} \{x\}$$
+
+Now, since $h_1 \widetilde{\iota}$ is null-homotopic and $\iota :U \to V$ is homotopic to
+$1_V$ via $f$, this implies that by multiplying the homotopies $g_t * h_t$ $[ *$ is the
+group operation of $\pi_1(X)]$ (Is the fundamental group, which will be covered in chaper
+1, idk how else I should say this, so leave me a reply when that becomes a thing), we get
+that $\iota$ is null-homotopic. $\square$
+
+And that's all folks. I am now the eeper.

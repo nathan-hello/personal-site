@@ -1,0 +1,164 @@
+---
+title: 6 Months in One Project
+author: nathan
+date: 27 May 2024
+image: "bear-hub.png"
+aria:
+  bear-hub.png:
+    alt: "Logo of my website Bear Hub"
+---
+
+This is a really long blog post about me learning web stuff in Go. If you're not also learning web stuff in Go,
+this probably isn't going to be interesting. If you are though, please leave a comment. :)
+
+Once again, I wanted to make a simple document and I turned it into a blog post. This was meant to be a message in
+the readme of [bear-hub](https://github.com/nathan-hello/bear-hub/), but it got too long and I don't think a readme
+is the right place for a story, so I'm going to finish writing it here. 
+
+Also, if you're looking for the website in question, it's not hosted yet. I'll put in instructions in the readme
+to run the server/develop it yourself if you'd like. In the future I'm going to put it on something like 
+bear-hub.reluekiss.com.
+
+Doing this made me think "what was the other post that I rambled so hard I turned it into a blog post?" and it was
+the post where I [wanted to start making videos](https://www.reluekiss.com/nathan/p/100017). Going through my posts,
+I saw my [Abstractions Essay](https://www.reluekiss.com/nathan/p/100006), which is about this exact project!
+I totally forgot I wrote that, so rereading it was a treat.
+Let's compare four months later, six months into the project. I've learned a whole lot and have basically been doing
+this one thing the whole time. I'm okay with putting this much time into one project because I'm learning! And it's
+still interesting! And hopefully I can reuse the code for a potential rewrite of this very website! Even if all of the
+text of the code goes in the garbage, the logic and what's necessary to do a proper website is something I have absolutely
+loved exploring.
+
+### Six Month Retrospective
+
+When I made bear-hub, originally called no-magic-stack, I wrote a list of goals. A roadmap. A list of things to aspire
+to. Well, after I made it I basically never looked at it again except to update what the project was doing and how to
+set it up. I'm going to rewrite the readme to be what it is in its current state and point
+to this post if anyone wants more insight to the history of the project (this will 100% just be for myself in the future,
+no-user-gang rise up). I feel like this project stuck to those goals very closely, actually which is nice. But, 
+goals should only be written down if you actually care about revisiting them to make sure you don't go off course.
+
+#### Auth is Hard, Websockets are Easy, Postgres is Mid
+
+Auth has been such a pain point. Now I have the JWT claims passing through the middlewares `r.Context()` correctly, so
+I'm basically done except for all of the annoying parts. First there's password resets, but then I want to do fancy
+stuff like TOTP 2fa tokens, and after that oauth/passkeys, and then after that become an oauth provider. I think doing
+that is the final boss. Maybe API keys after that? But that's relatively harmless. I'm looking for ways to abstract
+the auth package to the most reasonable degree. I want it to be as easy as the Auth.js/auth0 people, more on that later. 
+I absolutely hate how many articles and tutorials
+there are online of software that does not pass the "am I, the author, willing to put this into a production service" 
+test. In with auth there should not be handwaves for this material. Either it's
+golden or it's unusable, so tutorials that say "well in the real world you wouldn't *actually* want to do this" makes their content useless.
+
+Once I got up and running with htmx's websocket extension, and some copypasta'd chatbot gorilla/websocket handlers,
+it was off to the races. Mostly everything since then has been frontend stuff. I originally had an issue with 
+[getting the form data to the server](https://stackoverflow.com/questions/77953521/htmx-websocket-extension-not-sending-form-data-in-message-to-server)
+which took a couple days to figure out but after that I was smooth sailing. Recently, I made the chat interface look
+pretty because I thought that it wouldn't be very encouraging to work on something that visually looks like dogwater
+even if it's technically interesting. Eventually I'm going to have to figure out content moderation, which is more
+complicated than the current htmx websocket setup. Right now all it does is takes the div from the response and the
+response is an hx-swap-oob, so it just puts it in the dom. Say a moderator bans a user and deletes all of their
+chat messages. How does the client know to swap their messages with a "user has been banned" type of message? I 
+think this requires some client-side js that I don't have yet.
+
+Postgres was a big pain point. I wanted to make it work so much, and it does work! Use it! Leverage your database
+to do work that is too annoying to do in the application. Want to auto generate a uuid? Easy! Want to do migrations?
+Supabase has a really great migration situation that I'm starting to miss already. I moved off of Postgres because I don't want the database to do work
+for me. Supabase prides itself on It's Just Postgres, might as well benefit from them doing all of the hard parts. 
+But that, to me, seems like I'm learning a platform instead of learning a technology. Plus,
+with sqlite, it's super duper local. Supabase has local development in the form of servers that live on docker containers
+that you can host on your machine, but I couldn't ever get it to [work without shutting off my internet](https://github.com/supabase/supabase/issues/19645). 
+Anyways, all of this to say that I'm happy with sqlite because I want to do the heavy lifting myself, and now I get to learn the fun of
+hand-rolled migrations (or not, I haven't gotten that far yet. I hear there are good tools for this). 
+
+#### Htmx makes Correct applications, Sqlc is insane, Templ will take over web dev in 3 years
+
+What you'll hear online is that htmx makes it really easy to send html from the server and render it in the
+correct place. This is true, but it's not the whole story. When you have state in your application, you have
+to keep track of it somehow. What htmx really, really wants you to do is to move almost all of the logic to
+the server instead of the client. Whenever the client wants a page, you make a new state given the cookies,
+query params, headers, form submission fields, etc, and you render a new html document to send to them. 
+Importantly, all of the things I just listed are browser/http primitives that are here to stay. You leverage
+what browsers do best so your server can do what it does best: work. Once I unlocked this idea of keeping
+having a ClientState/AuthState struct, and being able to generate it based on what the client gave, it
+really helped. You don't need to negotiate with the client of what it knows. It knows nothing. I saw someone
+online say (paraphrasing) "A browser doesn't need to know how a calendar works. It only needs to know how
+to render what the server gives it. The logic of the calendar is on the server, the representation of the
+calendar - that's what goes to the client". And I agree with this so much. The fact that javascript has gotten
+so good has been bad, because it means that the browser does more work than it was ever meant to. Stop making
+calendars on the browser, that's not what they were made for. Keeping business logic away from the browser - that's what htmx is good at.
+
+Contrary to what I just said, I've thought about doing some SPA-level stuff with htmx. The idea is instead of doing 
+traditional routing where on a `GET /profile/yogibear61` request, the Go server responds with a fully complete html document, what really 
+happens is I render, say, just the `<body>` and htmx hoists the response into the body. 
+This way there's not a full page reload with a potential [flash of unstyled content](https://www.wikiwand.com/en/Flash_of_unstyled_content).
+The header, footer, etc, continues to exist, they aren't destroyed, it's just that the `<body>` tag gets
+replaced. This I think would help make the page feel faster and whatnot, but I'm not sure how legal that is in my mind
+yet. 
+
+Quick note on something I said in my Abstractions Essay. Htmx does have some security implications, but only
+if you have massive skill issues. You do have to think about sanitizing user input from html, because if you're
+telling the browser "render this div", and that div contains a chat message that says `<script>alert("pwned")</script>`,
+and it actually runs, yeah you have some security implications. Just sanitize your inputs, on our blog site we do this
+with the comments and it's literally [one function](https://github.com/nathan-hello/personal-site/commit/fc066e0c1289f8febeedf27c03f07290f15e402d).
+
+Sqlc is really, really good. Upon the transition from postgres to sqlite3, I tried to do the classic abstraction
+thing where the application calls my db package, and that db package wraps both the sqlite3 and postgres
+calls. The application doesn't know whether it's using postgres or sqlite3, it just gives the data to db,
+and db figures out what to do with this. The problem otherwise is that postgres and sqlite3 have different types.
+For example, postgres has a proper uuid type. This means that sqlc gives that field a `uuid.UUID` type. But sqlite3
+does not have such a type, it only has `text`. So, my db package would wrap both of these calls and the application
+would give whatever is most convenient (in this case, a `uuid.New()`) and db would disperse this information to
+what's correct for the database. The problem with this is the synchronization and return types. Basically, the only
+way to make it all work is if I made everything in postgres whatever sqlite3 can handle, and from which database
+should I return? What if I was writing to them both at the same time? This issue is solvable, but as I was doing it
+I realized it required an amount of effort that wasn't worth it. If you're curious, you can go
+[here](https://github.com/nathan-hello/bear-hub/tree/sqlc-shananigans)
+to figure out how I was trying to crack this egg. It is not pretty, but you're going to be looking in `src/db`
+
+Templ is such an insane bit. The tooling and compilation has only gotten better since I started using it. I have
+[one merged documentation PR](https://github.com/a-h/templ/pull/367) and another PR which I won't link that is a
+rewrite of a static site generator someone wrote for [templ.guide](https://templ.guide). I absolutely love the project. 
+It brings React's functional component model
+to Go. That's it, that's all you need to know. If you've ever tried to use Python's Jinja or Go's tmpl for html templating,
+it's an insane breath of fresh air. You literally pass Go structs, slices, whatever you want and as long as it goes
+into a string before it gets rendered, you're golden. The PR I linked was documentation on how to get tailwind's LSP, html's LSP, htmx's LSP,
+and templ's LSP all working within Neovim in .templ files. 
+The fact that that works is insane, and it's getting better and better. Templ doesn't have Hooks, or RSCs,
+or any other real React primitives, so comparing the two is a little bit disingenuous. It's not a React replacement,
+it's an html templating replacement. If you're someone who uses React for html templating, you are just simply doing
+it wrong. There's no need to bring in all of React for this job, and that's why templ and htmx work so well together.
+You have the templating you need, and the htmx to do the client side shenanigans. State? Like I said before, the client
+holds no state other than the tools that are built into http. useEffect? Wake up darli... what are you saying? 
+Rendering lifecycles? Hydration errors? Do you know what year this is? You're speaking nonsense.
+
+#### Abstractions are hard
+
+Like I mentioned before, I want to make a package for auth in Go web apps. But it's not easy. If you look throughout
+the code that calls on the stuff from `src/auth`, it's not as simple as taking on auth from on high. For example, I have it
+so the SignUp/SignIn struct has a method of signature `RenderErrs() []string` so when I'm rendering the html, I pass that
+struct into the templ templating, and within the template if there is anything within any of the errors, it will show them
+in little boxes on the page. If SignUp.UsernameErr exists, it will make the border color of the username box red. How could
+you make that into a package if you didn't own or understand the contents of the struct? The jwt boilerplate I think is
+production-ready, so that will probably be the first part in my auth series, but that one file alone probably isn't worth
+installing. Just copy it! If you look at it and you think it's good, copy it now! I like it, and if you don't then
+please cut an issue because I want to get a second opinion. One cool gimmick I'm going to pull with my auth series is that
+when I feel comfortable enough to share it, I'm going to pay real cash-money to pay a web security professional to do a code
+tour and pentest on my auth system. I want to get real insight on what I personally overlooked, and what common mistakes are. 
+This step is important because the number one reason I hear online of why someone should never, ever roll their own auth is
+because there are "so many" footguns you can find yourself in, you should really leave auth to people who dedicate their
+entire company towards security. But, to me, if you own your auth, and it Just Works, then you have it forever. You can
+microservice the heck out of it, and as long as you don't have severe skill issues, it will still Just Work. Auth is a concept,
+so if you have it done correctly then it will Just Work forever. That is, unless passwords really become out of fashion
+and you have to move to passkeys, but I'll have that covered to!
+
+I'm more excited for this project that I was working on [playlist-powertools](https://github.com/nathan-hello/playlist-powertools),
+a webapp that at least had a potential of having more than one user, and I was newer at programming then! Learning concepts
+instead of frameworks has been a lot of fun. I do want to say, however, that the chat service is something I intend on making
+a real thing that people use. The tagline: "A self-hostable twitch chat clone". I originally thought
+of making the chat backend be an irc server, but translating between irc and http (which I would need to do to avoid using
+a [javascript irc client](https://github.com/kiwiirc/irc-framework/)) seemed unnecessary. I'll see where that part of the
+project goes.
+
+Thanks for reading. I didn't want this to be my longest blog post yet, and here we are. I get really excited with this stuff
+because now I have multiple avenues of motivation, and this website is one of them. 

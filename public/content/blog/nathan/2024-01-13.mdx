@@ -1,0 +1,89 @@
+---
+author: nathan
+date: 13-Jan-2024
+title: Javascript Grindset
+image: "dogcar.jpg"
+aria:
+  dogcar.jpg:
+    alt:
+      a google street view image of a dog seemingly in the driver's seat of a moving car
+      without a human
+---
+
+I've been programming as a hobby for about two years now. I started with Python, moved on
+to Typescript through React, and since then I haven't quite moved on as much I would have
+liked to. The unfortunate reality is that the tooling around web-dev server-side
+javascript is really, really nice. I'm currently fleshing out some examples in my upcoming
+project [no-magic-stack](https://github.com/nathan-hello/no-magic-stack) - a stack using
+Go's builtin http router, htmx (super cool, but also popular right now which makes it less
+cool), tailwind, sqlc (really cool), and templ (really really cool). I have been
+implementing things that you get for free in javascript land for weeks now and it's not
+easy. I think it's worth it, and once I get up and running on the stack I have some ideas
+on cool stuff to do, but the tooling just isn't there. This is important to me because as
+much as I hate the frontend - I really like making websites. It's the thing that you are
+able to show other people with a link, something everyone can understand, you think that
+what you're making (once finished) will be, if not a big hit, something that you can hang
+your hat on. Of course there is pride to be had in every corner of software engineering,
+and of course it's vein to care as much as I do about showing off something to my friends.
+But dang it, I like showing my friends cool projects... even if I haven't finished one
+yet.
+
+Sometimes, through the couple years I've been doing this, I will have spent 10 hours in a
+day on a project. Today was one of those days and I'm really happy with it. Not all of
+those 10 were equally productive - much of it was fighting CSS to get the text to wrap
+around the images like Natalie wanted it to (it was `float-left` the whole time!). But I
+made a few really solid improvements to the site and to Natalie's ease of use in making
+posts as well as customizing it in the future. I think the types I've set up for
+everything is stable, and the code blocks are stable, and the images are stable, I'm
+really happy with how this has turned out so far.
+
+One of the reasons I haven't finished a project is because I don't know how to get off the
+ground with frontend design. Everything I make is really cool, but when I go to show it to
+someone, they recoil with just how god awful the css is. So, I try and try to make it look
+good, not just for them but also for me so I can call it "complete". Give it the gold star
+it deserves and move on. Granted, this has only been two projects, but one of them I've
+rewritten at least three times so that's got to count for something. Natalie brought this
+superpower to this project where she has a proper vision of what the site should look and
+feel like, and she did the first 80% of it. I did some more tricky css bits, but it was
+her vision the whole way through. I don't know how to make a design that has personality -
+I copy what I can from flowbite and hope that it doesn't look like something out of the
+chatbot.
+
+One really cool idea she had was if there is an image to a post, it is not in the body of
+the post but rather in the attachments at the beginning of the post. This is extremely
+similar to image boards but ours is cooler because we can link multiple images and say
+within the body "Image 2 is a picture of a dolphin". I like this because it keeps the body
+unobstructed. To this end, I have attached a screenshot that is the website in its current
+form. (Edit: I added it and I hated seeing it on the site. Some kind of recursion
+creepiness combined with it being a lil pretentious. If you want to see it, look a the git
+history [here](https://github.com/nathan-hello/personal-site) )
+
+Up next to the site is hooking up a proper database so we don't have to do this manual
+file nonsense. Doing it this way seems very prone to error because how will we know if a
+link is 404'd forever because of some silly move or overwrite or something? I expect this
+site to exist ten years from now, so I want to act that way. I also want to act in such a
+way that I don't have to maintain it for ten years but for some reason that seems unlikely
+(I have not ever finished a project, remember?).
+
+Also I need to figure out how time works. We make these posts, and the time part is
+optional. So, if we have a time, display that. If there's no time, js will default it to
+12:00AM which is logical. So, if you don't see a time in the future that's why. But then
+we have to figure out how time zones work. When you run `toLocalString()`, it says it does
+it in local time - but what the heck does that mean? We're on serverless, and we
+statically generate the html. I know there's a way to include timezone as well in the
+creation of the date object, so again I might do it I might not. For future reference, for
+the time being, I'm in EST.
+
+And, we made all of these changes without sacrificing client-side js. There still isn't
+any anywhere (check your network tab !) and if there is, we'll make a little thingy
+somewhere about it. I see this as a challenging limitation, as well as a good principle to
+follow. I think having no client js is worth some amount of sacrifice, just probably not
+to the degree as Natalie.
+
+Oh, also, I had this idea for Natalie. So the vlogbrothers (hank and john green) do videos
+to each other on their youtube directed at each other. It started as an exercise back in
+2007 or whatever because they felt like it would be a cool project to make them closer as
+brothers, and I thought that it might be cute for us to do that here. Not every post, but
+maybe once a week, either of us writes a letter to the other about whatever. And maybe a
+rule is that we can't talk about the post except for within our reply (just an idea, that
+would be impossible to follow through with).

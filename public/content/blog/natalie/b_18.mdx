@@ -1,0 +1,121 @@
+---
+title: Fully featured stream with ffmpeg 
+date: 2024-07-19T01:42
+author: natalie
+image: [obama.jpg]
+aria:
+  obama.jpg:
+    alt: obama jumping from a skyscraper, to scape a car/helicopter crash and a great white shark on a scateboard with nunjucks while wearing sunglasses.
+---
+If you wish to just have it without any knowladge (you will probably need to configure this), the full command I personally use is here. This is also only applicable to users of linux and alsa. Though hopefully the demonstration of some of the concepts here will make it a resource for greater applicability.
+
+```
+arecord -D default -f S24_3LE -c 2 -r 48000 - | \
+ffmpeg -c:a pcm_s24le -i - -af anlmdn=s=4 -c:a pcm_s32le -f wav - | \
+ffmpeg -hwaccel cuda -hwaccel_output_format cuda -f x11grab -s 1920x1080 -r 60 -i :0.0 \
+-f v4l2 -input_format mjpeg -s 640x480 -c:v mjpeg_cuvid -i /dev/video0 \
+-i - -f alsa -i looprec \
+-filter_complex "[0:v][1:v]overlay=main_w-overlay_w-10:main_h-overlay_h-10[v];[2:a][3:a]amerge[a]" -map "[v]" -map "[a]" \
+-c:v h264_nvenc -profile:v high -tune ll -preset p7 -b:v 6M -bufsize 3M -g 240 -c:a aac -b:a 128k -ar 44100 \
+-f flv "rtmp://live.twitch.tv/app/live_xxxxxxxxx_xxxxxxxxxxxxxxxxxxxxxx"
+```
+
+To make some sense of this I will start with the inputs. There are four principal ones which you will need to adjust as needed.
+- Screen capture with a resolution of 1920x1080 and refresh rate of 60Hz.
+```
+-f x11grab -s 1920x1080 -r 60 -i :0.0
+```
+If you don't use an X11 implementation like xorg, you can try using kms grab.
+
+- Camera capture (This is set to 640x480 directly from the camera, doing extra scaling is possible with scale[/_cuda], but I will not be covering this).
+```
+-f v4l2 -input_format mjpeg -s 640x480 -c:v mjpeg_cuvid -i /dev/video0
+```
+To check what formats and resolutions your camera is capable of outputting on your computer use 
+```
+v4l2-ctl --list-devices
+```
+and use the first option it gives you, in my case:
+```
+[relue:~]> v4l2-ctl --list-devices
+HD Web Camera: HD Web Camera (usb-0000:07:00.4-1.2):
+        /dev/video4
+        /dev/video5
+        /dev/media2
+
+USB2.0 HD UVC WebCam: USB2.0 HD (usb-0000:08:00.0-1):
+        /dev/video0
+        /dev/video1
+        /dev/video2
+        /dev/video3
+        /dev/media0
+        /dev/media1
+```
+I would wish to use either /dev/video4 or /dev/video0 depending on my choice of camera. To then determine the available resolutions run 
+```
+v4l2-ctl --device=/dev/video0 --list-formats-ext
+```
+I would recommend using a hardware accelerated decoder for the camera as cameras can dump a lot of raw yuv data which can overwhelm your cpu and reduce your framerates. Run 
+```
+ffmpeg -codecs | grep [v4l2/$format]
+```
+You will be looking for the decoders sectioni which would look something like this:
+```
+ DEV.LS h264                 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (decoders: h264 h264_v4l2m2m h264_cuvid ) (encoders: libx264 libx264rgb h264_nvenc h264_v4l2m2m h264_vaapi nvenc nvenc_h264 )
+```
+If you do not have an nvidia graphics card use the v4l2m2m decoders if they are packaged by your ffmpeg version. If you are ever missing anything from ffmpeg or your package maintainers are bad, there is the following [github](https://github.com/zimbatm/ffmpeg-static) which allows you to create a statically linked binary in a chrooted enviroment with a neat little script.
+
+- Microphone
+```
+arecord -D default -f S24_3LE -c 2 -r 48000 - | \
+ffmpeg -c:a pcm_s24le -i - -af anlmdn=s=4 -c:a pcm_s32le -f wav - | \
+ffmpeg ... -i - ...
+```
+As ffmepg only supports formats that have a 8/16/32/64 bit depth. I need to use arecord to initally record it, it also allows me to use a simple filter '-af anlmdn=s=4' for noise suppression specifically on the microphone and then upsample (I'm actually reencoding, feel free to also downsample to 16bit at your discretion) to a 32bit depth. 'default' here is my default pcm stream from my alsa config, for a reminder of which I have an article also explainaing that [here](https://www.reluekiss.com/natalie/p/100015). But it is asymmetric dsnoop wrapper on my mic.
+
+- System audio
+```
+-f alsa -i looprec
+```
+Again refer to my article above on this as this is quite in depth.
+
+That should be all for your personal configuring, this should now work on most major streaming platforms like twitch and youtube. Youtube has support for additional codecs like hevc and av1, and for personal streaming endpoints that number is practically limitless for an easy to configure media streaming server I can recommend [mediamtx](https://github.com/bluenviron/mediamtx).
+
+Beyond that there are the filters:
+```
+-filter_complex "[0:v][1:v]overlay=main_w-overlay_w-10:main_h-overlay_h-10[v];[2:a][3:a]amerge[a]" \
+-map "[v]" -map "[a]"
+```
+The first part delimited by a semicolon is the method I use for overlaying the camera over the screen recording. 10 here specifies the location to place the origin (bottom right corner) of the camera, I use 10 so that there is 10 pixels of padding but this can be freely ignored. The next is amerge, you could in theory have as many inputs here as you like simply add the stream identifiers before hand, like so. 
+```
+[1:a][2:a][3:a][4:a]...amerge[a]
+```
+The name '[a]' here is completely arbitrary. It is also not strictly required to specify the ':a/v' in the input identifiers if they are simply a single audio stream, you could if there were multiple use [3:v:2] to specify the second video stream in the third input stream. When using filter graphs it is important to make their outputs connected with the final output which is the function of the maps.
+```
+-map "[v]" -map "[a]"
+```
+These specify the names of the new streams we made in the filter graph and map them to the output.
+
+The following encoding options should look very familiar to those that use ffmpeg and can be found with little issue on the internet.
+```
+-c:v h264_nvenc -profile:v high -tune ll -preset p7 -b:v 6M -bufsize 3M -g 240 -c:a aac -b:a 128k -ar 44100
+```
+However, something which can be useful here when tuning this for live streaming specifically is to add a buffer using -bufsize, but also a constant bit rate allows for more consistant latentcy. If you aren't sure of the available options for a codec use 'ffmpeg -h encoder=h264_nvenc' in this case.
+
+The last part is the output:
+```
+-f flv "rtmp://live.twitch.tv/app/live_xxxxxxxxx_xxxxxxxxxxxxxxxxxxxxxx"
+```
+flv, is quite a restrictive container format and only allows h264 with aac, and only a single video and audio stream (with no subtitles either).
+This is slightly improved using the ```-rtmp_live 1``` flag which is introduced in ffmpeg version 6.0, and allows for more codec compatability, but still only single streams. For better support if using your own server, look into using rtsp or webrtc.
+Some more boiler plate for hls, rtsp and srt are below:
+```
+f hls -hls_time 10 -hls_list_size 4 -hls_flags delete_segments -hls_segment_filename "segment_%v_%03d.ts" -hls_base_url "http://tv.reluekiss.com:8888" "https://user@password@tv.reluekiss.com:8888/mystream"
+```
+```
+-f rtsp "rtsp://user@password@tv.reluekiss.com:1735/mystream/mystream"
+```
+```
+#-f mpegts srt://tv.reluekiss.com:1735?streamid=mystream:mystream:user:password&pkt_size=1316
+```
+That is all x.

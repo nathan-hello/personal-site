@@ -1,0 +1,660 @@
+---
+export const details = {
+  title: "AT-01",
+  date: "2024-01-15T03:36",
+  author: "natalie",
+  image: "torus.png",
+  aria: { "torus.png": { alt: "a cifford torus" } },
+  // overrideHref: '',
+  // overrideLayout: true,
+};
+---
+
+<style>
+  .cmr-5 {
+    font-size: 50%;
+  }
+  .cmr-7 {
+    font-size: 70%;
+  }
+  .cmmi-5 {
+    font-size: 50%;
+    font-style: italic;
+  }
+  .cmmi-7 {
+    font-size: 70%;
+    font-style: italic;
+  }
+  .cmmi-10 {
+    font-style: italic;
+  }
+  .cmsy-5 {
+    font-size: 50%;
+  }
+  .cmsy-7 {
+    font-size: 70%;
+  }
+  .cmbx-10 {
+    font-weight: bold;
+  }
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  p.indent {
+    text-indent: 0;
+  }
+  p + p {
+    margin-top: 1em;
+  }
+  p + div,
+  p + pre {
+    margin-top: 1em;
+  }
+  div + p,
+  pre + p {
+    margin-top: 1em;
+  }
+  a {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  @media print {
+    div.crosslinks {
+      visibility: hidden;
+    }
+  }
+  a img {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  center {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  td center {
+    margin-top: 0em;
+    margin-bottom: 0em;
+  }
+  .Canvas {
+    position: relative;
+  }
+  img.math {
+    vertical-align: middle;
+  }
+  div.par-math-display,
+  div.math-display {
+    text-align: center;
+  }
+  li p.indent {
+    text-indent: 0em;
+  }
+  li p:first-child {
+    margin-top: 0em;
+  }
+  li p:last-child,
+  li div:last-child {
+    margin-bottom: 0.5em;
+  }
+  li p ~ ul:last-child,
+  li p ~ ol:last-child {
+    margin-bottom: 0.5em;
+  }
+  .enumerate1 {
+    list-style-type: decimal;
+  }
+  .enumerate2 {
+    list-style-type: lower-alpha;
+  }
+  .enumerate3 {
+    list-style-type: lower-roman;
+  }
+  .enumerate4 {
+    list-style-type: upper-alpha;
+  }
+  div.newtheorem {
+    margin-bottom: 2em;
+    margin-top: 2em;
+  }
+  .obeylines-h,
+  .obeylines-v {
+    white-space: nowrap;
+  }
+  div.obeylines-v p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .overline {
+    text-decoration: overline;
+  }
+  .overline img {
+    border-top: 1px solid black;
+  }
+  td.displaylines {
+    text-align: center;
+    white-space: nowrap;
+  }
+  .centerline {
+    text-align: center;
+  }
+  .rightline {
+    text-align: right;
+  }
+  pre.verbatim {
+    font-family: monospace, monospace;
+    text-align: left;
+    clear: both;
+  }
+  .fbox {
+    padding-left: 3pt;
+    padding-right: 3pt;
+    text-indent: 0pt;
+    border: solid black 0.4pt;
+  }
+  div.fbox {
+    display: table;
+  }
+  div.center div.fbox {
+    text-align: center;
+    clear: both;
+    padding-left: 3pt;
+    padding-right: 3pt;
+    text-indent: 0pt;
+    border: solid black 0.4pt;
+  }
+  div.minipage {
+    width: 100%;
+  }
+  div.center,
+  div.center div.center {
+    text-align: center;
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+  div.center div {
+    text-align: left;
+  }
+  div.flushright,
+  div.flushright div.flushright {
+    text-align: right;
+  }
+  div.flushright div {
+    text-align: left;
+  }
+  div.flushleft {
+    text-align: left;
+  }
+  .underline {
+    text-decoration: underline;
+  }
+  .underline img {
+    border-bottom: 1px solid black;
+    margin-bottom: 1pt;
+  }
+  .framebox-c,
+  .framebox-l,
+  .framebox-r {
+    padding-left: 3pt;
+    padding-right: 3pt;
+    text-indent: 0pt;
+    border: solid black 0.4pt;
+  }
+  .framebox-c {
+    text-align: center;
+  }
+  .framebox-l {
+    text-align: left;
+  }
+  .framebox-r {
+    text-align: right;
+  }
+  span.thank-mark {
+    vertical-align: super;
+  }
+  span.footnote-mark sup.textsuperscript,
+  span.footnote-mark a sup.textsuperscript {
+    font-size: 80%;
+  }
+  div.tabular,
+  div.center div.tabular {
+    text-align: center;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  table.tabular td p {
+    margin-top: 0em;
+  }
+  table.tabular {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  td p:first-child {
+    margin-top: 0em;
+  }
+  td p:last-child {
+    margin-bottom: 0em;
+  }
+  div.td00 {
+    margin-left: 0pt;
+    margin-right: 0pt;
+  }
+  div.td01 {
+    margin-left: 0pt;
+    margin-right: 5pt;
+  }
+  div.td10 {
+    margin-left: 5pt;
+    margin-right: 0pt;
+  }
+  div.td11 {
+    margin-left: 5pt;
+    margin-right: 5pt;
+  }
+  table[rules] {
+    border-left: solid black 0.4pt;
+    border-right: solid black 0.4pt;
+  }
+  td.td00 {
+    padding-left: 0pt;
+    padding-right: 0pt;
+  }
+  td.td01 {
+    padding-left: 0pt;
+    padding-right: 5pt;
+  }
+  td.td10 {
+    padding-left: 5pt;
+    padding-right: 0pt;
+  }
+  td.td11 {
+    padding-left: 5pt;
+    padding-right: 5pt;
+  }
+  table[rules] {
+    border-left: solid black 0.4pt;
+    border-right: solid black 0.4pt;
+  }
+  .hline hr,
+  .cline hr {
+    height: 0px;
+    margin: 0px;
+  }
+  .hline td,
+  .cline td {
+    padding: 0;
+  }
+  .hline hr,
+  .cline hr {
+    border: none;
+    border-top: 1px solid black;
+  }
+  .tabbing-right {
+    text-align: right;
+  }
+  div.float,
+  div.figure {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  div.float img {
+    text-align: center;
+  }
+  div.figure img {
+    text-align: center;
+  }
+  .marginpar,
+  .reversemarginpar {
+    width: 20%;
+    float: right;
+    text-align: left;
+    margin-left: auto;
+    margin-top: 0.5em;
+    font-size: 85%;
+    text-decoration: underline;
+  }
+  .marginpar p,
+  .reversemarginpar p {
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+  }
+  .reversemarginpar {
+    float: left;
+  }
+  table.equation {
+    width: 100%;
+  }
+  .equation td {
+    text-align: center;
+  }
+  td.equation {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  td.equation-label {
+    width: 5%;
+    text-align: center;
+  }
+  td.eqnarray4 {
+    width: 5%;
+    white-space: normal;
+  }
+  td.eqnarray2 {
+    width: 5%;
+  }
+  table.eqnarray-star,
+  table.eqnarray {
+    width: 100%;
+  }
+  div.eqnarray {
+    text-align: center;
+  }
+  div.array {
+    text-align: center;
+  }
+  div.pmatrix {
+    text-align: center;
+  }
+  table.pmatrix {
+    width: 100%;
+  }
+  span.pmatrix img {
+    vertical-align: middle;
+  }
+  div.pmatrix {
+    text-align: center;
+  }
+  table.pmatrix {
+    width: 100%;
+  }
+  span.bar-css {
+    text-decoration: overline;
+  }
+  table.tabular {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  img.cdots {
+    vertical-align: middle;
+  }
+  .partToc a,
+  .partToc,
+  .likepartToc a,
+  .likepartToc {
+    line-height: 200%;
+    font-weight: bold;
+    font-size: 110%;
+  }
+  .index-item,
+  .index-subitem,
+  .index-subsubitem {
+    display: block;
+  }
+  div.caption {
+    text-indent: -2em;
+    margin-left: 3em;
+    margin-right: 1em;
+    text-align: left;
+  }
+  div.caption span.id {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  h1.partHead {
+    text-align: center;
+  }
+  p.bibitem {
+    text-indent: -2em;
+    margin-left: 2em;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
+  p.bibitem-p {
+    text-indent: 0em;
+    margin-left: 2em;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
+  .paragraphHead,
+  .likeparagraphHead {
+    margin-top: 2em;
+    font-weight: bold;
+  }
+  .subparagraphHead,
+  .likesubparagraphHead {
+    font-weight: bold;
+  }
+  .verse {
+    white-space: nowrap;
+    margin-left: 2em;
+  }
+  div.maketitle {
+    text-align: center;
+  }
+  h2.titleHead {
+    text-align: center;
+  }
+  div.maketitle {
+    margin-bottom: 2em;
+  }
+  div.author,
+  div.date {
+    text-align: center;
+  }
+  div.thanks {
+    text-align: left;
+    margin-left: 10%;
+    font-size: 85%;
+    font-style: italic;
+  }
+  div.author {
+    white-space: nowrap;
+  }
+  div.abstract p {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  div.abstract {
+    width: 100%;
+  }
+  .abstracttitle {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  figure.float,
+  div.figure {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  figure.float img,
+  figure.figure img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  figure.figure {
+    text-align: center;
+  }
+  figcaption.caption {
+    text-indent: -2em;
+    margin-left: 3em;
+    margin-right: 1em;
+    text-align: center;
+  }
+  figcaption.caption span.id {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  .abstract {
+    margin: 1em;
+  }
+  .equation td {
+    text-align: center;
+  }
+  .equation-star td {
+    text-align: center;
+  }
+  table.equation-star {
+    width: 100%;
+  }
+  table.equation {
+    width: 100%;
+  }
+  table.align,
+  table.alignat,
+  table.xalignat,
+  table.xxalignat,
+  table.flalign {
+    width: 95%;
+    margin-left: 5%;
+    white-space: nowrap;
+  }
+  table.align-star,
+  table.alignat-star,
+  table.xalignat-star,
+  table.flalign-star {
+    margin-left: auto;
+    margin-right: auto;
+    white-space: nowrap;
+  }
+  td.align-label {
+    width: 5%;
+    text-align: center;
+  }
+  td.align-odd {
+    text-align: right;
+    padding-right: 0.3em;
+  }
+  td.align-even {
+    text-align: left;
+    padding-right: 0.6em;
+  }
+  table.multline,
+  table.multline-star {
+    width: 100%;
+  }
+  td.gather {
+    text-align: center;
+  }
+  table.gather {
+    width: 100%;
+  }
+  div.gather-star {
+    text-align: center;
+  }
+  .rotatebox {
+    display: inline-block;
+  }
+</style>
+
+<body is:raw>
+  <!-- l. 8 --><p class='noindent'>Okaaaaaaaaaay, it’s finally time to write some math
+  runes to the web at long last and I’ll be working through hatcher’s algebraic topology,
+  as I ran through it a couple years ago. And as many people do, I went through it too
+  quickly, so that I have an actual foundation in the subject I’m running through the
+  problems, each section has a multitude of problems and I’ll try to work through every
+  other just so I’m not working on part 0 next year. </p><!-- l. 11 --><p class='indent'>
+  So the first question: </p><!-- l. 14 --><p class='indent'> <span class='cmbx-10'>1.
+  </span>Construct an explicit deformation retraction of the torus with one point deleted
+  onto a graph consisting of two circles intersecting in a point, namely, longitude and
+  meridian circles of the torus. </p><!-- l. 17 --><p class='indent'> So the first
+  question of the intro section, this should be pretty simple and it <span
+  class='cmmi-10'>i̸s</span> (kind of is). As most first questions are we are going to need
+  a couple definitions, formost what a deformation retract is: </p><!-- l. 20 --><p
+  class='indent'> A <span class='cmbx-10'>deformation </span>retract of a space <span
+  class='cmmi-10'>X </span>onto a subspace <span class='cmmi-10'>A </span>is a family of
+  maps <span class='cmmi-10'>f</span><sub><span class='cmmi-7'>t</span></sub> : <span
+  class='cmmi-10'>X </span><span class='cmsy-10'>→ </span><span class='cmmi-10'>X,t
+  </span><span class='cmsy-10'>∈ </span><span class='cmmi-10'>I</span>, such that <span
+  class='cmmi-10'>f</span><sub><span class='cmr-7'>0</span></sub> = <span
+  class='msbm-10'>⊮</span>, (the identity map), <span class='cmmi-10'>f</span><sub><span
+  class='cmr-7'>1</span></sub>(<span class='cmmi-10'>X</span>) = <span
+  class='cmmi-10'>A</span>, and <span class='cmmi-10'>f</span><sub><span
+  class='cmmi-7'>t</span></sub><span class='cmsy-10'>|</span><span class='cmmi-10'>A
+  </span>= <span class='msbm-10'>⊮</span><span class='cmsy-10'>∀</span><span
+  class='cmmi-10'>t</span>. The family <span class='cmmi-10'>f</span><sub><span
+  class='cmmi-7'>t</span></sub> should be continuous in the sense that the associated map
+  <span class='cmmi-10'>X </span><span class='cmsy-10'>× </span><span class='cmmi-10'>I
+  </span><span class='cmsy-10'>→ </span><span class='cmmi-10'>X</span>, (<span
+  class='cmmi-10'>x,t</span>)<img alt='↦→' src='/images/math/AT-00-010x.png' class='mapsto
+  filter invert' /><span class='cmmi-10'>f</span><sub><span
+  class='cmmi-7'>t</span></sub>(<span class='cmmi-10'>x</span>), is continuous. </p><!--
+  l. 23 --><p class='indent'> The first trick is to use the following construction where,
+  the torus <span class='cmmi-10'>S</span><sup><span class='cmr-7'>1</span></sup> <span
+  class='cmsy-10'>×</span><span class='cmmi-10'>S</span><sup><span
+  class='cmr-7'>1</span></sup> can be obtained by identifying opposite ends of the square,
+  which can be seen here. </p><!-- l. 26 --><p class='indent'> Let <span class='cmmi-10'>I
+  </span>= [<span class='cmsy-10'>−</span>1<span class='cmmi-10'>,</span>1] be an interval
+  on <span class='msbm-10'>ℝ</span><sup><span class='cmr-7'>2</span></sup>. Then <span
+  class='cmmi-10'>I</span><sup><span class='cmr-7'>2</span></sup> is a square. Without the
+  loss of genererality we choose the origin to be the deleted point. So now we need to
+  construct a map <span class='cmmi-10'>f </span>on <span
+  class='cmmi-10'>I</span><sup><span class='cmr-7'>2</span></sup> <span
+  class='cmsy-10'>∖{</span>0<span class='cmsy-10'>} </span>which takes a lot of fiddling
+  but you can find it to be: </p><!-- l. 28 --><p class='indent'> </p> <div
+  class='math-display'> <img alt=' ( ) f(x,y) = (1 − t)(x,y)+ t--(x,y)--- t max {|x|,|y|}
+  ' src='/images/math/AT-00-011x.png' class='math-display filter invert' /></div> <!-- l.
+  30 --><p class='indent'> Working from the requirements that <span
+  class='cmmi-10'>f</span><sub><span class='cmr-7'>0</span></sub>(<span
+  class='cmmi-10'>x,y</span>) = (<span class='cmmi-10'>x,y</span>) and <span
+  class='cmmi-10'>f</span><sub><span class='cmr-7'>1</span></sub>(<span
+  class='cmmi-10'>x,y</span>) = <img alt='( (x,y) ) max{|x|,|y|}' class='left filter
+  invert' src='/images/math/AT-00-012x.png' align='middle' /> as the latter is an element
+  of <span class='cmmi-10'>∂I</span><sup><span class='cmr-7'>2</span></sup> and to make
+  sure the restriction (<span class='cmmi-10'>f</span><sub><span
+  class='cmmi-7'>t</span></sub>(<span class='cmmi-10'>x,y</span>)<span
+  class='cmsy-10'>|</span><sub><span class='cmmi-7'>∂I</span><sup><span
+  class='cmr-5'>2</span></sup></sub> = (<span class='cmmi-10'>x,y</span>)) holds is
+  because of max<span class='cmsy-10'>{|</span><span class='cmmi-10'>x</span><span
+  class='cmsy-10'>|</span><span class='cmmi-10'>,</span><span
+  class='cmsy-10'>|</span><span class='cmmi-10'>y</span><span class='cmsy-10'>|} </span>=
+  1. I hope continuity should be easy to see. <span class='msam-10'>□</span> </p><!-- l.
+  33 --><p class='indent'> Alright one down, ... a ton to go, see you all tomorrow.
+  </p><!-- l. 36 --><p class='indent'> Nvm here’s another one cause its basically the same
+  <span class='cmbx-10'>2. </span>Construct an explicit deformation retraction of <span
+  class='msbm-10'>ℝ</span><sup><span class='cmmi-7'>n</span></sup> <span
+  class='cmsy-10'>∖{</span>0<span class='cmsy-10'>} </span>onto <span
+  class='cmmi-10'>S</span><sup><span class='cmmi-7'>n</span><span
+  class='cmsy-7'>−</span><span class='cmr-7'>1</span></sup>. </p><!-- l. 40 --><p
+  class='indent'> If you remember some linear algebra a vector in <span
+  class='msbm-10'>ℝ</span><sup><span class='cmmi-7'>n</span></sup> <span
+  class='cmsy-10'>∖{</span>0<span class='cmsy-10'>}</span>, is the normalised vector <img
+  alt='-x |x|' class='frac filter invert' src='/images/math/AT-00-013x.png' align='middle'
+  /> inside of <span class='cmmi-10'>S</span><sup><span class='cmmi-7'>n</span><span
+  class='cmsy-7'>−</span><span class='cmr-7'>1</span></sup>. So we just need the map to be
+  a normalisation process which is continuous. and is much like the previous question but
+  over n variables. ie </p><!-- l. 42 --><p class='indent'> </p> <div
+  class='math-display'> <img alt=' ( x x ) ft(x1,x2,...,xn) =
+  ------1-----,...,------n----- t||x||+ (1− t) t||x||+ (1 − t) '
+  src='/images/math/AT-00-014x.png' class='math-display filter invert' /></div> <!-- l. 44
+  --><p class='indent'> Just to check our bases the function <span
+  class='cmmi-10'>f</span><sub><span class='cmmi-7'>t</span></sub> is continuous for each
+  <span class='cmmi-10'>t </span><span class='cmsy-10'>∈ </span><span
+  class='cmmi-10'>I</span>, <span class='cmmi-10'>f</span><sub><span
+  class='cmr-7'>0</span></sub>(<span class='cmbx-10'>x</span>) = <span
+  class='cmbx-10'>x</span>, <span class='cmmi-10'>f</span><sub><span
+  class='cmr-7'>1</span></sub>(<span class='cmbx-10'>x</span> = <span
+  class='cmbx-10'>x</span><span class='cmmi-10'>∕</span><span
+  class='cmsy-10'>||</span><span class='cmbx-10'>x</span><span class='cmsy-10'>||</span>,
+  and <span class='cmmi-10'>f</span><sub><span class='cmmi-7'>t</span></sub>(<span
+  class='cmbx-10'>x</span>)<span class='cmsy-10'>|</span><sub><span
+  class='cmmi-7'>S</span><sup><span class='cmmi-5'>n</span><span
+  class='cmsy-5'>−</span><span class='cmr-5'>1</span></sup></sub> = <span
+  class='cmbx-10'>x</span> due to the fact that <span class='cmsy-10'>||</span><span
+  class='cmbx-10'>x</span><span class='cmsy-10'>|| </span>= 1 for all <span
+  class='cmbx-10'>x</span>. <span class='msam-10'>□</span> </p><!-- l. 47 --><p
+  class='indent'> And if you thought I was doing these in order you’re out of luck bucko,
+  I might make an index page that links to each question at some point, but that doesn’t
+  exist yet so :3. </p><!-- l. 50 --><p class='indent'> <span class='cmbx-10'>20.
+  </span>Show that the subspace <span class='cmmi-10'>X </span><span class='cmsy-10'>⊂
+  </span><span class='msbm-10'>ℝ</span><sup><span class='cmr-7'>3</span></sup> formed by a
+  Klein bottle intersecting itself in a circle as shown in Figure 1 is homotopy equivalent
+  to <span class='cmmi-10'>S</span><sup><span class='cmr-7'>1</span></sup> <span
+  class='cmsy-10'>∨ </span><span class='cmmi-10'>S</span><sup><span
+  class='cmr-7'>1</span></sup> <span class='cmsy-10'>∨ </span><span
+  class='cmmi-10'>S</span><sup><span class='cmr-7'>2</span></sup>. </p><!-- l. 53 --><p
+  class='indent'> Let <span class='cmmi-10'>X </span>be he figure shown, intersecting
+  itself at a circle <span class='cmmi-10'>C</span>. The main </p>
+</body>

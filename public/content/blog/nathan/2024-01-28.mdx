@@ -1,0 +1,380 @@
+---
+title: How to Abuse import.meta.glob in AstroJS
+author: nathan
+date: 28-Jan-2024
+image: "globtutorial.svg"
+aria:
+  globtutorial.svg:
+    alt: "astro.glob vs import.meta.glob"
+---
+
+This site came with some interesting challenges for me. I wanted to make a statically generated site, that is accessible to Natalie, that allows for .html or .md/.mdx and
+has good primatives for making sure what we create on here isn't lost to the sands of time. One of those things that we did was making a little object at the start of the
+posts for who wrote it, the date, the title, we'll go more into it in a minute. Tricky thing is, I wanted to customize the AstroJS build step, something that is tricky
+using the `Astro.glob` function they provide. If you use this, you have to use it within a .astro file, and if you're within a .astro file, then you can't really import
+a specific JS function. Luckily, [Astro.glob](https://docs.astro.build/en/reference/api-reference/#astroglob) is just a wrapper around [import.meta.glob](https://vitejs.dev/guide/features#glob-import). This means we can use our own
+glob function, and put it in a .ts file. 
+
+This post is going to explain how to get `import.meta.glob` to do what you want it to. If you're underwhelmed by `getCollection` and the other default tools that Astro
+provides for content management, this is for you. For those uninitiated, say you have .mdx files inside of `blogs/`, and your webpages inside of `pages/`. You might use
+either of these functions to not just parse these files, but Vite will do some really cool stuff with actually understanding the content of the file. Check the docs for more,
+because our usecase is very specific: read .astro/.mdx files, grab the metadata from them, do some extra processing, and make a new route for them on the website. All we have
+to do for this is create the file inside of `blogs/`, and make sure the thing builds. If it builds, it's good to go! 
+
+Here's what we want to write:
+
+```ts
+export type BlogDetails = {
+  title: string;
+  date: string;
+  author: string;
+  overrideHref?: string;
+  overrideLayout?: boolean;
+  description?: string;
+  image?: string | string[];
+  tags?: string[];
+  hidden?: boolean;
+  aria?: { [x: string]: ImageAccessibility };
+};
+```
+
+And here's what we want to work with throughout the code:
+
+```ts
+export type ImageAccessibility = {
+  alt: string; // a description of the image
+  role?: astroHTML.JSX.AriaRole; // list of image roles: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles#roles_defined_on_mdn
+  ariaDescribedby?: string; // if you describe the image in an HTML element, use give it an it like id="carpark-description". that way the screen reader can say "this div describes the image"
+  loading?: astroHTML.JSX.ImgHTMLAttributes["loading"]; // set to "eager" if image is essential to the post, "lazy" if it is not. default of this is lazy.
+};
+
+export type Image = {
+  url: string;
+  size: string;
+  ext: string;
+  filename: string;
+  fullname: string;
+  accessibility: ImageAccessibility;
+};
+
+export type Post = BlogDetails & {
+  id: number;
+  globbedImgs: Image[];
+  relativeUrl: string;
+  absoluteUrl: string;
+  dateObj: Date;
+  Component: AstroComponentFactory;
+};
+```
+
+So two goals: make a route to each of the blog posts, and shape them into `Post` objects.
+
+Example of BlogDetails` inside of a .astro file
+```ts
+---
+export const details: BlogDetails = {
+  title: "Images-in-the-terminal",
+  date: "2024-Jan-01",
+  author: "natalie",
+  image: ["LainLaugh.gif", "ncmpcpp.png"],
+  aria: {
+    "LainLaugh.gif": { alt: "an animated girl laughing" },
+    "ncmpcpp.png": { alt: "a terminal window with a music playing program open, complete with song picker and audio visualizer", },
+  },
+};
+---
+```
+
+In .mdx files, we would make it in yml format, like this:
+
+```yml
+---
+title: Looking Forward to the Future
+date: 2024-Jan-20
+author: nathan
+image: excitementometer.jpg
+aria:
+  excitementometer.jpg:
+    alt: a gauge of excitement, towards high
+---
+```
+
+Astro does provide a useful type definition for this, in `types.ts`, we can do something like this
+
+```ts
+export type BlogAstro = AstroInstance & {
+  details: BlogDetails;
+};
+
+export type BlogMdx = MDXInstance<BlogDetails>;
+```
+
+And this is where the fun begins. First, we make a function that combines these two into something we can work with better.
+
+```ts
+export function extractMetadata(i: BlogAstro | BlogMdx): {
+  details: BlogDetails;
+  component: AstroComponentFactory;
+  dateObj: Date;
+} {
+  if ("details" in i) {
+    return {
+      details: i.details,
+      component: i.default,
+      dateObj: parseDateString(i.details.date).dateObj,
+    };
+  }
+  if ("frontmatter" in i) {
+    return {
+      details: i.frontmatter,
+      component: i.Content,
+      dateObj: parseDateString(i.frontmatter.date).dateObj,
+    };
+  }
+  // this throw won't fire unless you ignore typescript. I like just like errors (golang arc)
+  throw new Error(`Input: ${i} is not a valid BlogAstro or BlogMdx`);
+}
+```
+
+
+Notice the component key. This is something Vite (the import.meta.glob people) and Astro (who is made using Vite) gives us when we glob.
+The `i.default`, or `i.Content` represent the html of the file.
+
+If you're copying this at home, you can look at the type definitions of MDXInstance and AstroInstance for yourself. Maybe there is other information
+baked into them that you want. For us, we extract those two things and move on. The `parseDateString()` is just a function that either parses the date
+or throws. We have it in another function just for the throwing angle (Did I mention I like to find bugs at compile time instead of runtime?)
+
+I'm pretty sure it's already html at this point for astro/mdx, but in any
+case it's not relevant. What's important to us is the mdx and astro globs into two different types, so we should combine them into one type.
+I considered naming this type but it's just used once. It's an intermediate step, and a quick one, so let's move on.
+
+Here's the star of the show: `globBlogs()`
+
+```ts
+export async function globBlogs(
+  limit: number | undefined,
+  author: PossibleAuthors | undefined,
+  hideHidden: boolean | undefined
+): Promise<RGlobBlogs[]> {
+  let combined: Post[] = [];
+  const interim: ReturnType<typeof extractMetadata>[] = [];
+  const blogs = import.meta.glob<BlogAstro>("/src/blog/**/*.astro");
+      //^? Record<string, () => Promise<BlogAstro>>
+
+  for (const post in blogs) {
+    const f = await blogs[post]();
+    const g = extractMetadata(f);
+    interim.push(g);
+  }
+
+  const mdxs = import.meta.glob<BlogMdx>("/src/blog/**/*.mdx");
+
+  for (const post in mdxs) { // Note: "in" not "of"
+    const f = await mdxs[post]();
+    const g = extractMetadata(f);
+    interim.push(g);
+  }
+
+  interim.sort((a, b) => {
+    return a.dateObj.getTime() - b.dateObj.getTime();
+  });
+```
+
+The generics for `.glob` are type assertions, so make sure your source of truth is... truthy. You could zod your way out of this
+but to me, if you have good types and throw errors when you need to, zod is irrelevant in this situation. 
+
+The string to the `.glob` needs to be a literal string - I don't know how they know that it's a variable but they do. It's okay though,
+because we get individual files by passing the file that we want as the index, and calling it as a function. 
+
+Then we sort! Let's move on...
+
+```ts
+  let count = 100001;
+  for (const p of interim) {
+    const id = count;
+    count++;
+    let href;
+    if (p.details.overrideHref) {
+      href = p.details.overrideHref;
+    } else {
+      href = `p/${id}`;
+    }
+```
+
+overrideHref exists in case if one of us wants to make a specific url but as easy and managed like a blog post. Not sure where that would come in.
+Probably something SEO heavy - like a tutorial. Not this one though.
+
+```ts
+    let imgs: Image[] = [];
+    if (typeof p.details.image === "string") {
+      imgs = await globImages(
+        [p.details.image],
+        p.dateObj.getFullYear().toString(),
+        p.details.aria
+      );
+    }
+
+    if (Array.isArray(p.details.image)) {
+      imgs = await globImages(
+        p.details.image,
+        p.dateObj.getFullYear().toString(),
+        p.details.aria
+      );
+    }
+```
+
+We'll get to globImages in a minute (there's more globbing!), but the deal is here I feel like it's easier to remember the syntax if we just allow
+a string or an array. It would be annoying if the build fails because you didn't put redundant brackets around a singular string.
+
+```ts
+    combined.push({
+      ...p.details,
+      id: id,
+      Component: p.component,
+      dateObj: p.dateObj,
+      relativeUrl: href,
+      absoluteUrl: `/${p.details.author}/${href}`,
+      globbedImgs: imgs,
+    });
+  }
+```
+
+And there we have it! One, proper, Post[].
+The rest of the function is sorting + filtering, but let's show it anyways.
+
+```ts
+  combined = combined.sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
+
+  combined.map((c) => pushBlogToDb(c));
+
+  if (author) {
+    combined = combined.filter((c) => parseAuthorName(c.author) === author);
+  }
+  if (limit) {
+    combined = combined.slice(0, limit);
+  }
+  if (hideHidden) {
+    combined = combined.filter((c) => c.hidden !== true);
+  }
+
+  return combined.map((c) => {
+    return {
+      params: { post: c.relativeUrl },
+      props: { c },
+    };
+  });
+}
+```
+
+Astro's `getStaticPaths()` function expects a params key and an object where the key is what you put as the file name, so for us it's `[...post].astro`, and
+the value being the url relative to that file. As for the props, it means we can do cool stuff with it instead of everything being a basic string. Let's look
+at `globImages()`
+
+The Vite function `import.meta.glob()` is not just for this, it does a whole lot and I'm really interested in using it to convert our site from Astro to Go
+when I feel comfortable doing so (the html templating just isn't as good yet, and that's important to me for Natalie). 
+
+
+```ts
+export async function globImages(
+  imgs: string[],
+  year: string,
+  aria: BlogDetails["aria"]
+): Promise<Image[]> {
+  const globber = import.meta.glob("/public/**/*.{jpg,gif,png,jpeg,bmp,webp}", {
+    as: "url",
+  });
+
+  let images: Image[] = [];
+```
+
+
+
+There is a second argument to it for options, and you can say `{ as: "url" }` so we don't really care about the content of the file, but the location of it.
+This function is only ever accessible through Vite, so it already knows where your root folder is and what the url would be
+to get there. 
+
+**Vite tangent**: I'm not sure what the role of Vite is, and I don't think I like that there's a step in the toolchain for
+Vite to have a job. In Go, I've been using the builtin http router and building stuff with templ, which is just a templating language that compiles to Go code.
+It's pretty great, and I get how it works. In this line of thought, we're kind of at the behest of the limited documentation of this function, github issues, and
+blogs like these for interesting usecases and how to work around these primatives. I don't like this. It shouldn't have been this tricky for me to figure all of this
+out, but there's too much magic fairy dust sprinkled around all of this. No, I haven't looked in to how Vite works, or how builders in js work in general because I don't
+want to have to care to learn about this. I like building stuff, and it seems like these layers make it more difficult for me to learn and iterate for myself. Because, just
+like getCollections(), the usecase that the library makers think of is almost never *exactly* what I want. So, now I have to put in a couple hours of effort to get the
+last 10% that they didn't bother to create. I'd rather it just not exist and tell me how to do it, because then that code lives with me. See my abstractions essay.
+
+```ts
+  let images: Image[] = [];
+
+  for (const img of imgs) {
+    const i = `/public/images/covers/${year}/${img}`;
+    const url = await globber[i]();
+
+    const fsPath = `.${i}`;
+    const size = fs.statSync(fsPath).size;
+    const ext = path.extname(fsPath);
+    const file = path.basename(fsPath, path.extname(fsPath));
+    const urlNoPublic = url.slice("/public".length);
+```
+
+One of the magic things that I do like, however, is the assumption that `/` is the root of the project, and not the root directory of the machine. Whenever that "just works",
+I'm really happy because I can have absolute paths and not be scared. But, understandably, the fs and path packages disagree, so we put a little dot behind it because the
+`astro build` (probably `npm run build` for you) command is always ran from the root directory. 
+
+Vite yells at me - it says "Don't make urls in your application point to /public! Any static url is already assumed to be /public, don't worry, we've already figured it out,
+so go ahead and remove this irrelevant url". But whenever I do, it doesn't work, and I don't understand why Vite has a problem with pointing to the /public folder. In the
+astro.config.mjs, we already rename the asset folder to `/a/`, so it can't be a security thing.
+
+```ts
+    if (!url || !urlNoPublic) {
+      throw new Error(`ERROR: ${url} undefined from ${imgs}`);
+    }
+
+    if (!aria || !aria[img]) {
+      console.log(`\n=====\nNo aria for the image ${img}. Consider adding one.\n=====\n`);
+    }
+    // else {
+    // console.log(`aria for ${img}:\n  ${JSON.stringify(aria[img])}`);
+    // }
+
+    const defaultAria = { [img]: { alt: "" } };
+    const accessibility = { ...defaultAria, ...aria }[img];
+
+    images.push({
+      size: formatBytes(size),
+      ext: ext,
+      url: url,
+      filename: file,
+      fullname: `${file}${ext}`,
+      accessibility: accessibility,
+    });
+  }
+  return images;
+};
+```
+
+We have some classic errors, I was on an accessibility kick a little while ago and that console.log used to throw an error. I'm not sure if I should make it throw.
+If you want more context with the codebase (such as the formatBytes() function that was 100% written by ChatGPT), you can look at the 
+[github repo](https://github.com/nathan-hello/personal-site), and if we've already rewritten the site by the time you get there, you can just look at the commit logs for January 2024.
+
+I'm not sure how informative this was on how to properly abuse `import.meta.glob()` but I hope it helps. Here's an example `[...post].astro` if you're really stuck.
+
+```js
+---
+export const getStaticPaths: GetStaticPaths = async () => {
+  const g = await globBlogs(undefined, "nathan", false);
+  // console.log(g)
+  return g;
+};
+
+const props = Astro.props as RGlobBlogs["props"];
+---
+
+<NathanLayout details={props.c}>
+  <props.c.Component />
+</NathanLayout>
+```
+
+Here, we get that `params` object, and we filtered for just nathan, there's no limit for how many routes we want to make, and we're not hidding hidden because even hidden
+posts should have a url to them. The `<props.c.Component/>` ends up getting put in the `<slot/>` of the layout from `@layouts/nathan/Root.astro`. 
+
+I hope this helps someone. Thanks for reading.
