@@ -18,6 +18,9 @@ Welcome to our site (:
 - rss feed
 - Live stream page withh built in irc front end (and back end linked to an ircd we host?)
 
+- Components:
+    - <Code lang=""/>
+
 # list of thingies i can do
 
 ## To Do
