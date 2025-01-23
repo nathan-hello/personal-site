@@ -18,6 +18,7 @@ func Logging(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
 func AllowMethods(methods ...string) alice.Constructor {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -31,8 +32,6 @@ func AllowMethods(methods ...string) alice.Constructor {
 	}
 }
 
-// This returned an alice.Constructor instead of
-// being an alice.Constructor because it requires an argument (key, value string).
 func CreateHeader(key string, value string) alice.Constructor {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -42,8 +41,6 @@ func CreateHeader(key string, value string) alice.Constructor {
 	}
 }
 
-// This returned an alice.Constructor instead of
-// being an alice.Constructor because it requires an argument (path string).
 func RejectSubroute(path string) alice.Constructor {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

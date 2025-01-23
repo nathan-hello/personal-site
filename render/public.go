@@ -6,13 +6,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/nathan-hello/personal-site/utils"
 )
 
 // This just copies the public/ dir verbatim to dist/
 
 func Public() error {
 	atLeastOne := false
-	err := filepath.Walk("public", func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(utils.DIR_PUBLIC, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

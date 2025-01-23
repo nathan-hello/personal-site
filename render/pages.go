@@ -22,7 +22,7 @@ import (
 
 func PagesHtml() error {
 
-	err := filepath.Walk("pages", func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(utils.DIR_PAGES, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -40,28 +40,13 @@ func PagesHtml() error {
 		}
 		defer f.Close()
 
-		meta := parseHtmlHeader(f)
-		comp := chooseLayout(meta)
-
-		renderedFile, err := customs.RenderCustomComponents(f)
-		if err != nil {
-			return err
-		}
-		fmt.Println(renderedFile)
-
 		route := strings.TrimPrefix(path, "pages")
 		dist := "dist" + route
 
-		var bits bytes.Buffer
-		childrenCtx := templ.WithChildren(context.Background(), templ.Raw(renderedFile))
-		err = comp.Render(childrenCtx, &bits)
+		err = writeHtmlFile(f, dist)
 		if err != nil {
-			return err
+			return nil
 		}
-
-		folder := strings.TrimSuffix(dist, info.Name())
-		os.MkdirAll(folder, 0777)
-		os.WriteFile(dist, bits.Bytes(), 0777)
 
 		return nil
 
@@ -70,6 +55,31 @@ func PagesHtml() error {
 		return err
 	}
 
+	return nil
+}
+
+func writeHtmlFile(f *os.File, dist string) error {
+
+	meta := parseHtmlHeader(f)
+	comp := chooseLayout(meta)
+
+	renderedFile, err := customs.RenderCustomComponents(f)
+	if err != nil {
+		return err
+	}
+	fmt.Println(renderedFile)
+
+	var bits bytes.Buffer
+	childrenCtx := templ.WithChildren(context.Background(), templ.Raw(renderedFile))
+	err = comp.Render(childrenCtx, &bits)
+	if err != nil {
+		return err
+	}
+
+	parts := strings.Split(dist, "/")
+	folder := strings.Join(parts[:len(parts)-1], "/")
+	os.MkdirAll(folder, 0777)
+	os.WriteFile(dist, bits.Bytes(), 0777)
 	return nil
 }
 

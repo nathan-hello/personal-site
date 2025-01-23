@@ -10,8 +10,8 @@ var formats = []string{
 	"2006-01-02T15:04",
 }
 
-func FormatDate(dateStr string) string {
-	dateObj := GetDateObject(dateStr)
+func DateFormatString(dateStr string) string {
+	dateObj := DateStringToObject(dateStr)
 
 	if dateObj.Hour() == 0 && dateObj.Minute() == 0 {
 		return dateObj.Format("02 Jan 2006")
@@ -20,7 +20,7 @@ func FormatDate(dateStr string) string {
 	return dateObj.Format("02 Jan 2006 15:04 MST")
 }
 
-func GetDateObject(dateStr string) time.Time {
+func DateStringToObject(dateStr string) time.Time {
 	var dateObj time.Time
 	var err error
 
