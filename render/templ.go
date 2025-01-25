@@ -3,7 +3,6 @@ package render
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"os"
 	"strings"
 
@@ -25,7 +24,6 @@ func PagesTempl(templs []TemplStaticPages) error {
 			parts = parts[:len(parts)-1]
 		}
 		folder := "dist" + strings.Join(parts, "/")
-		fmt.Println(folder)
 		os.MkdirAll(folder, 0777)
 		os.WriteFile("dist"+v.Route, bits.Bytes(), 0777)
 	}

@@ -2,24 +2,23 @@ package layouts
 
 import (
 	"github.com/nathan-hello/personal-site/components"
-	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/utils"
 )
 
-templ NathanPost(blog db.Blog, images []db.Image) {
-	@IndexLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Title, blog.Description, blog.Url, &images[0])) {
+templ NathanPost(blog utils.Blog) {
+	@IndexLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Frnt.Title, blog.Frnt.Description, blog.Url, &blog.Frnt.Images[0])) {
 		<div class="min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto md:w-[90%] lg:w-[65%]">
 			<div class="text-lg pt-6 pl-10 mx-auto">
-				<span class="text-[#a47996] font-bold">{ blog.Author }</span>
+				<span class="text-[#a47996] font-bold">{ blog.Frnt.Author }</span>
 				<span class="">- </span>
-				<span class="">{ blog.Title } - { utils.DateFormatString(blog.Date) } </span>
+				<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) } </span>
 			</div>
 			<div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
-				for _, v := range images {
+				for _, v := range blog.Frnt.Images {
 					@components.ImageCard(v)
 				}
 			</div>
-			<div id="blog-post-container" class="p-10 text-md leading-relaxed md:text-xl md:leading-8">
+			<div id="blog.Frnt-post-container" class="p-10 text-md leading-relaxed md:text-xl md:leading-8">
 				@components.PostFull(blog)
 			</div>
 		</div>

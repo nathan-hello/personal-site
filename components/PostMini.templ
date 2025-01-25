@@ -1,30 +1,53 @@
 package components
 
-import "github.com/nathan-hello/personal-site/db"
-import "github.com/nathan-hello/personal-site/utils"
+import (
+	"fmt"
+	"github.com/nathan-hello/personal-site/utils"
+	"strings"
+)
 
-templ PostMini(blog *db.Blog, image db.Image) {
-	<div
-		class={ `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 border-nat-white-c01 ${cardColor}` }
-	>
+func cardColor(blog utils.Blog) string {
+        fmt.Printf("%#v\n", blog.Url)
+	var cardColor = "bg-black"
+	var borderColor = "border-white"
+
+	if strings.ToLower(blog.Frnt.Author) == "nathan" {
+		cardColor = "bg-cyan-950"
+		borderColor = "border-green-900"
+	}
+	if strings.ToLower(blog.Frnt.Author) == "natalie" {
+		cardColor = "bg-neutral-800"
+		borderColor = "border-nat-white-c01"
+	}
+
+	return fmt.Sprintf("%s %s", cardColor, borderColor)
+
+}
+
+templ PostMini(blog utils.Blog) {
+
+	<div class={fmt.Sprintf(
+          `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 border-nat-white-c01 %s`,
+          cardColor(blog),
+        )}>
 		<style>
   input:checked + span {
     display: none;
   }
 </style>
-		<span class="text-[#a47996] font-bold font-vcrosdmono">{ blog.Author }</span>
+		<span class="text-[#a47996] font-bold font-vcrosdmono">{ blog.Frnt.Author }</span>
 		<span class="">{ " " }-{ " " }</span>
-		<span class="">{ blog.Title } - { utils.DateFormatString(blog.Date) }</span>
+		<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) }</span>
 		<input type="checkbox"/>
 		<span>
 			<div></div>
-			if (image.Url != "") {
-				<div class="float-left mr-10 mt-2">
-					@ImageCard(image)
+			if (len(blog.Frnt.Images) > 0) {
+				<div class="mr-10 mt-2">
+					@ImageCard(blog.Frnt.Images[0])
 				</div>
 			}
 			<div id="blog-post-container" class="max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
-				<slot></slot>
+				{}
 			</div>
 			<a
 				class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01 font-semibold"
@@ -32,8 +55,4 @@ templ PostMini(blog *db.Blog, image db.Image) {
 			>[See full post]</a>
 		</span>
 	</div>
-}
-
-templ postPreview(markdown string) {
-	<div></div>
 }

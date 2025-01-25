@@ -9,129 +9,27 @@ import (
 	"context"
 )
 
-const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM Users WHERE id = ?
+const insertComment = `-- name: InsertComment :one
+INSERT INTO Comments (created_at,text,post) values (?,?,?) RETURNING id, created_at, text, post
 `
 
-// DeleteUser
+type InsertCommentParams struct {
+	CreatedAt interface{}
+	Text      string
+	Post      string
+}
+
+// table: Comments
 //
-//	DELETE FROM Users WHERE id = ?
-func (q *Queries) DeleteUser(ctx context.Context, id string) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
-	return err
-}
-
-const insertUser = `-- name: InsertUser :one
-INSERT INTO Users ( email, username, encrypted_password, password_created_at)
-values (?, ?, ?, ?)
-RETURNING id, email, username
-`
-
-type InsertUserParams struct {
-	Email             *string
-	Username          string
-	EncryptedPassword string
-	PasswordCreatedAt string
-}
-
-type InsertUserRow struct {
-	ID       string
-	Email    *string
-	Username string
-}
-
-// InsertUser
-//
-//	INSERT INTO Users ( email, username, encrypted_password, password_created_at)
-//	values (?, ?, ?, ?)
-//	RETURNING id, email, username
-func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (InsertUserRow, error) {
-	row := q.db.QueryRowContext(ctx, insertUser,
-		arg.Email,
-		arg.Username,
-		arg.EncryptedPassword,
-		arg.PasswordCreatedAt,
-	)
-	var i InsertUserRow
-	err := row.Scan(&i.ID, &i.Email, &i.Username)
-	return i, err
-}
-
-const selectAllUsers = `-- name: SelectAllUsers :many
-SELECT created_at, username, email, encrypted_password, password_created_at, id FROM Users
-`
-
-// table: Users
-//
-//	SELECT created_at, username, email, encrypted_password, password_created_at, id FROM Users
-func (q *Queries) SelectAllUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, selectAllUsers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []User
-	for rows.Next() {
-		var i User
-		if err := rows.Scan(
-			&i.CreatedAt,
-			&i.Username,
-			&i.Email,
-			&i.EncryptedPassword,
-			&i.PasswordCreatedAt,
-			&i.ID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const selectUserByEmail = `-- name: SelectUserByEmail :one
-SELECT created_at, username, email, encrypted_password, password_created_at, id FROM Users WHERE email = ?
-`
-
-// SelectUserByEmail
-//
-//	SELECT created_at, username, email, encrypted_password, password_created_at, id FROM Users WHERE email = ?
-func (q *Queries) SelectUserByEmail(ctx context.Context, email *string) (User, error) {
-	row := q.db.QueryRowContext(ctx, selectUserByEmail, email)
-	var i User
+//	INSERT INTO Comments (created_at,text,post) values (?,?,?) RETURNING id, created_at, text, post
+func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, insertComment, arg.CreatedAt, arg.Text, arg.Post)
+	var i Comment
 	err := row.Scan(
-		&i.CreatedAt,
-		&i.Username,
-		&i.Email,
-		&i.EncryptedPassword,
-		&i.PasswordCreatedAt,
 		&i.ID,
-	)
-	return i, err
-}
-
-const selectUserByUsername = `-- name: SelectUserByUsername :one
-SELECT created_at, username, email, encrypted_password, password_created_at, id FROM Users WHERE username = ?
-`
-
-// SelectUserByUsername
-//
-//	SELECT created_at, username, email, encrypted_password, password_created_at, id FROM Users WHERE username = ?
-func (q *Queries) SelectUserByUsername(ctx context.Context, username string) (User, error) {
-	row := q.db.QueryRowContext(ctx, selectUserByUsername, username)
-	var i User
-	err := row.Scan(
 		&i.CreatedAt,
-		&i.Username,
-		&i.Email,
-		&i.EncryptedPassword,
-		&i.PasswordCreatedAt,
-		&i.ID,
+		&i.Text,
+		&i.Post,
 	)
 	return i, err
 }

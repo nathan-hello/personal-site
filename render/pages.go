@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -60,11 +61,16 @@ func PagesHtml() error {
 
 func writeHtmlFile(f *os.File, dist string) error {
 	meta := parsePagesFrontmatter(f)
-        meta.dist = dist
+	meta.dist = dist
 
 	comp := chooseLayout(meta)
 
-	renderedFile, err := customs.RenderCustomComponents(f)
+        content, err := io.ReadAll(f)
+        if err != nil {
+                return err
+        }
+
+	renderedFile, err := customs.RenderCustomComponents(string(content))
 	if err != nil {
 		return err
 	}
@@ -144,5 +150,5 @@ func chooseLayout(meta metadata) templ.Component {
 	}
 
 	url := strings.TrimPrefix(meta.dist, "dist")
-	return registeredLayouts[layout](components.Header(meta.title), components.Meta(meta.title, meta.description, url, components.DefaultImage))
+	return registeredLayouts[layout](components.Header(meta.title), components.Meta(meta.title, meta.description, url, nil))
 }

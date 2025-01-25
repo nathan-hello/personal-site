@@ -27,7 +27,7 @@ func MarkdownRender(md []byte) []byte {
 func mdCodeHighlighter(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
 	if code, ok := node.(*ast.CodeBlock); ok {
 		high, err := CodeHighlighter(string(code.Info), string(code.Literal))
-		if err != nil {
+                if err != nil {
 			w.Write(code.Literal)
 		}
 		w.Write([]byte(high))

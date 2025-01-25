@@ -4,40 +4,9 @@
 
 package db
 
-type Blog struct {
-	ID             int64
-	Markdown       string
-	Author         string
-	Date           string
-	Description    string
-	Hidden         *bool
-	Overridehref   *string
-	Overridelayout *bool
-	Tags           *string
-	Title          string
-	Url            string
-}
-
-type BlogsImage struct {
-	PostID  int64
-	ImageID int64
-}
-
-type Image struct {
-	ID       int64
-	Alt      string
-	Url      string
-	Size     string
-	Ext      string
-	Filename string
-	Fullname string
-}
-
-type User struct {
-	CreatedAt         string
-	Username          string
-	Email             *string
-	EncryptedPassword string
-	PasswordCreatedAt string
-	ID                string
+type Comment struct {
+	ID        string
+	CreatedAt interface{}
+	Text      string
+	Post      string
 }

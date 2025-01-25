@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/pages"
 	"github.com/nathan-hello/personal-site/render"
 )
@@ -21,13 +20,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = render.Blogs()
+        blogs,err := render.Blogs()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = render.PagesTempl([]render.TemplStaticPages{
-		{Templ: pages.Index([]db.Blog{}), Route: "/index.html"},
+		{Templ: pages.Index(blogs), Route: "/index.html"},
 	})
 	if err != nil {
 		log.Fatal(err)

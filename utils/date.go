@@ -17,13 +17,16 @@ var formats = []string{
 func DateFormatString(dateStr string) string {
 	dateObj := DateStringToObject(dateStr)
 
+        return DateFormatObject(dateObj)
+}
+
+func DateFormatObject(dateObj time.Time) string {
 	if dateObj.Hour() == 0 && dateObj.Minute() == 0 {
 		return dateObj.Format("02 Jan 2006")
 	}
 
 	return dateObj.Format("02 Jan 2006 15:04 MST")
 }
-
 func DateStringToObject(dateStr string) time.Time {
 	var dateObj time.Time
 	var err error

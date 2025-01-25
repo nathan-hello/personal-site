@@ -3,8 +3,6 @@ package customs
 import (
 	"context"
 	"fmt"
-	"io"
-	"os"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -27,25 +25,10 @@ type component struct {
 	Children   string // any nested components are already html by the time their parent gets rendered
 }
 
-func RenderCustomComponents(f *os.File) (string, error) {
-	content, err := io.ReadAll(f)
-	if err != nil {
-		return "", fmt.Errorf("failed to read file: %w", err)
-	}
-
-	processed, err := processComponents(string(content))
-	if err != nil {
-		return "", err
-	}
-
-	return processed, nil
-
-}
-
 // processComponents walks through the content, looking for <Component> tags.
 // Unregistered or improperly closed tags are output as-is. Registered components
 // with proper closing tags are processed.
-func processComponents(content string) (string, error) {
+func RenderCustomComponents(content string) (string, error) {
 	var output strings.Builder
 
 	for {
@@ -126,7 +109,7 @@ func processComponents(content string) (string, error) {
 
 		// Recursively process children that may contain further components.
 		if strings.Contains(comp.Children, "<") {
-			parsedChildren, err := processComponents(comp.Children)
+			parsedChildren, err := RenderCustomComponents(comp.Children)
 			if err != nil {
 				return "", err
 			}

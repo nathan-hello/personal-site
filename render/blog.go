@@ -1,78 +1,74 @@
 package render
 
 import (
-	"bufio"
-	"encoding/json"
+	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
 	"time"
 
+	"github.com/a-h/templ"
+	"github.com/nathan-hello/personal-site/components"
 	"github.com/nathan-hello/personal-site/render/customs"
 	"github.com/nathan-hello/personal-site/utils"
 	"gopkg.in/yaml.v3"
 )
 
-type image struct {
-	alt string `yaml:"alt"`
-}
-
-type frontmatter struct {
-	Author         string   `yaml:"author"`
-	Title          string   `yaml:"title"`
-	Date           string   `yaml:"date"`
-	Images         []image  `yaml:"images,omitempty"`
-	Tags           []string `yaml:"tags,omitempty"`
-	OverrideHref   string   `yaml:"overrideHref,omitempty"`
-	OverrideLayout string   `yaml:"overrideLayout,omitempty"`
-	Description    string   `yaml:"description,omitempty"`
-	Hidden         bool     `yaml:"hidden,omitempty"`
-}
-
-type Frontmatter struct {
-	Author         string
-	Title          string
-	Date           time.Time
-	Images         []Image
-	Tags           []string
-	OverrideHref   string
-	OverrideLayout string
-	Description    string
-	Hidden         bool
-}
-
-type Blog struct {
-	Id   int
-	Frnt Frontmatter
-	Html string
-}
-
-func Blogs() error {
+func Blogs() ([]utils.Blog, error) {
 
 	blogs, err := gatherRenderedHtmls()
 	if err != nil {
-		return err
+		return nil,err
 	}
 
-	slices.SortFunc(blogs, func(a, b Blog) int {
-		return a.Frnt.Date.Compare(b.Frnt.Date)
+	slices.SortFunc(blogs, func(a, b utils.Blog) int {
+		return b.Frnt.Date.Compare(a.Frnt.Date)
 	})
 
-	for _, _ = range blogs {
-		//fmt.Printf("%d: %#v\n", i, v)
+	for i, v := range blogs {
+                v.Id = 100_000+i
+		dist := fmt.Sprintf("./dist/%s/p/%d", strings.ToLower(v.Frnt.Author), v.Id)
+
+
+                v.Url = strings.TrimPrefix(dist,"./dist")
+
+		comp := chooseLayout(metadata{
+                        ascii: utils.AsciiNat_e,
+                        dist: dist, 
+                        title: v.Frnt.Title,
+                        description: v.Frnt.Description,
+                        overrideLayout: v.Frnt.OverrideLayout,
+                })
+
+		var bits bytes.Buffer
+		childrenCtx := templ.WithChildren(context.Background(), components.PostFull(v))
+		err = comp.Render(childrenCtx, &bits)
+		if err != nil {
+			return nil,err
+		}
+
+		parts := strings.Split(dist, "/")
+		folder := strings.Join(parts[:len(parts)-1], "/")
+		os.MkdirAll(folder, 0777)
+		os.WriteFile(dist, bits.Bytes(), 0777)
+
+                blogs[i] = v
 
 	}
 
-	return nil
+        
+
+        return blogs[:10],nil
 }
 
-func gatherRenderedHtmls() ([]Blog, error) {
-	blogs := []Blog{}
+func gatherRenderedHtmls() ([]utils.Blog, error) {
+	blogs := []utils.Blog{}
 	err := filepath.Walk(utils.DIR_BLOG, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -87,19 +83,22 @@ func gatherRenderedHtmls() ([]Blog, error) {
 		}
 		defer f.Close()
 
-		fm, err := parseBlogFrontmatter(f)
+		b := utils.Blog{
+			Frnt: utils.Frontmatter{},
+		}
+
+		yml, content, err := yoinkFrontmatter(f)
 		if err != nil {
 			return err
 		}
-		b := Blog{
-			Frnt: fm,
+
+		b.Frnt, err = parseFrontmatter(yml)
+		if err != nil {
+			return err
 		}
 
-		parseYaml(f)
-
 		if filepath.Ext(info.Name()) == ".html" {
-
-			rendered, err := customs.RenderCustomComponents(f)
+			rendered, err := customs.RenderCustomComponents(content)
 
 			if err != nil {
 				return err
@@ -108,14 +107,8 @@ func gatherRenderedHtmls() ([]Blog, error) {
 		}
 
 		if filepath.Ext(info.Name()) == ".md" || filepath.Ext(info.Name()) == ".mdx" {
-
-			contents, err := io.ReadAll(f)
-			if err != nil {
-				return err
-			}
-			rendered := customs.MarkdownRender(contents)
+                        rendered := customs.MarkdownRender([]byte(content))
 			b.Html = string(rendered)
-
 		}
 
 		blogs = append(blogs, b)
@@ -125,168 +118,119 @@ func gatherRenderedHtmls() ([]Blog, error) {
 	return blogs, err
 }
 
-func parseYaml(f *os.File) (string, error) {
-	// Read entire file at once
-	raw, err := io.ReadAll(f)
-	if err != nil {
-		return "", err
-	}
+func yoinkFrontmatter(f *os.File) (string,string, error) {
 
 	ext := filepath.Ext(f.Name())
+	asdf, err := io.ReadAll(f)
+	if err != nil {
+		return "", "",err
+	}
+	text := string(asdf)
+	lines := strings.Split(text, "\n")
+
 	var delims [2]string
-	switch ext {
-	case ".mdx":
+	if ext == ".mdx" || ext == ".md" {
 		delims = [2]string{"---", "---"}
-	case ".html":
+	}
+	if ext == ".html" {
 		delims = [2]string{"<!--", "-->"}
 	}
+	var idxs = [2]int{-1, -1}
 
-	// Build a safe regex that matches anything (including newlines) between delimiters
-	re := fmt.Sprintf(`(?s)%s(.*?)%s`, regexp.QuoteMeta(delims[0]), regexp.QuoteMeta(delims[1]))
-	rx := regexp.MustCompile(re)
-
-	// We want just the content inside the delimiters
-	match := rx.FindStringSubmatch(string(raw))
-	if len(match) < 2 {
-		return "", nil
-	}
-	fmt.Printf("%#v\n", match)
-
-	return match[1], nil
-
-}
-
-func parseBlogFrontmatter(f *os.File) (Frontmatter, error) {
-	scanner := bufio.NewScanner(f)
-	var begin, end bool
-	frontmatter := Frontmatter{}
-	for scanner.Scan() {
-
-		line := scanner.Text()
-		begin, end = testBeginningEnd(line, filepath.Ext(f.Name()), begin)
-
-		if end {
+	var a = 0
+	for i, v := range lines {
+		if strings.Contains(v, delims[a]) {
+			idxs[a] = i
+			a++
+		}
+		if idxs[0] > -1 && idxs[1] > -1 {
 			break
 		}
-
-		kv := strings.Split(line, ":")
-
-		key := kv[0]
-		value := strings.Join(kv[1:], ":")
-
-		err := parseKey(key, value, &frontmatter)
-		if err != nil {
-			return Frontmatter{}, err
-		}
-		if key == "images" || key == "image" {
-			parseImageFrontmatter([]byte(value), &frontmatter)
-		}
-	}
-	if !begin {
-		return Frontmatter{}, fmt.Errorf("file %s reached EOL without frontmatter", f.Name())
 	}
 
-	return frontmatter, nil
+	if idxs[0] == -1 || idxs[1] == -1 {
+		return "", "",fmt.Errorf("could not get frontmatter for file %s", f.Name())
+	}
+        frntString := strings.Join(lines[idxs[0]+1:idxs[1]], "\n")
+        content := strings.Join(lines[idxs[1]+1:], "\n")
+        
+        return frntString, content, nil
 }
 
-func parseKey(key string, value string, f *Frontmatter) error {
-	switch strings.ToLower(key) {
-	case "title":
-		f.Title = value
-	case "author":
-		f.Author = value
-	case "date":
-		f.Date = utils.DateStringToObject(value)
-	case "tags":
-		arr := []string{}
-		err := json.Unmarshal([]byte(value), &arr)
+type ymlImage struct {
+	Alt string `yaml:"alt,omitempty"`
+}
+type ymlFrontmatter struct {
+	Author         string              `yaml:"author"`
+	Title          string              `yaml:"title"`
+	Date           string              `yaml:"date"`
+	Images         map[string]ymlImage `yaml:"images,omitempty"`
+	Image          map[string]ymlImage `yaml:"image,omitempty"`
+	Tags           []string            `yaml:"tags,omitempty"`
+	OverrideHref   string              `yaml:"overrideHref,omitempty"`
+	OverrideLayout string              `yaml:"overrideLayout,omitempty"`
+	Description    string              `yaml:"description,omitempty"`
+	Hidden         bool                `yaml:"hidden,omitempty"`
+}
+
+func parseFrontmatter(s string) (utils.Frontmatter, error) {
+
+	yml := ymlFrontmatter{}
+
+	err := yaml.Unmarshal([]byte(s), &yml)
+	if err != nil {
+		log.Println(s)
+		return utils.Frontmatter{}, err
+	}
+
+	fm := utils.Frontmatter{}
+	fm.Author = yml.Author
+	fm.Title = yml.Title
+	fm.Date = utils.DateStringToObject(yml.Date)
+
+	getImages(yml.Image, &fm)  // key "image:"
+	getImages(yml.Images, &fm) // key "images:"
+
+	fm.Tags = yml.Tags
+	fm.OverrideHref = yml.OverrideHref
+	fm.OverrideLayout = yml.OverrideLayout
+	fm.Description = yml.Description
+	fm.Hidden = yml.Hidden
+
+	return fm, nil
+
+}
+
+func blogImageLocation(name string, d time.Time) string {
+	year := d.Year()
+	return fmt.Sprintf("./public/images/covers/%d/%s", year, name)
+}
+
+func getImages(yml map[string]ymlImage, fm *utils.Frontmatter) error {
+	for k, v := range yml {
+		publicDir := blogImageLocation(k, fm.Date)
+		url := strings.TrimPrefix(publicDir, "./public")
+		f, err := os.Open(publicDir)
 		if err != nil {
 			return err
 		}
-		f.Tags = arr
-	case "overrideHref":
-		f.OverrideHref = value
-	case "overrideLayout":
-		f.OverrideLayout = value
-	case "description":
-		f.Description = value
-	case "hidden":
-		if value == "true" {
-			f.Hidden = true
-		}
-	}
-	return nil
-}
-
-type imageFrontmatterProps struct {
-	Alt string `json:"alt"`
-}
-type imageFrontmatter map[string]imageFrontmatterProps
-type Image struct {
-	Name     string
-	Filesize string
-	Url      string
-	AltText  string
-}
-
-func parseImageFrontmatter(yamlData []byte, frontmatter *Frontmatter) error {
-	var fm struct {
-		Images imageFrontmatter `yaml:"images"`
-	}
-
-	err := yaml.Unmarshal(yamlData, &fm)
-	if err != nil {
-		return fmt.Errorf("failed to unmarshal YAML: %w", err)
-	}
-
-	ifm := fm.Images
-
-	images := []Image{}
-
-	folder := utils.GetBlogImageDir(frontmatter.Date)
-
-	for k, v := range ifm {
-		path := fmt.Sprintf("%s/%s", folder, k) // Use 'k' instead of 's'
-
-		file, err := os.Open(path)
+		defer f.Close()
+		stat, err := f.Stat()
 		if err != nil {
-			return fmt.Errorf("failed to open file %s: %w", path, err)
+			return err
 		}
-		defer file.Close()
 
-		stat, err := file.Stat()
-		if err != nil {
-			return fmt.Errorf("failed to stat file %s: %w", path, err)
-		}
-		size := utils.FormatSize(stat.Size())
-		images = append(images, Image{
-			Name:     k,
-			Url:      path,
-			AltText:  v.Alt,
-			Filesize: size,
-		})
+		fm.Images = append(fm.Images,
+			utils.Image{
+				Name:     k,
+				Size: utils.FormatSize(stat.Size()),
+                                Ext: filepath.Ext(k),
+				Url:      url,
+				Alt:  v.Alt,
+			},
+		)
+
 	}
-	frontmatter.Images = images
+
 	return nil
-}
-
-func testBeginningEnd(line, ext string, begin bool) (bool, bool) {
-	if ext == ".md" || ext == ".mdx" {
-		if strings.TrimSpace(line) == "---" {
-			if !begin {
-				return true, false
-			}
-			return true, true
-		}
-	}
-
-	if ext == ".html" {
-		if strings.Contains(line, "<!--") {
-			return true, false
-		}
-		if strings.Contains(line, "-->") {
-			return true, true
-		}
-	}
-	return begin, false
 }

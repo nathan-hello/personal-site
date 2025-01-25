@@ -2,20 +2,19 @@ package pages
 
 import (
 	"github.com/nathan-hello/personal-site/components"
-	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/layouts"
 	"github.com/nathan-hello/personal-site/utils"
 )
 
-templ Index(blogs []db.Blog) {
+templ Index(blogs []utils.Blog) {
 	@layouts.IndexLayout(
 		components.Header(utils.AsciiNat_e),
 		components.Meta("Nat/e", "reluekiss.com - Our blog <3", "reluekiss.com", nil),
 	) {
 		<div class="ml-[10%] mr-[10%]">
-		//	for _, v := range blogs {
-		//		@components.PostMini(&v, utils.GetBlogImages(v)[0])
-		//	}
+			for _, v := range blogs {
+				@components.PostMini(v)
+			}
 		</div>
 	}
 }

@@ -26,6 +26,9 @@ func CodeHighlighter(lang string, content string) (string, error) {
 	if lex == nil {
 		lex = lexers.Analyse(lang)
 	}
+        if lex == nil {
+                lex = lexers.Fallback
+        }
 	sty := styles.Get("gruvbox")
 	frm := html.New(
 		html.ClassPrefix("chroma-"),

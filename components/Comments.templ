@@ -2,7 +2,7 @@ package components
 
 import "fmt"
 
-templ Comments(blogId int64) {
+templ Comments(blogId int) {
 	<head>
 		<style>
     body {
@@ -22,7 +22,7 @@ templ Comments(blogId int64) {
 	<h2>Comments</h2>
 	<hr/>
 	<form
-		hx-post={ fmt.Sprintf("/api/comments/${id}", blogId) }
+		hx-post={ fmt.Sprintf("/api/comments/%d", blogId) }
 		hx-target="this"
 		hx-swap="outerHTML"
 		class="flex-col"
@@ -52,7 +52,7 @@ templ Comments(blogId int64) {
 			<div class="gap-x-4">
 				<div
 					class="max-h-screen"
-					hx-post={ fmt.Sprintf("/api/comments/${id}", blogId) }
+					hx-post={ fmt.Sprintf("/api/comments/%d", blogId) }
 					hx-target="this"
 					hx-trigger="load"
 				></div>

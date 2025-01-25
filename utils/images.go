@@ -3,13 +3,7 @@ package utils
 import (
 	"fmt"
 	"math"
-	"time"
 )
-
-func GetBlogImageDir(d time.Time) string {
-	year := d.Year()
-	return fmt.Sprintf("./public/images/covers/%d", year)
-}
 
 func FormatSize(bytes int64) string {
 
