@@ -104,18 +104,14 @@ func processComponents(content string) (string, error) {
 			continue
 		}
 
+		var closingTag string
 		if isSelfClosing {
-			selfClosingResult, err := registeredComponents[elem](comp)
-			if err != nil {
-				return "", err
-			}
-
-			selfClosingResult.Render(context.Background(), &output)
-			continue
+			closingTag = " />"
+		} else {
+			closingTag = fmt.Sprintf("</%s>", elem)
 		}
 
 		// Look for the closing tag for this component (e.g. </Code>).
-		closingTag := fmt.Sprintf("</%s>", elem)
 		closingIdx := strings.Index(content, closingTag)
 		if closingIdx == -1 {
 			// Proper closing tag not found, output verbatim and skip editing.

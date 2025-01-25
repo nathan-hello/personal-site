@@ -59,15 +59,15 @@ func PagesHtml() error {
 }
 
 func writeHtmlFile(f *os.File, dist string) error {
+	meta := parsePagesFrontmatter(f)
+        meta.dist = dist
 
-	meta := parseHtmlHeader(f)
 	comp := chooseLayout(meta)
 
 	renderedFile, err := customs.RenderCustomComponents(f)
 	if err != nil {
 		return err
 	}
-	fmt.Println(renderedFile)
 
 	var bits bytes.Buffer
 	childrenCtx := templ.WithChildren(context.Background(), templ.Raw(renderedFile))
@@ -75,7 +75,6 @@ func writeHtmlFile(f *os.File, dist string) error {
 	if err != nil {
 		return err
 	}
-
 	parts := strings.Split(dist, "/")
 	folder := strings.Join(parts[:len(parts)-1], "/")
 	os.MkdirAll(folder, 0777)
@@ -88,10 +87,10 @@ type metadata struct {
 	title          string
 	description    string
 	overrideLayout string
-	path           string
+	dist           string
 }
 
-func parseHtmlHeader(f *os.File) metadata {
+func parsePagesFrontmatter(f *os.File) metadata {
 
 	var sb strings.Builder
 	scanner := bufio.NewScanner(f)
@@ -140,10 +139,10 @@ var registeredLayouts = map[string]layouts.LayoutComponent{
 
 func chooseLayout(meta metadata) templ.Component {
 	layout := "default"
-	if strings.Contains(meta.path, "natalie") {
+	if strings.Contains(meta.dist, "natalie") {
 		layout = "natalie"
 	}
-	url := strings.Split(meta.path, "pages")[1]
 
+	url := strings.TrimPrefix(meta.dist, "dist")
 	return registeredLayouts[layout](components.Header(meta.title), components.Meta(meta.title, meta.description, url, components.DefaultImage))
 }

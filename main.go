@@ -21,6 +21,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	err = render.Blogs()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	err = render.PagesTempl([]render.TemplStaticPages{
 		{Templ: pages.Index([]db.Blog{}), Route: "/index.html"},
 	})
@@ -28,6 +33,10 @@ func main() {
 		log.Fatal(err)
 	}
 
+	serve()
+}
+
+func serve() {
 	serve := false
 	for _, v := range os.Args {
 		if strings.Contains(v, "--serve") {
@@ -40,9 +49,10 @@ func main() {
 		http.Handle("/", fs)
 
 		log.Print("Listening on :3000...")
-		err = http.ListenAndServe(":3000", nil)
+		err := http.ListenAndServe(":3000", nil)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
+
 }

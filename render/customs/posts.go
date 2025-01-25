@@ -6,6 +6,5 @@ import (
 
 func blogPost(c component) (templ.Component, error) {
 
-	return nil, nil
-	// return components.PostFull(), nil
+	return templ.Raw(""), nil
 }

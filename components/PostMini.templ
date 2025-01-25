@@ -14,7 +14,7 @@ templ PostMini(blog *db.Blog, image db.Image) {
 </style>
 		<span class="text-[#a47996] font-bold font-vcrosdmono">{ blog.Author }</span>
 		<span class="">{ " " }-{ " " }</span>
-		<span class="">{ blog.Title } - { utils.FormatDate(blog.Date) }</span>
+		<span class="">{ blog.Title } - { utils.DateFormatString(blog.Date) }</span>
 		<input type="checkbox"/>
 		<span>
 			<div></div>

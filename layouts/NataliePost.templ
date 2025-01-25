@@ -17,7 +17,7 @@ templ NataliePost(blog db.Blog, images []db.Image) {
 			<div class="text-lg pt-6 mx-auto pl-10">
 				<span class="text-[#a47996] font-bold">{ blog.Author }</span>
 				<span class="">- </span>
-				<span class="">{ blog.Title } - { utils.FormatDate(blog.Date) } </span>
+				<span class="">{ blog.Title } - { utils.DateFormatString(blog.Date) } </span>
 			</div>
 			<div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
 				for _, v := range images {
