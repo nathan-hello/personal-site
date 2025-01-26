@@ -1,4 +1,4 @@
-package customs
+package render
 
 import (
 	"context"
@@ -10,14 +10,16 @@ import (
 )
 
 // This file takes in the *os.File from whoever is rendering .html files
-// and makes it so that any HTML tags that are in the registeredComponents
+// and makes it so that any HTML tags that are in the registeredComponents()
 // will be rendered according to the ComponentFunc and replaced in the file.
 
 type ComponentFunc func(component) (templ.Component, error)
 
-var registeredComponents = map[string]ComponentFunc{
-	"Code":     code,
-	"BlogPost": blogPost,
+func registeredComponents() map[string]ComponentFunc {
+	return map[string]ComponentFunc{
+		"Code":         code,
+		"ManyPostMini": manyPostMini,
+	}
 }
 
 type component struct {
@@ -45,19 +47,12 @@ func RenderCustomComponents(content string) (string, error) {
 		output.WriteString(content[:startIdx])
 		content = content[startIdx:] // Move to the start of the tag.
 
-		var isSelfClosing bool
 		// Find the closing '>' of this tag
 		endIdx := strings.Index(content, ">")
 		if endIdx == -1 {
 			// No closing '>', output the rest as is and stop.
 			output.WriteString(content)
 			break
-		}
-
-		// Found "/>". Don't put that slash in the rest of the processing!
-		if content[endIdx-1] == '/' {
-			endIdx = endIdx - 1
-			isSelfClosing = true
 		}
 
 		// Check if there's another `<` before we reach `>`
@@ -79,7 +74,7 @@ func RenderCustomComponents(content string) (string, error) {
 			continue
 		}
 
-                log.Printf("found custom component: %s", elem)
+		log.Printf("found custom component: %s", elem)
 
 		// Get component metadata (element, attributes).
 		comp, err := parseStartTag(tag, elem)
@@ -90,12 +85,7 @@ func RenderCustomComponents(content string) (string, error) {
 			continue
 		}
 
-		var closingTag string
-		if isSelfClosing {
-			closingTag = " />"
-		} else {
-			closingTag = fmt.Sprintf("</%s>", elem)
-		}
+		closingTag := fmt.Sprintf("</%s>", elem)
 
 		// Look for the closing tag for this component (e.g. </Code>).
 		closingIdx := strings.Index(content, closingTag)
@@ -120,7 +110,7 @@ func RenderCustomComponents(content string) (string, error) {
 		}
 
 		// Look up the component's rendering function.
-		compFunc, ok := registeredComponents[comp.Element]
+		compFunc, ok := registeredComponents()[comp.Element]
 		if !ok {
 			// If somehow not registered, output the raw text we had and move on.
 			output.WriteString("<" + tag + ">")
@@ -143,7 +133,7 @@ func RenderCustomComponents(content string) (string, error) {
 }
 
 func isComponent(tag string) string {
-	for elem := range registeredComponents {
+	for elem := range registeredComponents() {
 		if strings.HasPrefix(tag, elem) {
 			return elem
 		}

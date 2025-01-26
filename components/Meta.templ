@@ -2,7 +2,7 @@ package components
 
 import "github.com/nathan-hello/personal-site/utils"
 
-templ Meta(title, description, url string, image *utils.Image) {
+templ Meta(title, description, url string, image []utils.Image) {
 	<script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
         //<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
@@ -30,8 +30,8 @@ templ Meta(title, description, url string, image *utils.Image) {
 	<meta property="twitter:url" content={ url }/>
 	<meta property="twitter:title" content={ title }/>
 	<meta property="twitter:description" content={ description }/>
-	if (image != nil) {
-		<meta property="og:image" content={ image.Url }/>
-		<meta property="twitter:image" content={ image.Url }/>
+	if (len(image) > 0) {
+		<meta property="og:image" content={ image[0].Url }/>
+		<meta property="twitter:image" content={ image[0].Url }/>
 	}
 }

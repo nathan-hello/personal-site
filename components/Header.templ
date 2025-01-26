@@ -7,7 +7,7 @@ templ Header(s string) {
 	<div
 		class="bg-[#171717] text-[#bcb8c3] border-2 border-[#1e1e1e] p-3 mt-4 mr-[10%] ml-[10%]"
 	>
-		<div class="mx-auto text-nat-white-c01 px-3 mb-2 inline-block whitespace-nowrap">
+		<div class="mx-auto text-nat-white-c01 px-3 mb-2 inline-block whitespace-nowrap font-[Terminus]">
 			@ascii(s)
 			<br/>
 			@links()
@@ -18,7 +18,7 @@ templ Header(s string) {
 templ ascii(s string) {
 	<a href="/" class="leading-5 no-underline text-nat-white-c01 visited:text-nat-white-c01">
 		<b>
-			<pre>{ utils.AsciiRender(s) }</pre>
+			<pre class="font-[Terminus] leading-[15px]">{ utils.AsciiRender(s) }</pre>
 		</b>
 	</a>
 }
@@ -45,31 +45,31 @@ templ links() {
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-			href="/natalie/links"
+			href="/natalie/links.html"
 		>
 			/links/
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-			href="/natalie/webring"
+			href="/natalie/webring.html"
 		>
 			/webring/
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-			href="/natalie/tv"
+			href="/natalie/tv.html"
 		>
 			/tv/
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-			href="/irc"
+			href="/irc.html"
 		>
 			/irc/
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-			href="/js"
+			href="/js.html"
 		>
 			/js-notice/
 		</a>

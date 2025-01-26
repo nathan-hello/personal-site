@@ -1,5 +1,4 @@
 /* Background */ .chroma-bg { color: #ebdbb2; background-color: #282828; }
-/* PreWrapper */ .chroma-chroma { color: #ebdbb2; background-color: #282828; }
 /* LineNumbers targeted by URL anchor */ .chroma-chroma .chroma-ln:target { color: #ebdbb2; background-color: #3d3d3d }
 /* LineNumbersTable targeted by URL anchor */ .chroma-chroma .chroma-lnt:target { color: #ebdbb2; background-color: #3d3d3d }
 /* LineLink */ .chroma-chroma .chroma-lnlinks { outline: none; text-decoration: none; color: inherit }
@@ -63,4 +62,9 @@
 /* GenericSubheading */ .chroma-chroma .chroma-gu { color: #b8bb26; font-weight: bold }
 /* GenericTraceback */ .chroma-chroma .chroma-gt { background-color: #fb4934; font-weight: bold }
 
+/* PreWrapper */ .chroma-chroma { color: #ebdbb2; width:90%; margin-left:auto;margin-right:auto;margin-top:1rem; margin-bottom:1rem; }
 
+.chroma-chroma code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

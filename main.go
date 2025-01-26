@@ -4,10 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 
-	"github.com/nathan-hello/personal-site/pages"
 	"github.com/nathan-hello/personal-site/render"
+	"github.com/nathan-hello/personal-site/utils"
 )
 
 func main() {
@@ -20,13 +21,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-        blogs,err := render.Blogs()
+	blogs, err := render.Blogs(true)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	slices.SortFunc(blogs, func(a, b utils.Blog) int {
+		return b.Frnt.Date.Compare(a.Frnt.Date)
+	})
 	err = render.PagesTempl([]render.TemplStaticPages{
-		{Templ: pages.Index(blogs), Route: "/index.html"},
 	})
 	if err != nil {
 		log.Fatal(err)

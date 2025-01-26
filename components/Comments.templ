@@ -25,9 +25,9 @@ templ Comments(blogId int) {
 		hx-post={ fmt.Sprintf("/api/comments/%d", blogId) }
 		hx-target="this"
 		hx-swap="outerHTML"
-		class="flex-col"
+		class="flex-col "
 	>
-		<table id="postForm">
+		<table id="postForm" class="mx-auto">
 			<tbody>
 				<tr data-type="Author">
 					<td>Author (optional)</td>
@@ -37,6 +37,7 @@ templ Comments(blogId int) {
 							name="author"
 							type="text"
 							tabindex="1"
+							class="bg-white text-white"
 							placeholder="Anonymous"
 						/>
 						<input type="submit" value="Post" tabindex="10"/>
@@ -45,7 +46,15 @@ templ Comments(blogId int) {
 				<tr data-type="body">
 					<td>Body</td>
 					<td>
-						<textarea id="body" name="body" cols="48" rows="4" wrap="soft" tabindex="4"></textarea>
+						<textarea
+							id="body"
+							name="body"
+							cols="48"
+							rows="4"
+							wrap="soft"
+							tabindex="4"
+                                                        class="bg-white text-black"
+						></textarea>
 					</td>
 				</tr>
 			</tbody>

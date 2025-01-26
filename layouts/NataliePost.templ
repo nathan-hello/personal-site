@@ -6,26 +6,19 @@ import (
 )
 
 templ NataliePost(blog utils.Blog) {
-	@IndexLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Frnt.Title, blog.Frnt.Description, blog.Url, &blog.Frnt.Images[0])) {
-		<style>
-    * {
-        font-family: Terminus;
-    }
-    </style>
+	@IndexLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Frnt.Title, blog.Frnt.Description, blog.Url, blog.Frnt.Images)) {
 		<div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
 			<div class="text-lg pt-6 mx-auto pl-10">
 				<span class="text-[#a47996] font-bold">{ blog.Frnt.Author }</span>
 				<span class="">- </span>
 				<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) } </span>
 			</div>
-			<div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
-				for _, v := range blog.Frnt.Images {
-					@components.ImageCard(v)
-				}
+			@components.ImagesFull(blog)
+			<div class="text-md leading-relaxed md:text-xl md:leading-8 px-4">
+				@templ.Raw(blog.Html)
 			</div>
-			<div id="blog.Frnt-post-container" class="p-10">
-				@components.PostFull(blog)
-			</div>
+                        <br/>
+			@components.Comments(blog.Id)
 		</div>
 	}
 }

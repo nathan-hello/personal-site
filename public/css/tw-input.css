@@ -9,3 +9,9 @@
         --color-nat-green-c01: "#0a241e";
         
 }
+
+@font-face {
+  font-family: Terminus;
+  src: url(/fonts/Terminus/TerminusTTF.ttf);
+}
+

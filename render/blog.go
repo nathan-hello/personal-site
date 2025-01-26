@@ -14,57 +14,63 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
-	"github.com/nathan-hello/personal-site/components"
-	"github.com/nathan-hello/personal-site/render/customs"
+	"github.com/nathan-hello/personal-site/layouts"
 	"github.com/nathan-hello/personal-site/utils"
 	"gopkg.in/yaml.v3"
 )
 
-func Blogs() ([]utils.Blog, error) {
+func Blogs(write bool) ([]utils.Blog, error) {
+
 
 	blogs, err := gatherRenderedHtmls()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	slices.SortFunc(blogs, func(a, b utils.Blog) int {
-		return b.Frnt.Date.Compare(a.Frnt.Date)
+		return a.Frnt.Date.Compare(b.Frnt.Date)
 	})
 
 	for i, v := range blogs {
-                v.Id = 100_000+i
+		v.Id = 100_000 + i + 1
 		dist := fmt.Sprintf("./dist/%s/p/%d", strings.ToLower(v.Frnt.Author), v.Id)
 
+		v.Url = strings.TrimPrefix(dist, "./dist")
 
-                v.Url = strings.TrimPrefix(dist,"./dist")
+		blogs[i] = v
 
-		comp := chooseLayout(metadata{
-                        ascii: utils.AsciiNat_e,
-                        dist: dist, 
-                        title: v.Frnt.Title,
-                        description: v.Frnt.Description,
-                        overrideLayout: v.Frnt.OverrideLayout,
-                })
-
-		var bits bytes.Buffer
-		childrenCtx := templ.WithChildren(context.Background(), components.PostFull(v))
-		err = comp.Render(childrenCtx, &bits)
-		if err != nil {
-			return nil,err
-		}
-
-		parts := strings.Split(dist, "/")
-		folder := strings.Join(parts[:len(parts)-1], "/")
-		os.MkdirAll(folder, 0777)
-		os.WriteFile(dist, bits.Bytes(), 0777)
-
-                blogs[i] = v
+		if write {
+			err = writeBlogPost(v, dist)
+                        if err != nil {
+                                return nil,err
+                        }
+		} 
 
 	}
 
-        
+	return blogs, nil
+}
 
-        return blogs[:10],nil
+func writeBlogPost(v utils.Blog, dist string) error {
+	var bits bytes.Buffer
+
+	comp := chooseBlogLayout(v)
+	err := comp.Render(context.Background(), &bits)
+	if err != nil {
+		return err
+	}
+
+	parts := strings.Split(dist, "/")
+	folder := strings.Join(parts[:len(parts)-1], "/")
+	err = os.MkdirAll(folder, 0777)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(dist, bits.Bytes(), 0777)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func gatherRenderedHtmls() ([]utils.Blog, error) {
@@ -98,7 +104,7 @@ func gatherRenderedHtmls() ([]utils.Blog, error) {
 		}
 
 		if filepath.Ext(info.Name()) == ".html" {
-			rendered, err := customs.RenderCustomComponents(content)
+			rendered, err := RenderCustomComponents(content)
 
 			if err != nil {
 				return err
@@ -107,7 +113,7 @@ func gatherRenderedHtmls() ([]utils.Blog, error) {
 		}
 
 		if filepath.Ext(info.Name()) == ".md" || filepath.Ext(info.Name()) == ".mdx" {
-                        rendered := customs.MarkdownRender([]byte(content))
+			rendered := MarkdownRender([]byte(content))
 			b.Html = string(rendered)
 		}
 
@@ -118,12 +124,12 @@ func gatherRenderedHtmls() ([]utils.Blog, error) {
 	return blogs, err
 }
 
-func yoinkFrontmatter(f *os.File) (string,string, error) {
+func yoinkFrontmatter(f *os.File) (string, string, error) {
 
 	ext := filepath.Ext(f.Name())
 	asdf, err := io.ReadAll(f)
 	if err != nil {
-		return "", "",err
+		return "", "", err
 	}
 	text := string(asdf)
 	lines := strings.Split(text, "\n")
@@ -149,12 +155,12 @@ func yoinkFrontmatter(f *os.File) (string,string, error) {
 	}
 
 	if idxs[0] == -1 || idxs[1] == -1 {
-		return "", "",fmt.Errorf("could not get frontmatter for file %s", f.Name())
+		return "", "", fmt.Errorf("could not get frontmatter for file %s", f.Name())
 	}
-        frntString := strings.Join(lines[idxs[0]+1:idxs[1]], "\n")
-        content := strings.Join(lines[idxs[1]+1:], "\n")
-        
-        return frntString, content, nil
+	frntString := strings.Join(lines[idxs[0]+1:idxs[1]], "\n")
+	content := strings.Join(lines[idxs[1]+1:], "\n")
+
+	return frntString, content, nil
 }
 
 type ymlImage struct {
@@ -222,10 +228,10 @@ func getImages(yml map[string]ymlImage, fm *utils.Frontmatter) error {
 
 		fm.Images = append(fm.Images,
 			utils.Image{
-				Name:     k,
+				Name: k,
 				Size: utils.FormatSize(stat.Size()),
-                                Ext: filepath.Ext(k),
-				Url:      url,
+				Ext:  filepath.Ext(k),
+				Url:  url,
 				Alt:  v.Alt,
 			},
 		)
@@ -233,4 +239,18 @@ func getImages(yml map[string]ymlImage, fm *utils.Frontmatter) error {
 	}
 
 	return nil
+}
+
+type BlogComponent = func(utils.Blog) templ.Component
+var registeredBlogLayouts = map[string]BlogComponent{
+	"natalie": layouts.NataliePost,
+	"nathan": layouts.NathanPost,
+}
+
+func chooseBlogLayout(blog utils.Blog) templ.Component {
+        comp,ok := registeredBlogLayouts[blog.Frnt.Author]
+        if !ok {
+                return registeredBlogLayouts["nathan"](blog)
+        }
+        return comp(blog)
 }

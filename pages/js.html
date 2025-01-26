@@ -3,11 +3,14 @@
 <description>A notice on javascript for reluekiss.com</description>
 -->
   <br />
-  <div class="md:w-[50vw] mx-auto text-xl">
-    <p class="text-3xl">
+<div class="bg-neutral-800 text-white w-[80%] mx-auto py-12">
+        <div class="w-[90%] mx-auto text-lg">
+    <p class="text-xl">
       This website has some amounts of javascript. This page tells you where.
+      (Correct as of 26 Jan 2025)
     </p>
-    <p>
+    <br/>
+    <p >
       Natalie cares a lot about keeping JS to an absolute bare minimum. This said, a
       statically generated site like ours has inherent limitations. Namely, there isn't a
       server running code available to run per-request renders.
@@ -18,7 +21,7 @@
     </p>
     <p>
       Here are the areas that have JS:
-      <ul class="text-xl">
+      <ul class="list-disc ml-4">
         <li>
           On each blog post, we use htmx to grab the comments from the server, and then
           place the server-rendered html in the dom. Disabling JS means you won't see

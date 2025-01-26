@@ -3,20 +3,5 @@ package components
 import "github.com/nathan-hello/personal-site/utils"
 
 templ PostFull(blog utils.Blog) {
-	<div class="min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto md:w-[90%] lg:w-[65%]">
-		<div class="text-lg pt-6 pl-10 mx-auto">
-			<span class="text-[#a47996] font-bold">{ blog.Frnt.Author }</span>
-			<span class="">{ " " }-{ " " }</span>
-			<span class="">{ blog.Frnt.Title } { utils.DateFormatObject(blog.Frnt.Date) }</span>
-		</div>
-		<div class="float-left flex flex-wrap px-10 pb-2 gap-x-2">
-			for _, v := range blog.Frnt.Images {
-				@ImageCard(v)
-			}
-		</div>
-		<div id="blog-post-container" class="p-10 text-md leading-relaxed md:text-xl md:leading-8">
-			@templ.Raw(blog.Html)
-		</div>
-	</div>
-	@Comments(blog.Id)
 }
+

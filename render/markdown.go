@@ -1,4 +1,4 @@
-package customs
+package render
 
 import (
 	"io"
@@ -11,26 +11,31 @@ import (
 
 func MarkdownRender(md []byte) []byte {
 
-	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock | parser.MathJax 
 	p := parser.NewWithExtensions(extensions)
+
 	doc := p.Parse(md)
 
 	opts := mdhtml.RendererOptions{
 		Flags:          mdhtml.CommonFlags,
-		RenderNodeHook: mdCodeHighlighter,
+		RenderNodeHook: mdRenderHooks,
 	}
 	renderer := mdhtml.NewRenderer(opts)
 
 	return markdown.Render(doc, renderer)
 }
 
-func mdCodeHighlighter(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
+func mdRenderHooks(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
 	if code, ok := node.(*ast.CodeBlock); ok {
 		high, err := CodeHighlighter(string(code.Info), string(code.Literal))
-                if err != nil {
+		if err != nil {
 			w.Write(code.Literal)
 		}
 		w.Write([]byte(high))
+		return ast.GoToNext, true
+	}
+	if _, ok := node.(*ast.Paragraph); ok {
+		w.Write([]byte("<br/>"))
 		return ast.GoToNext, true
 	}
 	return ast.GoToNext, false
