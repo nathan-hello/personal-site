@@ -3,8 +3,12 @@ package layouts
 templ NatalieFullPage(header templ.Component, meta templ.Component) {
 	<html lang="en">
 		<head>
-			<slot name="meta"></slot>
+                        @meta
 			<style>
+      @font-face {
+        font-family: Terminus;
+        src: url(/fonts/TerminusTTF.ttf);
+     }
     * {
         font-family: Terminus;
     }
@@ -45,7 +49,6 @@ templ NatalieFullPage(header templ.Component, meta templ.Component) {
 		<body>
 			<div id="top" class="floaty">
 				@header
-                                @meta
 				{ children... }
 			</div>
 		</body>

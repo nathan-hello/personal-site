@@ -7,17 +7,14 @@ import (
 )
 
 func cardColor(blog utils.Blog) string {
-        fmt.Printf("%#v\n", blog.Url)
 	var cardColor = "bg-black"
 	var borderColor = "border-white"
 
 	if strings.ToLower(blog.Frnt.Author) == "nathan" {
-		cardColor = "bg-cyan-950"
-		borderColor = "border-green-900"
+		cardColor = "bg-[#0a241e]"
 	}
 	if strings.ToLower(blog.Frnt.Author) == "natalie" {
-		cardColor = "bg-neutral-800"
-		borderColor = "border-nat-white-c01"
+		cardColor = "bg-[#261c4a]"
 	}
 
 	return fmt.Sprintf("%s %s", cardColor, borderColor)
@@ -25,29 +22,29 @@ func cardColor(blog utils.Blog) string {
 }
 
 templ PostMini(blog utils.Blog) {
-
-	<div class={fmt.Sprintf(
+<style>
+input:checked + span { display: none; }
+.lighter-a-tags a { color: #93c5fd; }
+.lighter-a-tags a:visited { color: #9333ea; }
+</style>
+	<div
+		class={ fmt.Sprintf(
           `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 border-nat-white-c01 %s`,
           cardColor(blog),
-        )}>
-		<style>
-  input:checked + span {
-    display: none;
-  }
-</style>
+        ) }
+	>
 		<span class="text-[#a47996] font-bold font-vcrosdmono">{ blog.Frnt.Author }</span>
 		<span class="">{ " " }-{ " " }</span>
 		<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) }</span>
 		<input type="checkbox"/>
 		<span>
-			<div></div>
 			if (len(blog.Frnt.Images) > 0) {
-				<div class="mr-10 mt-2">
+				<div class="float-left mr-10 mt-2">
 					@ImageCard(blog.Frnt.Images[0])
 				</div>
 			}
-			<div id="blog-post-container" class="max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
-				{}
+			<div class="lighter-a-tags max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
+				@templ.Raw(blog.Html)
 			</div>
 			<a
 				class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01 font-semibold"

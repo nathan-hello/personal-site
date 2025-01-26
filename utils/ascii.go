@@ -1,7 +1,6 @@
 package utils
 
 import "strings"
-
 const AsciiNat_e = `
  _   _       _       __   
 | \ | |     | |     / /   

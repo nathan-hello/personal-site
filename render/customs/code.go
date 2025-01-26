@@ -29,15 +29,20 @@ func CodeHighlighter(lang string, content string) (string, error) {
         if lex == nil {
                 lex = lexers.Fallback
         }
-	sty := styles.Get("gruvbox")
-	frm := html.New(
-		html.ClassPrefix("chroma-"),
-		html.WithLineNumbers(true),
-	)
 	iter, err := lex.Tokenise(nil, content)
 	if err != nil {
 		return "", nil
 	}
+
+        // chroma-classes are written in ./public/css/chroma.css
+	sty := styles.Get("gruvbox")
+	frm := html.New(
+                html.WithClasses(true), 
+		html.ClassPrefix("chroma-"),
+		html.WithLineNumbers(true),
+	)
+
+
 	var buf bytes.Buffer
 	err = frm.Format(&buf, sty, iter)
 	if err != nil {

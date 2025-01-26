@@ -65,6 +65,8 @@ func writeHtmlFile(f *os.File, dist string) error {
 
 	comp := chooseLayout(meta)
 
+        f.Seek(0,0)
+
         content, err := io.ReadAll(f)
         if err != nil {
                 return err
@@ -150,5 +152,5 @@ func chooseLayout(meta metadata) templ.Component {
 	}
 
 	url := strings.TrimPrefix(meta.dist, "dist")
-	return registeredLayouts[layout](components.Header(meta.title), components.Meta(meta.title, meta.description, url, nil))
+	return registeredLayouts[layout](components.Header(meta.ascii), components.Meta(meta.title, meta.description, url, nil))
 }
