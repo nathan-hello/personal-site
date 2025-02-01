@@ -74,7 +74,7 @@ func manyPostMini(c component) (templ.Component, error) {
 		sort = "descending"
 	}
 
-	blogs, err := Blogs("", "", false)
+	blogs, err := Blogs("./public/content/blog", "", false)
 	if err != nil {
 		return nil, err
 	}

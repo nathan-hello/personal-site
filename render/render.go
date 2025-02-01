@@ -3,7 +3,6 @@ package render
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -73,8 +72,6 @@ func RenderCustomComponents(content string) (string, error) {
 			content = content[endIdx+1:]
 			continue
 		}
-
-		log.Printf("found custom component: %s", elem)
 
 		// Get component metadata (element, attributes).
 		comp, err := parseStartTag(tag, elem)

@@ -46,11 +46,10 @@ func PagesHtml(input, output string) error {
 		}
 
 		dist := output + route
-		fmt.Printf("%s\n\n", dist)
 
 		err = writeHtmlFile(f, dist)
 		if err != nil {
-			return nil
+			return err
 		}
 
 		return nil
@@ -87,10 +86,18 @@ func writeHtmlFile(f *os.File, dist string) error {
 	if err != nil {
 		return err
 	}
+
 	parts := strings.Split(dist, "/")
 	folder := strings.Join(parts[:len(parts)-1], "/")
-	os.MkdirAll(folder, 0777)
-	os.WriteFile(dist, bits.Bytes(), 0777)
+	fmt.Printf("INFO: writing file %s in folder %s\n", dist, folder)
+	err = os.MkdirAll(folder, 0777)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(dist, bits.Bytes(), 0777)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

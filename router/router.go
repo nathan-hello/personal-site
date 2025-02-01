@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"slices"
@@ -39,12 +40,14 @@ func SiteRouter(cert, key, filesDir string) error {
 			}))
 		}()
 
+		fmt.Printf("Listening on :80 and :443...")
 		err := http.ListenAndServeTLS(":443", cert, key, nil)
 		if err != nil {
 			return err
 		}
 	} else {
 		err := http.ListenAndServe(":3000", nil)
+		fmt.Printf("Listening on :3000...")
 		if err != nil {
 			return err
 		}

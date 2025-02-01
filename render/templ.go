@@ -3,6 +3,7 @@ package render
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -18,14 +19,27 @@ func PagesTempl(output string, templs []TemplStaticPages) error {
 
 	var bits bytes.Buffer
 	for _, v := range templs {
-		v.Templ.Render(context.Background(), &bits)
+		err := v.Templ.Render(context.Background(), &bits)
+		if err != nil {
+			return err
+		}
 		parts := strings.Split(v.Route, "/")
 		if len(parts) > 1 {
 			parts = parts[:len(parts)-1]
 		}
 		folder := output + strings.Join(parts, "/")
-		os.MkdirAll(folder, 0777)
-		os.WriteFile("dist"+v.Route, bits.Bytes(), 0777)
+		dist := "dist" + v.Route
+
+		fmt.Printf("INFO: writing file %s in folder %s\n", dist, folder)
+		err = os.MkdirAll(folder, 0777)
+		if err != nil {
+			return err
+		}
+		err = os.WriteFile(dist, bits.Bytes(), 0777)
+		if err != nil {
+			return err
+		}
+
 	}
 
 	return nil

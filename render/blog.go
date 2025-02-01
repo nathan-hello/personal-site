@@ -64,6 +64,8 @@ func writeBlogPost(v utils.Blog, dist string) error {
 
 	parts := strings.Split(dist, "/")
 	folder := strings.Join(parts[:len(parts)-1], "/")
+
+	fmt.Printf("INFO: writing file %s in folder %s\n", dist, folder)
 	err = os.MkdirAll(folder, 0777)
 	if err != nil {
 		return err

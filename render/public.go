@@ -2,6 +2,7 @@ package render
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -27,8 +28,16 @@ func Public(input, output string) error {
 			return err
 		}
 		folder := strings.TrimSuffix(dist, info.Name())
-		os.MkdirAll(folder, 0777)
-		os.WriteFile(dist, bits, 0777)
+
+		fmt.Printf("INFO: writing file %s in folder %s\n", dist, folder)
+		err = os.MkdirAll(folder, 0777)
+		if err != nil {
+			return err
+		}
+		err = os.WriteFile(dist, bits, 0777)
+		if err != nil {
+			return err
+		}
 
 		atLeastOne = true
 
