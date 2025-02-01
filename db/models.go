@@ -6,7 +6,8 @@ package db
 
 type Comment struct {
 	ID        string
-	CreatedAt interface{}
+	CreatedAt string
+	Author    string
 	Text      string
-	Post      string
+	PostID    string
 }

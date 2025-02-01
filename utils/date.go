@@ -15,7 +15,10 @@ var formats = []string{
 }
 
 func DateFormatString(dateStr string) string {
-	dateObj := DateStringToObject(dateStr)
+	dateObj,err := DateStringToObject(dateStr)
+        if err != nil {
+                panic(err)
+        }
 
         return DateFormatObject(dateObj)
 }
@@ -27,7 +30,7 @@ func DateFormatObject(dateObj time.Time) string {
 
 	return dateObj.Format("02 Jan 2006 15:04 MST")
 }
-func DateStringToObject(dateStr string) time.Time {
+func DateStringToObject(dateStr string) (time.Time, error) {
 	var dateObj time.Time
 	var err error
 
@@ -44,8 +47,8 @@ func DateStringToObject(dateStr string) time.Time {
 	}
 
 	if err != nil {
-		panic(err)
+                return time.Time{},err
 	}
 
-	return dateObj
+	return dateObj,nil
 }

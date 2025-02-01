@@ -10,10 +10,12 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/layouts"
 	"github.com/nathan-hello/personal-site/utils"
 	"gopkg.in/yaml.v3"
@@ -253,4 +255,17 @@ func chooseBlogLayout(blog utils.Blog) templ.Component {
                 return registeredBlogLayouts["nathan"](blog)
         }
         return comp(blog)
+}
+
+func getComments(blogId int) []utils.Comment {
+        cmts,err := db.Conn.SelectCommentsMany(context.Background(),strconv.Itoa(blogId))
+        if err != nil {
+                return nil
+        }
+        c := []utils.Comment{}
+        for _,v := range cmts {
+                c = append(c, v.NewBlogComment())             
+        }
+
+        return c
 }

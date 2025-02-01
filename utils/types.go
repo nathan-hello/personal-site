@@ -1,6 +1,8 @@
 package utils
 
-import "time"
+import (
+	"time"
+)
 type Image struct {
 	Name     string
 	Size string
@@ -26,5 +28,14 @@ type Blog struct {
         Url string
 	Frnt Frontmatter
 	Html string
+}
+
+type Comment struct {
+        Id string
+        Author string
+        Date time.Time
+        PostId string
+        Text string
+        Html string
 }
 

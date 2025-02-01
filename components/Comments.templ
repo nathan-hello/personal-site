@@ -1,6 +1,9 @@
 package components
 
-import "fmt"
+import (
+	"fmt"
+)
+
 
 templ Comments(blogId int) {
 	<head>
@@ -20,6 +23,7 @@ templ Comments(blogId int) {
   </style>
 	</head>
 	<h2>Comments</h2>
+        
 	<hr/>
 	<form
 		hx-post={ fmt.Sprintf("/api/comments/%d", blogId) }
@@ -53,7 +57,7 @@ templ Comments(blogId int) {
 							rows="4"
 							wrap="soft"
 							tabindex="4"
-                                                        class="bg-white text-black"
+							class="bg-white text-black"
 						></textarea>
 					</td>
 				</tr>

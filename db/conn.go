@@ -7,26 +7,24 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var conn *Queries
+var Conn *Queries
 
-func InitDb() error {
+func InitDb() (*Queries, error) {
+        if Conn != nil {
+                return Conn, nil
+        }
 
 	var d, err = sql.Open("sqlite3", "file://data.db")
 	if err != nil {
-		return err
+		return nil,err
 	}
 	err = d.Ping()
 	if err != nil {
 		fmt.Print("ping")
-		return err
+		return nil,err
 	}
-	conn = New(d)
-	return nil
+	Conn = New(d)
+	return Conn,nil
 }
 
-func Conn() *Queries {
-	if conn == nil {
-		panic("asdf")
-	}
-	return conn
-}
+

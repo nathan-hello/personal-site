@@ -41,6 +41,9 @@ func PagesHtml() error {
 		defer f.Close()
 
 		route := strings.TrimPrefix(path, "pages")
+                if info.Name() != "index.html" {
+                route = strings.TrimSuffix(route,filepath.Ext(info.Name()))
+                }
 		dist := "dist" + route
 
 		err = writeHtmlFile(f, dist)
@@ -152,7 +155,7 @@ func parsePagesFrontmatter(f *os.File) metadata {
 var layoutMap map[string]layouts.LayoutComponent
 var registeredPageLayouts = map[string]layouts.LayoutComponent{
 	"natalie": layouts.NatalieFullPage,
-	"default": layouts.IndexLayout,
+	"default": layouts.BaseLayout,
 }
 
 func choosePageLayout(meta metadata) templ.Component {

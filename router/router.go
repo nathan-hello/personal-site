@@ -7,7 +7,7 @@ import (
 	"github.com/nathan-hello/personal-site/router/routes"
 )
 
-func SiteRouter() {
+func SiteRouter() error {
 
 	type Site struct {
 		route       string
@@ -29,6 +29,13 @@ func SiteRouter() {
 		http.Handle(v.route, v.middlewares.ThenFunc(v.hfunc))
 	}
 
-	http.ListenAndServe(":3000", nil)
+	fs := http.FileServer(http.Dir("./dist"))
+	http.Handle("/", fs)
+
+        err := http.ListenAndServe(":3000", nil)
+		if err != nil {
+                return err
+		}
+        return nil
 }
 
