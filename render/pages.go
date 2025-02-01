@@ -46,6 +46,7 @@ func PagesHtml(input, output string) error {
 		}
 
 		dist := output + route
+		fmt.Printf("%s\n\n", dist)
 
 		err = writeHtmlFile(f, dist)
 		if err != nil {

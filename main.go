@@ -22,7 +22,7 @@ const FILE_CERT = "/var/www/reluekiss.com/private/reluekiss.cert"
 const FILE_KEY = "/var/www/reluekiss.com/private/reluekiss.key"
 
 func main() {
-	initFiles()
+	//	initFiles()
 	generate()
 
 	if slices.Contains(os.Args, "--build-only") {
@@ -41,7 +41,7 @@ func initFiles() {
 		log.Fatal(err)
 	}
 
-	err = os.MkdirAll(OUTPUT_PUBLIC, 0544)
+	err = os.MkdirAll(OUTPUT_PUBLIC, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,12 +59,12 @@ func initFiles() {
 }
 
 func generate() {
-	err := render.Public(INPUT_PUBLIC, OUTPUT_PUBLIC)
+
+	err := render.PagesHtml(INPUT_PAGES, OUTPUT_PUBLIC)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	err = render.PagesHtml(INPUT_PAGES, OUTPUT_PUBLIC)
+	err = render.Public(INPUT_PUBLIC, OUTPUT_PUBLIC+"/public")
 	if err != nil {
 		log.Fatal(err)
 	}
