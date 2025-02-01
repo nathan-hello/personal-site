@@ -3,8 +3,10 @@ tmp
 *_templ.txt
 *_templ.go
 
+
 # build output
 dist/
+tw-output.css
 # generated types
 .astro/
 
