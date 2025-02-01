@@ -5,9 +5,10 @@
 package db
 
 type Comment struct {
-	ID        string
+	ID        int64
 	CreatedAt string
 	Author    string
 	Text      string
-	PostID    string
+	Html      string
+	PostID    int64
 }

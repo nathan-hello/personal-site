@@ -28,14 +28,13 @@ type Blog struct {
         Url string
 	Frnt Frontmatter
 	Html string
+        Comments []Comment
 }
 
 type Comment struct {
-        Id string
+        Id int64
         Author string
         Date time.Time
-        PostId string
-        Text string
+        PostId int64
         Html string
 }
-

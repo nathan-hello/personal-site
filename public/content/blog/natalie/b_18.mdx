@@ -108,13 +108,11 @@ The last part is the output:
 flv, is quite a restrictive container format and only allows h264 with aac, and only a single video and audio stream (with no subtitles either).
 This is slightly improved using the ```-rtmp_live 1``` flag which is introduced in ffmpeg version 6.0, and allows for more codec compatability, but still only single streams. For better support if using your own server, look into using rtsp or webrtc.
 Some more boiler plate for hls, rtsp and srt are below:
+
 ```
 f hls -hls_time 10 -hls_list_size 4 -hls_flags delete_segments -hls_segment_filename "segment_%v_%03d.ts" -hls_base_url "http://tv.reluekiss.com:8888" "https://user@password@tv.reluekiss.com:8888/mystream"
-```
-```
 -f rtsp "rtsp://user@password@tv.reluekiss.com:1735/mystream/mystream"
+-f mpegts srt://tv.reluekiss.com:1735?streamid=mystream:mystream:user:password&pkt_size=1316
 ```
-```
-#-f mpegts srt://tv.reluekiss.com:1735?streamid=mystream:mystream:user:password&pkt_size=1316
-```
+
 That is all x.

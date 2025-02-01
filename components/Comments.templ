@@ -2,74 +2,94 @@ package components
 
 import (
 	"fmt"
+	"github.com/nathan-hello/personal-site/utils"
 )
 
-
-templ Comments(blogId int) {
-	<head>
-		<style>
-    body {
-      background: #1d1f21;
-      color: #c5c8c6;
-    }
-
-    table > tbody > tr > td:first-child {
-      background-color: #282a2e;
-      color: #c5c8c6;
-      font-weight: 700;
-      border: 1px solid #111;
-      padding: 5px;
-    }
-  </style>
-	</head>
+templ Comments(blog utils.Blog) {
 	<h2>Comments</h2>
-        
 	<hr/>
 	<form
-		hx-post={ fmt.Sprintf("/api/comments/%d", blogId) }
-		hx-target="this"
-		hx-swap="outerHTML"
-		class="flex-col "
+		id="comment-form"
+		hx-swap="afterbegin"
+		hx-target="#comments-go-here"
+		hx-post={ fmt.Sprintf("/api/comments/%d", blog.Id) }
+		class="flex-col  "
 	>
-		<table id="postForm" class="mx-auto">
+		<table class="mx-auto px-4 bg-stone-800">
 			<tbody>
 				<tr data-type="Author">
-					<td>Author (optional)</td>
-					<td>
+					<td class="px-2">Author</td>
+					<td class="flex flex-row justify-between my-4">
 						<input
-							id="author"
-							name="author"
+							name="comment-author"
 							type="text"
 							tabindex="1"
-							class="bg-white text-white"
+							class="bg-white h-full px-2 text-lg my-auto"
 							placeholder="Anonymous"
 						/>
-						<input type="submit" value="Post" tabindex="10"/>
 					</td>
 				</tr>
-				<tr data-type="body">
-					<td>Body</td>
+				<tr
+					class="mx-2"
+					data-type="body"
+				>
+					<td class="px-2">Body</td>
 					<td>
 						<textarea
-							id="body"
-							name="body"
+							name="comment-text"
 							cols="48"
 							rows="4"
 							wrap="soft"
 							tabindex="4"
-							class="bg-white text-black"
+							class="bg-white text-black w-[90%]"
 						></textarea>
 					</td>
 				</tr>
+				<tr class="">
+					<td></td>
+					<td>
+						<input
+							class="w-16 h-full text-lg bg-white text-black ml-auto mr-4"
+							type="submit"
+							value="Post"
+							tabindex="10"
+						/>
+					</td>
+				</tr>
 			</tbody>
-			<div class="gap-x-4">
-				<div
-					class="max-h-screen"
-					hx-post={ fmt.Sprintf("/api/comments/%d", blogId) }
-					hx-target="this"
-					hx-trigger="load"
-				></div>
-			</div>
 		</table>
 	</form>
+	@commentBox(blog.Id)
+	<script>
+	document.getElementById("comment-form").addEventListener('htmx:afterRequest', function(event) {
+                if (event.detail.successful) {
+                        event.target.reset();
+                }
+        });
+</script>
+}
+
+templ commentBox(blogId int) {
+	<div
+		class="gap-y-12"
+		id="comments-go-here"
+		hx-trigger="load"
+		hx-swap="innerHTML"
+		hx-get={ fmt.Sprintf("/api/comments/%d", blogId) }
+	></div>
+	<hr/>
+}
+
+templ Comment(v utils.Comment, blog int64) {
+	<div class="flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg" id={ fmt.Sprintf("%d-%d", blog, v.Id) }>
+		<div class="flex flex-col">
+			<div class="flex flex-row px-4 w-full">
+				<span class="font-thin">{ v.Author } - { utils.DateFormatObject(v.Date) }</span>
+			</div>
+			<hr/>
+			<div class="mx-4 text-xl">
+				@templ.Raw(v.Html)
+			</div>
+		</div>
+	</div>
 }

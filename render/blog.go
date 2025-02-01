@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -34,9 +33,11 @@ func Blogs(write bool) ([]utils.Blog, error) {
 
 	for i, v := range blogs {
 		v.Id = 100_000 + i + 1
-		dist := fmt.Sprintf("./dist/%s/p/%d", strings.ToLower(v.Frnt.Author), v.Id)
 
+		dist := fmt.Sprintf("./dist/%s/p/%d", strings.ToLower(v.Frnt.Author), v.Id)
 		v.Url = strings.TrimPrefix(dist, "./dist")
+
+                v.Comments = getComments(int64(v.Id))
 
 		blogs[i] = v
 
@@ -260,8 +261,8 @@ func chooseBlogLayout(blog utils.Blog) templ.Component {
 	return comp(blog)
 }
 
-func getComments(blogId int) []utils.Comment {
-	cmts, err := db.Conn.SelectCommentsMany(context.Background(), strconv.Itoa(blogId))
+func getComments(blogId int64) []utils.Comment {
+	cmts, err := db.Conn.SelectCommentsMany(context.Background(), blogId)
 	if err != nil {
 		return nil
 	}

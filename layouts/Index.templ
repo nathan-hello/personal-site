@@ -6,7 +6,7 @@ templ BaseLayout(header templ.Component, meta templ.Component) {
 		<head>
 			@meta
 		</head>
-		<body class="font-[Terminus]">
+		<body id="body-primary" class="font-[Terminus]">
 			<img
 				class="fixed top-0 left-0 w-full h-full z-[-1] bg-no-repeat bg-cover"
 				style="background-image: url(/images/carpark.png);"
@@ -17,5 +17,12 @@ templ BaseLayout(header templ.Component, meta templ.Component) {
 			{ children... }
 		</body>
 		<div class="h-96 bg-transparent"></div>
+                <script>
+                (function() {
+                        if (localStorage.getItem("disable-terminus") === "true") {
+                                document.getElementById("body-primary").classList.remove("font-[Terminus]")
+                        }
+                })();
+                </script>
 	</html>
 }

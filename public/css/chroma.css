@@ -62,7 +62,8 @@
 /* GenericSubheading */ .chroma-chroma .chroma-gu { color: #b8bb26; font-weight: bold }
 /* GenericTraceback */ .chroma-chroma .chroma-gt { background-color: #fb4934; font-weight: bold }
 
-/* PreWrapper */ .chroma-chroma { color: #ebdbb2; width:90%; margin-left:auto;margin-right:auto;margin-top:1rem; margin-bottom:1rem; }
+/* .chroma-chroma { color: #ebdbb2; width:90%; margin-left:auto;margin-right:auto;margin-top:1rem; margin-bottom:1rem; } */
+.chroma-chroma { background-color: var(--color-stone-700); }
 
 .chroma-chroma code {
   white-space: pre-wrap;

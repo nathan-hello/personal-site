@@ -29,11 +29,6 @@ templ ImageCard(image utils.Image, toggleSize bool) {
 	</div>
 }
 
-func asdf(v any) string {
-        fmt.Printf("%#v\n",v) 
-        return ""
-}
-
 templ ImagesFull(blog utils.Blog) {
 	if (len(blog.Frnt.Images) > 0) {
 		<div

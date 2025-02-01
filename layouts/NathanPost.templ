@@ -7,18 +7,18 @@ import (
 
 templ NathanPost(blog utils.Blog) {
 	@BaseLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Frnt.Title, blog.Frnt.Description, blog.Url, blog.Frnt.Images)) {
-		<div class="w-[80%] min-h-96 text-nat-white-c01 bg-neutral-800 mx-auto">
+		<div class="w-[80%] min-h-96 text-[#c5c8c6]  bg-neutral-800 mx-auto">
 			<div class="text-lg pt-6 pl-10 mx-auto">
 				<span class="text-[#a47996] font-bold">{ blog.Frnt.Author }</span>
 				<span class="">- </span>
 				<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) } </span>
 			</div>
 			@components.ImagesFull(blog)
-			<div class="text-md leading-relaxed md:text-xl md:leading-8 px-4">
+			<div class="text-md leading-relaxed md:text-xl md:leading-8 px-4 ">
 				@templ.Raw(blog.Html)
 			</div>
                         <br/>
-			@components.Comments(blog.Id)
+			@components.Comments(blog)
 		</div>
 	}
 }

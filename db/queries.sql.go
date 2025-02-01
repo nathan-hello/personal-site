@@ -10,39 +10,48 @@ import (
 )
 
 const insertComment = `-- name: InsertComment :one
-INSERT INTO Comments (created_at,text,post_id) values (?,?,?) RETURNING id, created_at, author, text, post_id
+INSERT INTO Comments (author,created_at,text,post_id,html) values (?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id
 `
 
 type InsertCommentParams struct {
+	Author    string
 	CreatedAt string
 	Text      string
-	PostID    string
+	PostID    int64
+	Html      string
 }
 
 // InsertComment
 //
-//	INSERT INTO Comments (created_at,text,post_id) values (?,?,?) RETURNING id, created_at, author, text, post_id
+//	INSERT INTO Comments (author,created_at,text,post_id,html) values (?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id
 func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (Comment, error) {
-	row := q.db.QueryRowContext(ctx, insertComment, arg.CreatedAt, arg.Text, arg.PostID)
+	row := q.db.QueryRowContext(ctx, insertComment,
+		arg.Author,
+		arg.CreatedAt,
+		arg.Text,
+		arg.PostID,
+		arg.Html,
+	)
 	var i Comment
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.Author,
 		&i.Text,
+		&i.Html,
 		&i.PostID,
 	)
 	return i, err
 }
 
 const selectCommentsMany = `-- name: SelectCommentsMany :many
-SELECT id, created_at, author, text, post_id FROM Comments WHERE post_id = ?
+SELECT id, created_at, author, text, html, post_id FROM Comments WHERE post_id = ?
 `
 
 // table: Comments
 //
-//	SELECT id, created_at, author, text, post_id FROM Comments WHERE post_id = ?
-func (q *Queries) SelectCommentsMany(ctx context.Context, postID string) ([]Comment, error) {
+//	SELECT id, created_at, author, text, html, post_id FROM Comments WHERE post_id = ?
+func (q *Queries) SelectCommentsMany(ctx context.Context, postID int64) ([]Comment, error) {
 	rows, err := q.db.QueryContext(ctx, selectCommentsMany, postID)
 	if err != nil {
 		return nil, err
@@ -56,6 +65,7 @@ func (q *Queries) SelectCommentsMany(ctx context.Context, postID string) ([]Comm
 			&i.CreatedAt,
 			&i.Author,
 			&i.Text,
+			&i.Html,
 			&i.PostID,
 		); err != nil {
 			return nil, err

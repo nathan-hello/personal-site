@@ -3,11 +3,10 @@ package components
 import "github.com/nathan-hello/personal-site/utils"
 
 templ Header(s string) {
-
 	<div
 		class="bg-[#171717] text-[#bcb8c3] border-2 border-[#1e1e1e] p-3 mt-4 mr-[10%] ml-[10%]"
 	>
-		<div class="mx-auto text-nat-white-c01 px-3 mb-2 inline-block whitespace-nowrap font-[Terminus]">
+		<div class="mx-auto text-nat-white-c01 px-3 mb-2 inline-block whitespace-nowrap ">
 			@ascii(s)
 			<br/>
 			@links()
@@ -18,7 +17,7 @@ templ Header(s string) {
 templ ascii(s string) {
 	<a href="/" class="leading-5 no-underline text-nat-white-c01 visited:text-nat-white-c01">
 		<b>
-			<pre class="font-[Terminus] leading-[15px]">{ utils.AsciiRender(s) }</pre>
+			<pre class="leading-[15px] font-[Terminus]">{ utils.AsciiRender(s) }</pre>
 		</b>
 	</a>
 }
@@ -72,6 +71,12 @@ templ links() {
 			href="/js"
 		>
 			/js-notice/
+		</a>
+		<a
+			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+			href="/font"
+		>
+			/font-notice/
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"

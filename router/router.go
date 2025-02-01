@@ -19,9 +19,8 @@ func SiteRouter() error {
 		{route: "/api/comments/{id}",
 			hfunc: routes.ApiComments,
 			middlewares: alice.New(
-				RejectSubroute("/"),
 				Logging,
-				AllowMethods("GET"),
+				AllowMethods("GET", "POST"),
 			)},
 	}
 
