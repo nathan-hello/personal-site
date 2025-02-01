@@ -7,14 +7,13 @@ import (
 	"github.com/nathan-hello/personal-site/router/routes"
 )
 
-func SiteRouter() error {
+type Site struct {
+	route       string
+	hfunc       http.HandlerFunc
+	middlewares alice.Chain
+}
 
-	type Site struct {
-		route       string
-		hfunc       http.HandlerFunc
-		middlewares alice.Chain
-	}
-
+func SiteRouter(cert, key, filesDir string) error {
 	sites := []Site{
 		{route: "/api/comments/{id}",
 			hfunc: routes.ApiComments,
@@ -28,13 +27,19 @@ func SiteRouter() error {
 		http.Handle(v.route, v.middlewares.ThenFunc(v.hfunc))
 	}
 
-	fs := http.FileServer(http.Dir("./dist"))
+	fs := http.FileServer(http.Dir(filesDir))
 	http.Handle("/", fs)
 
-        err := http.ListenAndServe(":3000", nil)
-		if err != nil {
-                return err
-		}
-        return nil
-}
+	go func() {
+		http.ListenAndServe(":80", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
+		}))
+	}()
 
+	err := http.ListenAndServeTLS(":443", cert, key, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -14,7 +14,7 @@ type TemplStaticPages struct {
 	Route string
 }
 
-func PagesTempl(templs []TemplStaticPages) error {
+func PagesTempl(output string, templs []TemplStaticPages) error {
 
 	var bits bytes.Buffer
 	for _, v := range templs {
@@ -23,7 +23,7 @@ func PagesTempl(templs []TemplStaticPages) error {
 		if len(parts) > 1 {
 			parts = parts[:len(parts)-1]
 		}
-		folder := "dist" + strings.Join(parts, "/")
+		folder := output + strings.Join(parts, "/")
 		os.MkdirAll(folder, 0777)
 		os.WriteFile("dist"+v.Route, bits.Bytes(), 0777)
 	}

@@ -14,18 +14,18 @@ var schema string
 
 var Conn *Queries
 
-func InitDb() (*Queries, error) {
+func InitDb(input string) (*Queries, error) {
 	if Conn != nil {
 		return Conn, nil
 	}
 
-	var d, err = sql.Open("sqlite3", "file:data.db?cache=shared")
+	d, err := sql.Open("sqlite3", input)
 	if err != nil {
 		return nil, err
 	}
 
 	if _, err := d.ExecContext(context.Background(), schema); err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	err = d.Ping()
@@ -38,4 +38,3 @@ func InitDb() (*Queries, error) {
 
 	return Conn, nil
 }
-

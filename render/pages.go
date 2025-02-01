@@ -20,9 +20,9 @@ import (
 
 // This renders .html files in the pages/ dir.
 
-func PagesHtml() error {
+func PagesHtml(input, output string) error {
 
-	err := filepath.Walk(utils.DIR_PAGES, func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(input, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -41,10 +41,11 @@ func PagesHtml() error {
 		defer f.Close()
 
 		route := strings.TrimPrefix(path, "pages")
-                if info.Name() != "index.html" {
-                route = strings.TrimSuffix(route,filepath.Ext(info.Name()))
-                }
-		dist := "dist" + route
+		if info.Name() != "index.html" {
+			route = strings.TrimSuffix(route, filepath.Ext(info.Name()))
+		}
+
+		dist := output + route
 
 		err = writeHtmlFile(f, dist)
 		if err != nil {
@@ -67,12 +68,12 @@ func writeHtmlFile(f *os.File, dist string) error {
 
 	comp := choosePageLayout(meta)
 
-        f.Seek(0,0)
+	f.Seek(0, 0)
 
-        content, err := io.ReadAll(f)
-        if err != nil {
-                return err
-        }
+	content, err := io.ReadAll(f)
+	if err != nil {
+		return err
+	}
 
 	renderedFile, err := RenderCustomComponents(string(content))
 	if err != nil {
@@ -138,16 +139,15 @@ func parsePagesFrontmatter(f *os.File) metadata {
 		meta = metadata{ascii: utils.AsciiNat_e, title: "reluekiss.com", description: "Nat/e. We are Boingus."}
 	}
 
-        if meta.ascii == "" {
-                meta.ascii = utils.AsciiNat_e
-        }
-        if meta.title == "" {
-                meta.title = "Nat/e - reluekiss.com"
-        }
-        if meta.description == "" {
-                meta.description = "We are boingus."
-        }
-        
+	if meta.ascii == "" {
+		meta.ascii = utils.AsciiNat_e
+	}
+	if meta.title == "" {
+		meta.title = "Nat/e - reluekiss.com"
+	}
+	if meta.description == "" {
+		meta.description = "We are boingus."
+	}
 
 	return meta
 }

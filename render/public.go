@@ -6,15 +6,11 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/nathan-hello/personal-site/utils"
 )
 
-// This just copies the public/ dir verbatim to dist/
-
-func Public() error {
+func Public(input, output string) error {
 	atLeastOne := false
-	err := filepath.Walk(utils.DIR_PUBLIC, func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(input, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -24,7 +20,7 @@ func Public() error {
 
 		route := strings.TrimPrefix(path, "public") // keep "/" in beginning
 
-		dist := "dist" + route
+		dist := output + route
 
 		bits, err := os.ReadFile(path)
 		if err != nil {

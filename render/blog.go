@@ -20,9 +20,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func Blogs(write bool) ([]utils.Blog, error) {
+func Blogs(input, output string, write bool) ([]utils.Blog, error) {
 
-	blogs, err := gatherRenderedHtmls()
+	blogs, err := gatherRenderedHtmls(input)
 	if err != nil {
 		return nil, err
 	}
@@ -34,10 +34,10 @@ func Blogs(write bool) ([]utils.Blog, error) {
 	for i, v := range blogs {
 		v.Id = 100_000 + i + 1
 
-		dist := fmt.Sprintf("./dist/%s/p/%d", strings.ToLower(v.Frnt.Author), v.Id)
+		dist := fmt.Sprintf("%s/%s/p/%d", output, strings.ToLower(v.Frnt.Author), v.Id)
 		v.Url = strings.TrimPrefix(dist, "./dist")
 
-                v.Comments = getComments(int64(v.Id))
+		v.Comments = getComments(int64(v.Id))
 
 		blogs[i] = v
 
@@ -75,9 +75,9 @@ func writeBlogPost(v utils.Blog, dist string) error {
 	return nil
 }
 
-func gatherRenderedHtmls() ([]utils.Blog, error) {
+func gatherRenderedHtmls(input string) ([]utils.Blog, error) {
 	blogs := []utils.Blog{}
-	err := filepath.Walk(utils.DIR_BLOG, func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(input, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
