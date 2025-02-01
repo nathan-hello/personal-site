@@ -41,12 +41,12 @@ func initFiles() {
 		log.Fatal(err)
 	}
 
-	err = os.MkdirAll(OUTPUT_PUBLIC, 0644)
+	err = os.MkdirAll(OUTPUT_PUBLIC, 0744)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = os.MkdirAll(OUTPUT_PRIVATE, 0600)
+	err = os.MkdirAll(OUTPUT_PRIVATE, 0700)
 	if err != nil {
 		log.Fatal(err)
 	}
