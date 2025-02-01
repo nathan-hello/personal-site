@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	err := router.SiteRouter(FILE_CERT, FILE_KEY, OUTPUT_PUBLIC)
+	err := router.SiteRouter(FILE_CERT, FILE_KEY, OUTPUT_PUBLIC, ":3000")
 	if err != nil {
 		log.Fatal(err)
 	}
