@@ -4,7 +4,7 @@ sql:
   queries: db/input/queries.sql
   engine: sqlite
   database:
-    uri: file://data.db
+    uri: file:test.db?cache=shared&mode=memory
   gen:
     go:
       package: db

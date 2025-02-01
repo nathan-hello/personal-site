@@ -10,21 +10,20 @@ import (
 var Conn *Queries
 
 func InitDb() (*Queries, error) {
-        if Conn != nil {
-                return Conn, nil
-        }
+	if Conn != nil {
+		return Conn, nil
+	}
 
-	var d, err = sql.Open("sqlite3", "file://data.db")
+	var d, err = sql.Open("sqlite3", "file:test.db?cache=shared&mode=memory")
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	err = d.Ping()
 	if err != nil {
 		fmt.Print("ping")
-		return nil,err
+		return nil, err
 	}
 	Conn = New(d)
-	return Conn,nil
+
+	return Conn, nil
 }
-
-

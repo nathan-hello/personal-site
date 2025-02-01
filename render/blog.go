@@ -23,7 +23,6 @@ import (
 
 func Blogs(write bool) ([]utils.Blog, error) {
 
-
 	blogs, err := gatherRenderedHtmls()
 	if err != nil {
 		return nil, err
@@ -43,10 +42,10 @@ func Blogs(write bool) ([]utils.Blog, error) {
 
 		if write {
 			err = writeBlogPost(v, dist)
-                        if err != nil {
-                                return nil,err
-                        }
-		} 
+			if err != nil {
+				return nil, err
+			}
+		}
 
 	}
 
@@ -194,7 +193,10 @@ func parseFrontmatter(s string) (utils.Frontmatter, error) {
 	fm := utils.Frontmatter{}
 	fm.Author = yml.Author
 	fm.Title = yml.Title
-	fm.Date = utils.DateStringToObject(yml.Date)
+	fm.Date, err = utils.DateStringToObject(yml.Date)
+	if err != nil {
+		return utils.Frontmatter{}, err
+	}
 
 	getImages(yml.Image, &fm)  // key "image:"
 	getImages(yml.Images, &fm) // key "images:"
@@ -244,28 +246,29 @@ func getImages(yml map[string]ymlImage, fm *utils.Frontmatter) error {
 }
 
 type BlogComponent = func(utils.Blog) templ.Component
+
 var registeredBlogLayouts = map[string]BlogComponent{
 	"natalie": layouts.NataliePost,
-	"nathan": layouts.NathanPost,
+	"nathan":  layouts.NathanPost,
 }
 
 func chooseBlogLayout(blog utils.Blog) templ.Component {
-        comp,ok := registeredBlogLayouts[blog.Frnt.Author]
-        if !ok {
-                return registeredBlogLayouts["nathan"](blog)
-        }
-        return comp(blog)
+	comp, ok := registeredBlogLayouts[blog.Frnt.Author]
+	if !ok {
+		return registeredBlogLayouts["nathan"](blog)
+	}
+	return comp(blog)
 }
 
 func getComments(blogId int) []utils.Comment {
-        cmts,err := db.Conn.SelectCommentsMany(context.Background(),strconv.Itoa(blogId))
-        if err != nil {
-                return nil
-        }
-        c := []utils.Comment{}
-        for _,v := range cmts {
-                c = append(c, v.NewBlogComment())             
-        }
+	cmts, err := db.Conn.SelectCommentsMany(context.Background(), strconv.Itoa(blogId))
+	if err != nil {
+		return nil
+	}
+	c := []utils.Comment{}
+	for _, v := range cmts {
+		c = append(c, v.NewBlogComment())
+	}
 
-        return c
+	return c
 }
