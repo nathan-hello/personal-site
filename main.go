@@ -22,7 +22,7 @@ const FILE_CERT = "/var/www/reluekiss.com/private/reluekiss.cert"
 const FILE_KEY = "/var/www/reluekiss.com/private/reluekiss.key"
 
 func main() {
-	//	initFiles()
+	initFiles()
 	generate()
 
 	if slices.Contains(os.Args, "--build-only") {
