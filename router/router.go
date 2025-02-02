@@ -46,8 +46,8 @@ func SiteRouter(cert, key, filesDir string) error {
 			return err
 		}
 	} else {
-		err := http.ListenAndServe(":3000", nil)
 		fmt.Printf("Listening on :3000...")
+		err := http.ListenAndServe(":3000", nil)
 		if err != nil {
 			return err
 		}
