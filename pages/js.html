@@ -2,44 +2,51 @@
 <title>Javascript Notice</title>
 <description>A notice on javascript for reluekiss.com</description>
 -->
-  <br />
+<br />
 <div class="bg-neutral-800 text-white w-[80%] mx-auto py-12">
         <div class="w-[90%] mx-auto text-lg">
-    <p class="text-xl">
-      This website has some amounts of javascript. This page tells you where.
-      (Correct as of 26 Jan 2025)
-    </p>
-    <br/>
-    <p >
-      Natalie cares a lot about keeping JS to an absolute bare minimum. This said, a
-      statically generated site like ours has inherent limitations. Namely, there isn't a
-      server running code available to run per-request renders.
-    </p>
-    <p>
-      This isn't meant to be a scary list of things you can't do without JS on our site,
-      just an explanation. We're really happy with how little our site needs JS.
-    </p>
-    <p>
-      Here are the areas that have JS:
-      <ul class="list-disc ml-4">
-        <li>
-          On each blog post, we use htmx to grab the comments from the server, and then
-          place the server-rendered html in the dom. Disabling JS means you won't see
-          comments.
-        </li>
-        <li>
-          On /natalie/tv there is a video player that will stream video if Natalie is
-          serving content via our (other, non-web) server. The iframe that she uses to get
-          the stream working in the browser uses JS. Disabling JS would mean you can't see
-          this video.
-        </li>
-        <li>
-          On /font, you can disable the Terminus font from the page. This just puts 
-          "disable-terminus": "true" in your localStorage. This check also happens on
-          each page load so you don't have to check it every time you visit or go to
-          another page.
-        </li>
-      </ul>
-    </p>
-  </div>
-
+                <p class="text-xl">
+                        This website has some amounts of javascript. This page tells you where.
+                        (Correct as of 26 Jan 2025)
+                </p>
+                <br />
+                <p>
+                        Natalie cares a lot about keeping JS to an absolute bare minimum. This said, a
+                        statically generated site like ours has inherent limitations. Namely, there isn't a
+                        server running code available to run per-request renders.
+                </p>
+                <p>
+                        This isn't meant to be a scary list of things you can't do without JS on our site,
+                        just an explanation. We're really happy with how little our site needs JS.
+                </p>
+                <p>
+                        Here are the areas that have JS:
+                <ul class="list-disc ml-4">
+                        <li>
+                                On each blog post, we use htmx to grab the comments from the server, and then
+                                place the server-rendered html in the dom. Disabling JS means you won't see
+                                comments.
+                        </li>
+                        <li>
+                                On each blog post, we use <a href="https://katex.org/docs/autorender">katex</a> to
+                                render Natalie's latex
+                                into html. Disabling JS means you won't see Natalie's math rendered properly. If you
+                                have a good solution
+                                for server rendering the latex to html without using perl or server-side js, I'm very
+                                open to it!
+                        </li>
+                        <li>
+                                On /natalie/tv there is a video player that will stream video if Natalie is
+                                serving content via our (other, non-web) server. The iframe that she uses to get
+                                the stream working in the browser uses JS. Disabling JS would mean you can't see
+                                this video.
+                        </li>
+                        <li>
+                                On /font, you can disable the Terminus font from the page. This just puts
+                                "disable-terminus": "true" in your localStorage. This check also happens on
+                                each page load so you don't have to check it every time you visit or go to
+                                another page.
+                        </li>
+                </ul>
+                </p>
+        </div>
