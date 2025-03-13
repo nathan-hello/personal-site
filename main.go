@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"slices"
 
@@ -10,71 +11,88 @@ import (
 	"github.com/nathan-hello/personal-site/router"
 )
 
+var prod map[string]string = map[string]string{
+	"public":  "/var/www/reluekiss.com/public",
+	"private": "/var/www/reluekiss.com/private",
+	"db":      "/var/www/reluekiss.com/private/data.db",
+}
+
+var dev map[string]string = map[string]string{
+	"public":  "./dist",
+	"private": "./dist/private",
+	"db":      ":memory:",
+}
+
 const INPUT_BLOG = "./public/content/blog"
 const INPUT_PAGES = "./pages"
 const INPUT_PUBLIC = "./public"
 
-const OUTPUT_PUBLIC = "/var/www/reluekiss.com/public"
-const OUTPUT_PRIVATE = "/var/www/reluekiss.com/private"
-const FILE_DATABASE = "file:/var/www/reluekiss.com/private/data.db"
-const FILE_CERT = "/var/www/reluekiss.com/private/reluekiss.cert"
-const FILE_KEY = "/var/www/reluekiss.com/private/reluekiss.key"
-
 func main() {
-	initFiles()
-	generate()
+	m := prod
+	if slices.Contains(os.Args, "--dev") {
+		m = dev
+	}
+
+	initFiles(m)
+	generate(m)
 
 	if slices.Contains(os.Args, "--build-only") {
 		return
 	}
 
-	err := router.SiteRouter(FILE_CERT, FILE_KEY, OUTPUT_PUBLIC)
+	err := router.SiteRouter(m["public"])
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if slices.Contains(os.Args, "--dev") {
+		fs := http.FileServer(http.Dir("./dir"))
+		http.Handle("/", fs)
+		http.ListenAndServe(":8000", nil)
 	}
 }
 
-func initFiles() {
-	err := os.RemoveAll(OUTPUT_PUBLIC)
+func initFiles(m map[string]string) {
+	err := os.RemoveAll(m["public"])
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = os.MkdirAll(OUTPUT_PUBLIC, 0744)
+	err = os.MkdirAll(m["public"], 0744)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = os.MkdirAll(OUTPUT_PRIVATE, 0700)
+	err = os.MkdirAll(m["private"], 0700)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = db.InitDb(FILE_DATABASE)
+	_, err = db.InitDb(m["db"])
 	if err != nil {
 		log.Fatal(err)
 	}
 
 }
 
-func generate() {
+func generate(m map[string]string) {
 
-	err := render.PagesHtml(INPUT_PAGES, OUTPUT_PUBLIC)
+	err := render.PagesHtml(INPUT_PAGES, m["public"])
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = render.Public(INPUT_PUBLIC, OUTPUT_PUBLIC)
+	err = render.Public(INPUT_PUBLIC, m["public"])
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = render.Blogs(INPUT_BLOG, OUTPUT_PUBLIC, true)
+	_, err = render.Blogs(INPUT_BLOG, m["public"], true)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Currently no static templs, but we could!
-	err = render.PagesTempl(OUTPUT_PUBLIC, []render.TemplStaticPages{})
+	err = render.PagesTempl(m["public"], []render.TemplStaticPages{})
 	if err != nil {
 		log.Fatal(err)
 	}

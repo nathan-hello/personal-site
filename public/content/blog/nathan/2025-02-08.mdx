@@ -1,0 +1,230 @@
+---
+title: "Rewrite it in Go: How I Accidentally Made My Own SSG Framework"
+date: 13-Mar-2025
+author: nathan
+image: 
+        justalittleguy.jpg:
+                alt: "A large snowy leopard or cat or something looking at the camera with a neutral expression."
+---
+
+This website started with two goals:
+
+&#8226;	Post content.
+
+&#8226;	Allow Natalie to post content as easily as possible.
+
+My beautiful wife isn't interested in webdev, and I don't want to force it on her.
+We both want to post content, and I want to it to be easy for myself as well, so
+the question is: what's the right balance between making the typical blog post
+simple and out of the way, while maintaining the ability to reach out and make
+more interactive experiences, should they arise?
+
+Astro is pretty far left in this category. The framework has grown a lot since I started
+using it (to include the [introduction](https://astro.build/blog/astro-db-deep-dive/) and eventual
+[deprecation](https://astro.build/blog/goodbye-astro-studio/) of AstroDB), and it is extensible
+because it is purposefully not a frontend framework, but a backend one. You can bring your own
+frontend framework and allow Astro to serve the static assets and pull in dynamic data via React
+or just normal JS or whatever.
+
+There's a critical flaw with Astro - the `.astro` file. It's the thing that you look at first and say
+"what the heck how would anyone find this acceptable?", then in the middle of the bell curve you think
+"oh, it's actually pretty great because you can colocate your JS and markup kinda like JSX but as a
+backend framework", and then after a while you want to write your website using anything but the one
+editor it works on and you run into wall after wall of either the LSP or the Treesitter not working. 
+
+I installed VSC*de on my home machine only because writing Astro was so atrocious on neovim. I don't like
+tech that dictates what my editing experience is, and for Natalie that's a non-starter. She will rather go
+without any of the dev tools then go down the web dev rabbit hole. Natalie has this idea of a semi-interactive
+story-telling thing (I'll let her break ground on that because it's really cool) and when she described it to
+me I just knew it wasn't something that we were equipped to do. And I don't want to pour more time into Astro
+when I could do it right and set ourselves up for success. No more happy paths, but instead our own path.
+
+So, a few months ago, The Big Rewrite was underway. I went through a few iterations of what content creation
+would look like, but I'll spare the details. For us, the blogs are the same. We write in a markdown(x) file in a folder,
+give some metadata details in the frontmatter, and the program spits out all of the html statically at "build" time.
+
+Build time in what I'm uncreatively dubbing `nat-ssg` (library soon?), is just program initialization. Basically
+the idea is that all of the data that *can* be pre-rendered SSG style will be pre-rendered. As in, there is a static
+folder `/var/www/reluekiss.com/public/` which the nginx server reads from. Whenever there a browser requests a route
+that matches a file/filepath in that folder, we just serve the file.
+
+I aboslutely love how we ended up actually rendering the files. There's three ways right now:
+
+&#8226;	 Write html and put it in `pages/`
+
+&#8226;	 Write a blog post and put it in `public/content/blog/` (I'm very careful with my filepaths)
+
+&#8226;	 Write a templ component and manually put the url in the `main.go`
+
+
+Blog basically works the same it did in Astro, only that I've unrooted much of what Astro did for us. We use 
+`gomarkdown` as all good Go web apps do, but we still have some heavy lifting to do. We never really liked
+how code blocks worked on the website. We couldn't figure out how to customize it on the server to have a nice
+font, have lines on the left, make it centered, you get it. I think when we looked into it all we could find
+were frontend JS things, and [we're very cautious of frontend JS](https://reluekiss.com/notices). In Go, however,
+we get some handy hooks to let us inject whatever we'd like when `gomarkdown`'s AST hits a code block.
+
+Basically, it makes the AST, then as it renders it checks if that node (code block, paragraph, bold text, etc)
+has some non-default function it should use instead. Here's what it looks like in action:
+
+```go
+package render
+
+import (
+	"io"
+
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/ast"
+	mdhtml "github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
+)
+
+func MarkdownRender(md []byte) []byte {
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock | parser.MathJax 
+	p := parser.NewWithExtensions(extensions)
+	doc := p.Parse(md)
+	opts := mdhtml.RendererOptions{
+		Flags:          mdhtml.CommonFlags,
+		RenderNodeHook: mdRenderHooks,
+	}
+	renderer := mdhtml.NewRenderer(opts)
+	return markdown.Render(doc, renderer)
+}
+
+func mdRenderHooks(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
+	if code, ok := node.(*ast.CodeBlock); ok { // Are we in a CodeBlock?
+                // Sweet. Let's grab out the language (code.Info) and the code (code.Literal) and give it to our rendering function
+		high, err := CodeHighlighter(string(code.Info), string(code.Literal)) 
+		if err != nil {
+                        // If it errors out, that's ok! Just write out the original, it's not that deep. We'll catch it.
+			w.Write(code.Literal)
+		}
+                // Write the newly formatted code please!
+		w.Write([]byte(high))
+                // Tell the AST that we're good to go. No idea what the `true` is for.
+		return ast.GoToNext, true
+	}
+        // I didn't like how paragraphs were in the default rendering so I just make it a <br/>
+	if v, ok := node.(*ast.Paragraph); ok {
+                if v.Parent != nil { // Except if the paragraph is the first one.. that would look weird.
+		w.Write([]byte("<br/>"))
+                }
+		return ast.GoToNext, true
+	}
+	return ast.GoToNext, false
+}
+```
+
+
+I absolutely love how this turned out because I can actually dig into the renderer and change stuff I don't like. That's
+what you get when you step out of highly opinionated frameworks and do some Real Programming. No shots on those who like
+their frameworks. For work I've been developing on a React + Vite app, using a ton of shadcn and v0. It's nice when what
+you're making is the happy path and you don't need to do hacks. But there's a difference between a touchscreen that just
+needs to look pretty and be written somewhat efficiently and a labor of love which is this website. There are tons of these
+little moments through the rewrite and you can dig through it. It's only about 2500 lines of the Gopher's language.
+
+Next, I want to show you how I did Components. This is what makes this a proper SSG framework, and will allow Natalie to
+dream big. 
+
+First, quick note on [templ](https://github.com/a-h/templ). I abosolutely love this library, I absolutely love the maintainer
+who gave [this excellent talk](https://www.youtube.com/watch?v=EkK8Jxjj95s) that helped me understand not just how LSPs work,
+but why they *have* to work that way and the real-world nitty-gritty of getting something done. His explanation here is something
+I strive for whenever I'm explaining something technical to other technical people. 
+
+The library, as I talked about [here](https://reluekiss.com/nathan/p/100026) is a breath of fresh air not just to Go, but of
+the concept of server-side rendering HTML without server-side Javascript. No other HTML templating library can say with a straight
+face that they use a Component model. That is, a function which returns HTML which itself can call other HTML rendering functions.
+For some reason, these templating libraries expect that you're writing one HTML file per route! Yes, you can have headers and footers,
+(as Astro and now `nat-ssg` calls them: Layouts), but you cannot have an arbitrary piece of HTML encapuslate all of the child HTML that
+it may need if you actually need to call code to render it. That sounds like a mouthfull, but if you've been trying and failing as hard 
+as I have to hate React, it's the thing that I want to shout at the rooftops. Components! Why after a decade of React's dominance in webdev
+have templating engines not tried this yet? Have you seen jinja? Have you seen `template/html`? It's absolute insane people who don't
+build interactive experiences on the web trying to make an API for building websites. You get bumpkis and that's why server-side JS is
+so prevalent. It's impossible to write a good webapp without Typescript. Oh, did I mention that `templ` is typesafe and has an LSP?
+And don't worry about [injection attacks](https://templ.guide/security/injection-attacks/) because there is no shot you're going to get 
+html in a component without running `templ.Raw()` (which is something that React does by default and it's GOOD).
+I am absolutely jazzed to see native having good DX. It's a rare sight, and I haven't built anything interactive with it so maybe I'm
+missing something big but if you're okay with your Typescript being in a different file, I don't expect there to be anything to complain about.
+
+We use Templ to build components, that's its whole job right? Well excuse me because I wasn't clear. These `nat-ssg` Components are called *inside*
+of the html, then parsed + rendered during the "build" process. It'll be clear with an example so here is our entire `index.html`:
+
+```html
+<!-- pages/index.html -->
+<!--
+<ascii>
+ _   _       _       __   
+| \ | |     | |     / /   
+|  \| | __ _| |_   / /__  
+| . ` |/ _` | __| / / _ \ 
+| |\  | (_| | |_ / /  __/ 
+|_| \_|\__,_|\__/_/ \___| "We are Boingus"
+</ascii>
+<title>Nat/e</title>
+<description>We are boingus.</description>
+-->
+<div class="ml-[10%] mr-[10%]">
+        <ManyPostMini amount="all" author="all" sort="descending"></ManyPostMini>
+</div>
+```
+
+First, beacuse of the templ's model, I put everything in a Layout. For the `index.html`, that's `layouts/Base.templ` and everything inside of
+`index.html` goes inside of `{ children... }` of that layout.
+
+Now that we have a decent start to the page, let's bring in the content. `<ManyPostMini>` is a Component. It's defined in `render/components.go`,
+right alongside that `CodeHighlighter` from earlier (we reused the codeblocks for the markdown as a Component, how cool is that!). Now, every component
+gets a struct, so here's what we need to get going:
+
+```go
+type ComponentFunc func(component) (templ.Component, error)
+
+func registeredComponents() map[string]ComponentFunc {
+	return map[string]ComponentFunc{
+		"Code":         code,
+		"ManyPostMini": manyPostMini,
+	}
+}
+
+type component struct {
+	Element    string
+	Attributes map[string]string
+	Children   string // any nested components are already html by the time their parent gets rendered
+}
+```
+
+First we need which Component we called in the html, that's `Element`, then we get the Attributes as a `map[string]string`, and we also need to tell
+Templ where to put its children because oh snap! It's all Templ components the whole way down! Because know what Component (again, `Element`) we're 
+trying to render, we can start writing functions that parse out those attributes, get the data we need, place the children where they should go,
+and return a `templ.Component` to then be rendered during the "build" process. All of this was so tricky to get right which was the cause for a big
+delay in the rewrite, but now that it's here it's so clear that this is how I want to write this website. Natalie can ask me for a feature request
+on some Component that she would want that requires some third-party data, something from the filesystem, whatever, and I can provide her the data
+she needs to do what she really wants to do, which is just write html and forget about the rest. And for my sake, I can write a new page with not
+much overhead. And of the overhead I do need, I can make it into a Component!
+
+I think this is an excellent strategy if you're looking for a good balance between what you write in your static html and dynamic data. 
+
+Most of the rest of the rewrite was spent trying to get this portion to work. 
+
+Notable mentions include: 
+
+&#8226;	 failed attempt in squeezing all of our blogs that are on the filesystem into SQLite things asdf
+
+&#8226;	 XML parsing from HTML comments to get page metadata so I don't have to bake that in to the Go/Templ side
+
+&#8226;	 ChatGPT for writing the HTML parsing for Components
+
+&#8226;	 Natalie for doing really cool ascii art
+
+&#8226;	 HTMX for powering out comment sections (we don't do telemetry, so please leave one!)
+
+&#8226;	 `io.Writer` for being such an excellect 10/10 5 star programming moment
+
+
+Thanks for reading :)
+
+nate
+
+
+
+
+

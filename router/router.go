@@ -3,8 +3,6 @@ package router
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"slices"
 
 	"github.com/justinas/alice"
 	"github.com/nathan-hello/personal-site/router/routes"
@@ -16,7 +14,7 @@ type Site struct {
 	middlewares alice.Chain
 }
 
-func SiteRouter(cert, key, filesDir string) error {
+func SiteRouter(filesDir string) error {
 	sites := []Site{
 		{route: "/api/comments/{id}",
 			hfunc: routes.ApiComments,
@@ -33,24 +31,10 @@ func SiteRouter(cert, key, filesDir string) error {
 	fs := http.FileServer(http.Dir(filesDir))
 	http.Handle("/", fs)
 
-	if slices.Contains(os.Args, "--prod-server") {
-		go func() {
-			http.ListenAndServe(":80", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
-			}))
-		}()
-
-		fmt.Printf("Listening on :80 and :443...")
-		err := http.ListenAndServeTLS(":443", cert, key, nil)
-		if err != nil {
-			return err
-		}
-	} else {
-		fmt.Printf("Listening on :3000...")
-		err := http.ListenAndServe(":3000", nil)
-		if err != nil {
-			return err
-		}
+	fmt.Printf("Listening on :3001...")
+	err := http.ListenAndServe(":3001", nil)
+	if err != nil {
+		return err
 	}
 
 	return nil

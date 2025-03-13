@@ -1,7 +1,7 @@
 build/templ:
 	templ generate
 build/css:
-	bunx @tailwindcss/cli -i ./public/css/tw-input.css -o ./public/css/tw-output.css
+	bun run tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css
 build/sqlc:
 	go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0 generate
 build/go:
@@ -9,7 +9,7 @@ build/go:
 
 
 watch/templ:
-	templ generate --watch --cmd="go run ." --proxy="http://localhost:3000" --open-browser=false
+	templ generate --watch --cmd="go run . --dev" --proxy="http://localhost:3000" --open-browser=false
 watch/css:
 	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
 dev: 

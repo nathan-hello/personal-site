@@ -3,6 +3,7 @@ package components
 import (
 	"fmt"
 	"github.com/nathan-hello/personal-site/utils"
+	"strconv"
 )
 
 templ Comments(blog utils.Blog) {
@@ -84,7 +85,7 @@ templ Comment(v utils.Comment, blog int64) {
 	<div class="flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg" id={ fmt.Sprintf("%d-%d", blog, v.Id) }>
 		<div class="flex flex-col">
 			<div class="flex flex-row px-4 w-full">
-				<span class="font-thin">{ v.Author } - { utils.DateFormatObject(v.Date) }</span>
+				<span class="font-semibold">{strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }</span>
 			</div>
 			<hr/>
 			<div class="mx-4 text-xl">

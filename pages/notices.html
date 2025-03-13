@@ -1,6 +1,6 @@
 <!--
-<title>Javascript Notice</title>
-<description>A notice on javascript for reluekiss.com</description>
+<title>Reluekiss.com Notices</title>
+<description>We want to tell you something.</description>
 -->
 <br />
 <div class="bg-neutral-800 text-white w-[80%] mx-auto py-12">
@@ -42,11 +42,48 @@
                                 this video.
                         </li>
                         <li>
-                                On /font, you can disable the Terminus font from the page. This just puts
+                                On this page, you can disable the Terminus font from the page. This just puts
                                 "disable-terminus": "true" in your localStorage. This check also happens on
                                 each page load so you don't have to check it every time you visit or go to
                                 another page.
                         </li>
                 </ul>
                 </p>
+<br />
+        <div class="w-[90%] mx-auto text-lg">
+                <p class="text-xl">
+                        A note to Firefox users
+                </p>
+                <br />
+                <p>
+                        Natalie really likes the Terminus font, but unfortunately on firefox it looks like dog.
+                        Something to do with the bitmapping or aliasing or something. It's just really blurry,
+                </p>
+                <p>
+                        You can check the box below and turn off having Terminus as the font of our
+                        website if you'd like. Click it again to re-enable.
+                </p>
+                <br/>
+                <input id="terminus-disable" type="checkbox" />
+                <label for="terminus-disable">Check to disable Terminus font.</label>
+        </div>
+        <script>
+                (function() {
+                        if (localStorage.getItem("disable-terminus") === "true") {
+                                document.getElementById("terminus-disable").checked = true;
+                        }
+                })();
+                function handleClick(e) {
+                        console.log(e)
+                        if (e.target.checked === true) {
+                                document.getElementById("body-primary").classList.remove("font-[Terminus]")
+                                localStorage.setItem("disable-terminus", "true")
+                        }
+                        if (e.target.checked === false) {
+                                document.getElementById("body-primary").classList.add("font-[Terminus]")
+                                localStorage.removeItem("disable-terminus")
+                        }
+                }
+                document.getElementById("terminus-disable").addEventListener("click", handleClick);
+        </script>
         </div>
