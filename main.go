@@ -33,18 +33,22 @@ func main() {
 		m = dev
 	}
 
-	_, err := db.InitDb(m["db"])
-	if err != nil {
-		log.Fatal(err)
+	build := slices.Contains(os.Args, "--build")
+	serve := slices.Contains(os.Args, "--serve")
+	if build && serve {
+		log.Fatal("both --build and --serve was given: choose one!")
+	}
+	if !build && !serve {
+		log.Fatal("neither --build or --serve was given: choose one!")
 	}
 
-	generate(m)
-
-	if slices.Contains(os.Args, "--build-only") {
-		return
+	if build {
+		generate(m)
 	}
 
-	startHttp(m)
+	if serve {
+		startHttp(m)
+	}
 
 }
 
@@ -73,6 +77,10 @@ func generate(m map[string]string) {
 }
 
 func startHttp(m map[string]string) {
+	_, err := db.InitDb(m["db"])
+	if err != nil {
+		log.Fatal(err)
+	}
 	router.RegisterApiHttpHandler()
 
 	if slices.Contains(os.Args, "--dev") {
