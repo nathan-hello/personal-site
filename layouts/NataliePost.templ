@@ -7,14 +7,14 @@ import (
 
 templ NataliePost(blog utils.Blog) {
 	@BaseLayout(components.Header(utils.AsciiNat_e), components.Meta(blog.Frnt.Title, blog.Frnt.Description, blog.Url, blog.Frnt.Images)) {
-		<div class="w-[80%] min-h-96 text-[#c5c8c6] bg-neutral-800 mx-auto">
+		<div class="min-h-96 text-[#c5c8c6] bg-neutral-800 mx-auto">
 			<div class="text-lg pt-6 mx-auto pl-10">
 				<span class="text-[#a47996] font-bold">{ blog.Frnt.Author }</span>
 				<span class="">- </span>
 				<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) } </span>
 			</div>
 			@components.ImagesFull(blog)
-			<div class="text-md leading-relaxed md:text-xl md:leading-8 px-4" >
+			<div class="text-md leading-relaxed lg:text-xl lg:leading-8 px-4" >
 				@templ.Raw(blog.Html)
 			</div>
                         <br/>
@@ -22,3 +22,4 @@ templ NataliePost(blog utils.Blog) {
 		</div>
 	}
 }
+

@@ -43,7 +43,7 @@ func CodeHighlighter(lang string, content string) (string, error) {
 	// chroma-classes are written in ./public/css/chroma.css
 	sty := styles.Get("gruvbox")
 	frm := html.New(
-		html.WrapLongLines(true),
+		html.WrapLongLines(false),
 		html.WithClasses(true),
 		html.ClassPrefix("chroma-"),
 		html.WithLineNumbers(true),

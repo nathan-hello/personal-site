@@ -1,9 +1,9 @@
 package components
 
 import (
+	"fmt"
 	"github.com/nathan-hello/personal-site/utils"
 	"strings"
-        "fmt"
 )
 
 templ ImageCard(image utils.Image, toggleSize bool) {
@@ -20,7 +20,9 @@ templ ImageCard(image utils.Image, toggleSize bool) {
 				if toggleSize {
 					onclick="this.classList.toggle('max-h-48')"
 				}
-				class="max-h-48 max-w-full"
+				class={ fmt.Sprintf(
+                                        "max-h-48 max-w-full " ,
+                                ) }
 				alt={ image.Alt }
 				src={ image.Url }
 				loading="lazy"
@@ -32,7 +34,7 @@ templ ImageCard(image utils.Image, toggleSize bool) {
 templ ImagesFull(blog utils.Blog) {
 	if (len(blog.Frnt.Images) > 0) {
 		<div
-			class="float-left flex flex-wrap md:px-10 pb-2 gap-x-2"
+			class="px-10  float-left flex flex-wrap pb-2 gap-x-2 w-full lg:w-fit my-2 lg:my-0"
 		>
 			for _, v := range blog.Frnt.Images {
 				@ImageCard(v, true)
@@ -44,14 +46,14 @@ templ ImagesFull(blog utils.Blog) {
 templ ImagesMini(blog utils.Blog) {
 	if (len(blog.Frnt.Images) > 0) {
 		<div
-			class={fmt.Sprintf(
+			class={ fmt.Sprintf(
                         "%s %s %s float-left flex flex-wrap pb-2 gap-x-2",
                         cardColor(blog),
-                        // on less than md:, do `after:first:hidden`
-                        "[&>*:not(:first-child)]:hidden md:[&>*:not(:first-child)]:block px-2 md:px-10",
-                        "w-full md:max-w-60",
+                        // on less than lg:, do `after:first:hidden`
+                        "px-2 lg:px-10",
+                        "w-full lg:w-fit",
 
-                        )}
+                        ) }
 		>
 			@ImageCard(blog.Frnt.Images[0], false)
 		</div>

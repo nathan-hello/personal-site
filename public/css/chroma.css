@@ -64,8 +64,12 @@
 
 /* .chroma-chroma { color: #ebdbb2; width:90%; margin-left:auto;margin-right:auto;margin-top:1rem; margin-bottom:1rem; } */
 .chroma-chroma { background-color: var(--color-stone-700); }
+.chroma-chroma {overflow-x: auto;}
+.chroma-chroma {font-size: .9rem;}
+.chroma-chroma {line-height: 1.333rem;}
+.chroma-bg {padding-top: 8px; padding-bottom: 8px;}
 
-.chroma-chroma code {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
+/* .chroma-chroma code {
+   white-space: pre-wrap;
+   word-break: break-word;
+ }*/
