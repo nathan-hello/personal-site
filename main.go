@@ -33,6 +33,11 @@ func main() {
 		m = dev
 	}
 
+	_, err := db.InitDb(m["db"])
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	build := slices.Contains(os.Args, "--build")
 	serve := slices.Contains(os.Args, "--serve")
 	if build && serve {
@@ -77,10 +82,6 @@ func generate(m map[string]string) {
 }
 
 func startHttp(m map[string]string) {
-	_, err := db.InitDb(m["db"])
-	if err != nil {
-		log.Fatal(err)
-	}
 	router.RegisterApiHttpHandler()
 
 	if slices.Contains(os.Args, "--dev") {
