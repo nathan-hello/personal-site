@@ -29,9 +29,14 @@ const INPUT_PAGES = "./pages"
 const INPUT_PUBLIC = "./public"
 
 func main() {
+	build := slices.Contains(os.Args, "--build")
+	serve := slices.Contains(os.Args, "--serve")
+
 	m := prod
 	if slices.Contains(os.Args, "--dev") {
 		m = dev
+		build = true
+		serve = true
 	}
 
 	_, err := db.InitDb(m["db"])
@@ -39,11 +44,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	build := slices.Contains(os.Args, "--build")
-	serve := slices.Contains(os.Args, "--serve")
-	if build && serve {
-		log.Fatal("both --build and --serve was given: choose one!")
-	}
 	if !build && !serve {
 		log.Fatal("neither --build or --serve was given: choose one!")
 	}

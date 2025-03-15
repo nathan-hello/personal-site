@@ -41,9 +41,12 @@ func PagesHtml(input, output string) error {
 		defer f.Close()
 
 		route := strings.TrimPrefix(path, "pages")
-		if info.Name() != "index.html" {
-			route = strings.TrimSuffix(route, filepath.Ext(info.Name()))
-		}
+
+                // Generated files keep their extension.
+                // Tell nginx to try without .html and look for the same path but with .html
+		// if info.Name() != "index.html" {
+		// 	route = strings.TrimSuffix(route, filepath.Ext(info.Name()))
+		// }
 
 		dist := output + route
 
