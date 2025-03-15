@@ -15,3 +15,6 @@
   src: url(/fonts/Terminus/TerminusTTF.ttf);
 }
 
+input:checked + span { display: none; }
+.lighter-a-tags a { color: #93c5fd; }
+.lighter-a-tags a:visited { color: #9333ea; }

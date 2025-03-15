@@ -38,6 +38,7 @@ func mdRenderHooks(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, b
                 if v.Parent != nil {
                         w.Write([]byte("<p class=\"pb-2\"></p>"))
                 }
+
 		return ast.GoToNext, true
 	}
 	return ast.GoToNext, false

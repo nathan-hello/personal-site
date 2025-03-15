@@ -22,14 +22,9 @@ func cardColor(blog utils.Blog) string {
 }
 
 templ PostMini(blog utils.Blog) {
-<style>
-input:checked + span { display: none; }
-.lighter-a-tags a { color: #93c5fd; }
-.lighter-a-tags a:visited { color: #9333ea; }
-</style>
 	<div
 	  class={ fmt.Sprintf(
-          `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-10 lg:mb-3 border-nat-white-c01 %s`,
+          `lighter-a-tags hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-10 lg:mb-3 border-nat-white-c01 %s`,
           cardColor(blog),
         ) }
 	>
@@ -39,7 +34,7 @@ input:checked + span { display: none; }
 		<input type="checkbox"/>
 		<span>
 			@ImagesMini(blog)
-			<div class="lighter-a-tags max-h-[32rem] lg:max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
+			<div class="max-h-[32rem] lg:max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
 				@templ.Raw(blog.Html)
 			</div>
 			<a
