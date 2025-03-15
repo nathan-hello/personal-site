@@ -29,7 +29,7 @@ input:checked + span { display: none; }
 </style>
 	<div
 	  class={ fmt.Sprintf(
-          `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-3 border-nat-white-c01 %s`,
+          `hover:border-2 hover:border-solid border-none hover:p-4 p-[18px] mx-auto text-[#b3b8c3] mb-10 md:mb-3 border-nat-white-c01 %s`,
           cardColor(blog),
         ) }
 	>
@@ -39,7 +39,7 @@ input:checked + span { display: none; }
 		<input type="checkbox"/>
 		<span>
 			@ImagesMini(blog)
-			<div class="lighter-a-tags max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
+			<div class="lighter-a-tags max-h-[32rem] md:max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
 				@templ.Raw(blog.Html)
 			</div>
 			<a

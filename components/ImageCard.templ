@@ -32,7 +32,7 @@ templ ImageCard(image utils.Image, toggleSize bool) {
 templ ImagesFull(blog utils.Blog) {
 	if (len(blog.Frnt.Images) > 0) {
 		<div
-			class="float-left flex flex-wrap px-10 pb-2 gap-x-2"
+			class="float-left flex flex-wrap md:px-10 pb-2 gap-x-2"
 		>
 			for _, v := range blog.Frnt.Images {
 				@ImageCard(v, true)
@@ -44,7 +44,14 @@ templ ImagesFull(blog utils.Blog) {
 templ ImagesMini(blog utils.Blog) {
 	if (len(blog.Frnt.Images) > 0) {
 		<div
-			class={fmt.Sprintf("float-left flex flex-wrap px-10 pb-2 gap-x-2 %s",cardColor(blog))}
+			class={fmt.Sprintf(
+                        "%s %s %s float-left flex flex-wrap pb-2 gap-x-2",
+                        cardColor(blog),
+                        // on less than md:, do `after:first:hidden`
+                        "[&>*:not(:first-child)]:hidden md:[&>*:not(:first-child)]:block px-2 md:px-10",
+                        "w-full md:max-w-60",
+
+                        )}
 		>
 			@ImageCard(blog.Frnt.Images[0], false)
 		</div>

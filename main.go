@@ -53,7 +53,7 @@ func main() {
 	}
 
 	if serve {
-		startHttp(m)
+		serveHttp(m)
 	}
 
 }
@@ -82,15 +82,18 @@ func generate(m map[string]string) {
 
 }
 
-func startHttp(m map[string]string) {
+func serveHttp(m map[string]string) {
 	router.RegisterApiHttpHandler()
 
-	if slices.Contains(os.Args, "--dev") {
+        if slices.Contains(os.Args, "--dev") {
 		http.Handle("/", http.FileServer(http.Dir(m["public"])))
 	}
 
 	fmt.Printf("Listening on port :3000 for routes: %#v\n", router.ApiRoutes)
 
-	http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServe(":3000", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
