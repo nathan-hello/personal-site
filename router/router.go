@@ -19,7 +19,6 @@ var ApiRoutes = []Site{
 		middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
-                        RejectSubroute("/api/comments"),
 		)},
 }
 
