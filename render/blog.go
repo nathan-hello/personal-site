@@ -34,15 +34,17 @@ func Blogs(input, output string, write bool) ([]utils.Blog, error) {
 	for i, v := range blogs {
 		v.Id = 100_000 + i + 1
 
-		dist := fmt.Sprintf("%s/%s/p/%d.html", output, strings.ToLower(v.Frnt.Author), v.Id)
-		v.Url = strings.TrimPrefix(dist, "./dist")
+		urlWithDist := fmt.Sprintf("%s/%s/p/%d", output, strings.ToLower(v.Frnt.Author), v.Id)
+		v.Url = strings.TrimPrefix(urlWithDist, "./dist")
+
+                v.Path = v.Url + ".html"
 
 		v.Comments = getComments(int64(v.Id))
 
 		blogs[i] = v
 
 		if write {
-			err = writeBlogPost(v, dist)
+			err = writeBlogPost(v, v.Path)
 			if err != nil {
 				return nil, err
 			}

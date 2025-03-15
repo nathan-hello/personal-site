@@ -28,6 +28,7 @@ type Blog struct {
         Url string
 	Frnt Frontmatter
 	Html string
+        Path string
         Comments []Comment
 }
 

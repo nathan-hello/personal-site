@@ -67,7 +67,9 @@ func PagesHtml(input, output string) error {
 
 func writeHtmlFile(f *os.File, dist string) error {
 	meta := parsePagesFrontmatter(f)
-	meta.dist = dist
+	meta.path = dist
+        meta.url = strings.TrimSuffix(meta.path, ".html")
+	meta.url = strings.TrimPrefix(meta.path, "dist")
 
 	comp := choosePageLayout(meta)
 
@@ -109,7 +111,8 @@ type metadata struct {
 	title          string
 	description    string
 	overrideLayout string
-	dist           string
+	path           string
+        url string
 }
 
 func parsePagesFrontmatter(f *os.File) metadata {
@@ -171,10 +174,9 @@ var registeredPageLayouts = map[string]layouts.LayoutComponent{
 
 func choosePageLayout(meta metadata) templ.Component {
 	layout := "default"
-	if strings.Contains(meta.dist, "natalie") {
+	if strings.Contains(meta.url, "natalie") {
 		layout = "natalie"
 	}
 
-	url := strings.TrimPrefix(meta.dist, "dist")
-	return registeredPageLayouts[layout](components.Header(meta.ascii), components.Meta(meta.title, meta.description, url, nil))
+	return registeredPageLayouts[layout](components.Header(meta.ascii), components.Meta(meta.title, meta.description, meta.url, nil))
 }
