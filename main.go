@@ -12,13 +12,13 @@ import (
 )
 
 var prod map[string]string = map[string]string{
-	"public":  "/var/www/reluekiss.com/public",
-	"private": "/var/www/reluekiss.com/private",
+	"public":  "./dist/public",
+	"private": "./dist/private",
 	"db":      "/var/www/reluekiss.com/private/data.db",
 }
 
 var dev map[string]string = map[string]string{
-	"public":  "./dist",
+	"public":  "./dist/public",
 	"private": "./dist/private",
 	"db":      ":memory:",
 }
@@ -33,45 +33,18 @@ func main() {
 		m = dev
 	}
 
-	initFiles(m)
+	_, err := db.InitDb(m["db"])
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	generate(m)
 
 	if slices.Contains(os.Args, "--build-only") {
 		return
 	}
 
-	err := router.SiteRouter(m["public"])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if slices.Contains(os.Args, "--dev") {
-		fs := http.FileServer(http.Dir("./dir"))
-		http.Handle("/", fs)
-		http.ListenAndServe(":8000", nil)
-	}
-}
-
-func initFiles(m map[string]string) {
-	err := os.RemoveAll(m["public"])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.MkdirAll(m["public"], 0744)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.MkdirAll(m["private"], 0700)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.InitDb(m["db"])
-	if err != nil {
-		log.Fatal(err)
-	}
+	startHttp(m)
 
 }
 
@@ -96,5 +69,16 @@ func generate(m map[string]string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+}
+
+func startHttp(m map[string]string) {
+	router.RegisterApiHttpHandler()
+
+	if slices.Contains(os.Args, "--dev") {
+		http.Handle("/", http.FileServer(http.Dir(m["public"])))
+	}
+
+	http.ListenAndServe(":3000", nil)
 
 }

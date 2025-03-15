@@ -1,3 +1,6 @@
+install/js:
+	bun install
+
 build/templ:
 	templ generate
 build/css:
@@ -6,6 +9,9 @@ build/sqlc:
 	go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0 generate
 build/go:
 	go build .
+
+start:
+	./cicd.sh
 
 
 watch/templ:
@@ -18,4 +24,4 @@ dev:
 
 
 prod:
-	make build/templ build/css build/go
+	make install/js build/css build/templ build/go start
