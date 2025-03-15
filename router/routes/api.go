@@ -41,6 +41,11 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	author := r.PostForm.Get("comment-author")
+
+        if (author == "") {
+                author = "Anonymous"
+        }
+
 	text := r.PostForm.Get("comment-text")
 	escaped := render.EscapeHtml(text)
 	html := render.MarkdownRender([]byte(escaped))
@@ -91,7 +96,6 @@ func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
 		uc = append(uc, v.NewBlogComment())
 	}
 
-	fmt.Sprintf("%#v\n", comments)
 	var buf bytes.Buffer
 
 	for _, v := range uc {
