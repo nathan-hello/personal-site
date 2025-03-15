@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-Shell-script-on-error
 # -e exits on error
