@@ -42,8 +42,8 @@ func PagesHtml(input, output string) error {
 
 		route := strings.TrimPrefix(path, "pages")
 
-                // Generated files keep their extension.
-                // Tell nginx to try without .html and look for the same path but with .html
+		// Generated files keep their extension.
+		// Tell nginx to try without .html and look for the same path but with .html
 		// if info.Name() != "index.html" {
 		// 	route = strings.TrimSuffix(route, filepath.Ext(info.Name()))
 		// }
@@ -68,8 +68,9 @@ func PagesHtml(input, output string) error {
 func writeHtmlFile(f *os.File, dist string) error {
 	meta := parsePagesFrontmatter(f)
 	meta.path = dist
-        meta.url = strings.TrimSuffix(meta.path, ".html")
-	meta.url = strings.TrimPrefix(meta.path, "dist")
+	foo := meta.path
+	meta.url = strings.TrimSuffix(foo, ".html")
+	meta.url = strings.TrimPrefix(foo, "dist")
 
 	comp := choosePageLayout(meta)
 
@@ -92,14 +93,14 @@ func writeHtmlFile(f *os.File, dist string) error {
 		return err
 	}
 
-	parts := strings.Split(dist, "/")
+	parts := strings.Split(meta.path, "/")
 	folder := strings.Join(parts[:len(parts)-1], "/")
-	fmt.Printf("INFO: writing file %s in folder %s\n", dist, folder)
+	fmt.Printf("INFO: writing file %s in folder %s\n", meta.path, folder)
 	err = os.MkdirAll(folder, 0777)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(dist, bits.Bytes(), 0777)
+	err = os.WriteFile(meta.path, bits.Bytes(), 0777)
 	if err != nil {
 		return err
 	}
@@ -112,7 +113,7 @@ type metadata struct {
 	description    string
 	overrideLayout string
 	path           string
-        url string
+	url            string
 }
 
 func parsePagesFrontmatter(f *os.File) metadata {
