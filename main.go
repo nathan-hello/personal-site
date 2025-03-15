@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -87,6 +88,8 @@ func startHttp(m map[string]string) {
 	if slices.Contains(os.Args, "--dev") {
 		http.Handle("/", http.FileServer(http.Dir(m["public"])))
 	}
+
+	fmt.Printf("Listening on port :3000 for routes: %#v\n", router.ApiRoutes)
 
 	http.ListenAndServe(":3000", nil)
 

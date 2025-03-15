@@ -13,7 +13,7 @@ type Site struct {
 	middlewares alice.Chain
 }
 
-var apiRoutes = []Site{
+var ApiRoutes = []Site{
 	{route: "/api/comments/{id}",
 		hfunc: routes.ApiComments,
 		middlewares: alice.New(
@@ -23,7 +23,7 @@ var apiRoutes = []Site{
 }
 
 func RegisterApiHttpHandler() {
-	for _, v := range apiRoutes {
+	for _, v := range ApiRoutes {
 		http.Handle(v.route, v.middlewares.ThenFunc(v.hfunc))
 	}
 }
