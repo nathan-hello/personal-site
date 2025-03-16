@@ -18,6 +18,7 @@ func registeredComponents() map[string]ComponentFunc {
 	return map[string]ComponentFunc{
 		"Code":         code,
 		"ManyPostMini": manyPostMini,
+                "CharacterSheet": characterSheet,
 	}
 }
 
@@ -151,3 +152,4 @@ func parseStartTag(tag string, elem string) (component, error) {
 	comp.Attributes = attributes
 	return comp, nil
 }
+

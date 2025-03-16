@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -28,6 +29,7 @@ func code(c component) (templ.Component, error) {
 }
 
 func CodeHighlighter(lang string, content string) (string, error) {
+
 	lex := lexers.Get(lang)
 	if lex == nil {
 		lex = lexers.Analyse(lang)
@@ -112,11 +114,61 @@ func manyPostMini(c component) (templ.Component, error) {
 
 	var bits bytes.Buffer
 	for i, v := range blogs {
-		if i-1 > amt {
+		components.PostMini(v).Render(context.Background(), &bits)
+		if i > amt {
 			break
 		}
-		components.PostMini(v).Render(context.Background(), &bits)
 	}
 
 	return templ.Raw(bits.String()), nil
+}
+
+var characterSheetLabels = map[string]string{
+        "txt": "Character Sheet for",
+        "diff": "Updated Character Sheet for",
+}
+
+// <CharacterSheet story="cyberpunk" character="natasha" version="1.1" type="diff | txt" label?="string with periods instead of spaces, with CHARACTER always following immediately after"/>
+func characterSheet(c component) (templ.Component, error) {
+
+	story, ok := c.Attributes["story"]
+	if !ok {
+		return nil, fmt.Errorf("component did not give required attribute \"story\": %#v", c)
+	}
+	character, ok := c.Attributes["character"]
+	if !ok {
+		return nil, fmt.Errorf("component did not give required attribute \"character\": %#v", c)
+	}
+	version, ok := c.Attributes["version"]
+	if !ok {
+		return nil, fmt.Errorf("component did not give required attribute \"version\": %#v", c)
+	}
+
+	ext, ok := c.Attributes["type"]
+	if !ok {
+		return nil, fmt.Errorf("component did not give required attribute \"type\": %#v", c)
+	}
+
+	label, ok := c.Attributes["label"]
+	if !ok {
+                defaultLabel, ok := characterSheetLabels[ext]
+                if ok {
+                        label = defaultLabel
+                } else {
+                        label = strings.ReplaceAll(label, ".", " ")
+                }
+	}
+
+	path := fmt.Sprintf("./public/content/character-sheets/%s/%s-%s.%s", story, character, version, ext)
+
+	fmt.Printf("component: %#v\n, path: %s\n", c, path)
+
+	f, err := os.ReadFile(path)
+
+	if err != nil {
+		return nil, fmt.Errorf("err reading file for component %#v, os.ReadFile err: %s", c, err)
+	}
+
+	return components.CharacterSheet(label, character, version, string(f)), nil
+
 }

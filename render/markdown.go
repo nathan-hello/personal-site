@@ -32,6 +32,7 @@ func mdRenderHooks(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, b
 			w.Write(code.Literal)
 		}
 		w.Write([]byte(high))
+                
 		return ast.GoToNext, true
 	}
 	if v, ok := node.(*ast.Paragraph); ok {
@@ -41,6 +42,12 @@ func mdRenderHooks(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, b
 
 		return ast.GoToNext, true
 	}
+
+        if v, ok := node.(*ast.HTMLBlock); ok {
+                w.Write(v.Literal)
+		return ast.GoToNext, true
+        }
+
 	return ast.GoToNext, false
 }
 

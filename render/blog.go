@@ -81,6 +81,7 @@ func writeBlogPost(v utils.Blog, dist string) error {
 func gatherRenderedHtmls(input string) ([]utils.Blog, error) {
 	blogs := []utils.Blog{}
 	err := filepath.Walk(input, func(path string, info fs.FileInfo, err error) error {
+                fmt.Println("entering ", path)
 		if err != nil {
 			return err
 		}
@@ -108,22 +109,24 @@ func gatherRenderedHtmls(input string) ([]utils.Blog, error) {
 			return err
 		}
 
-		if filepath.Ext(info.Name()) == ".html" {
-			rendered, err := RenderCustomComponents(content)
+                var rendered string
 
-			if err != nil {
-				return err
-			}
-			b.Html = rendered
-		}
-
-		if filepath.Ext(info.Name()) == ".md" || filepath.Ext(info.Name()) == ".mdx" {
-			rendered := MarkdownRender([]byte(content))
-			b.Html = string(rendered)
-		}
+                if filepath.Ext(info.Name()) == ".md" || filepath.Ext(info.Name()) == ".mdx" {
+	                rendered = string(MarkdownRender([]byte(content)))
+                } else {
+                	rendered = content
+                }
+                
+                // This needs to be after MarkdownRender, so the code blocks are escaped.
+                // Otherwise, this will pick up on custom components that are in code blocks.
+                comps, err := RenderCustomComponents(rendered)
+                if err != nil {
+                	return err
+                }
+                
+                b.Html = comps
 
 		blogs = append(blogs, b)
-
 		return nil
 	})
 	return blogs, err

@@ -88,7 +88,8 @@ templ Comment(v utils.Comment, blog int64) {
 				<span class="font-semibold">{strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }</span>
 			</div>
 			<hr/>
-			<div class="mx-4 text-xl">
+                        // unescape for the function defined in Meta.templ
+			<div class="unescape mx-4 text-xl">
 				@templ.Raw(v.Html)
 			</div>
 		</div>
