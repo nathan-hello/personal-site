@@ -1,0 +1,221 @@
+HANDLE: Natasha (Наташа)
+
+HEIGHT: 175cm
+WEIGHT: 62kg
+CASH: 300eb
+
+[ROLE]
+[ ] Solo
+[ ] Rocker
+[ ] Netrunner
+[ ] Media
+[ ] Nomad
+[ ] Fixer
+[ ] Cop
+[ ] Corp
+[x] Techie
+[ ] Medtechie
+
+CHARACTER POINTS: 70
+
+[STATS]
+ATTR..[7]
+BODY..[6]
+COOL..[8]
+EMP...[7]
+INT...[8]
+LUCK..[6]
+MA....[6]
+REF...[8](10) -2 from Jacket (-1) Legs (-1)
+TECH..[10]
+
+RUN...[21]
+LEAP..[5]
+LIFT..[4]
+CARRY.[60]
+THROW.[]
+
+[Location]  | Head 1 | Torso 2-4 | R.Arm 5 | L.Arm 6 | R.Leg 7-8 | L.Leg 9-0 |
+[Armour SP] |   25   |    18     |  18     |  18     |  18       |  18       |
+
+SAVE:
+BTM: -3
+
+[WOUNDS]
+LIGHT    SERIOUS  CRITICAL MORTAL0  MORTAL1
+[][][][] [][][][] [][][][] [][][][] [][][][]
+MORTAL0  MORTAL1  MORTAL2  MORTAL3  MORTAL4
+[][][][] [][][][] [][][][] [][][][] [][][][]
+
+REP: 0
+CURRENT IP: 0 (General rather than specific)
+HUMANITY: 54 (70)
+
+[SKILLS]
+A mark of x represents a Career Skill
+first slot is the skills current IP second is the actual level of the skill.
+(x) is an IP multiplier for leveling ie level * 10 * multi
+
+[Special Abilities]              [REF]
+Authority.................[][]     Archery...................[][]
+Charismatic Leadership....[][]     Athletics.................[][2]
+Combat Sense..............[][]     Brawling..................[][]
+Credibility...............[][]     Dance.....................[][]
+Family....................[][]     Dodge & Escape............[][]
+Interface.................[][]     Driving...................[][]
+Jury Rig.................x[][4]    Fencing...................[][]
+Medical Tech..............[][]     Handgun...................[][8]
+Resources.................[][]     Heavy Weapons.............[][]
+Streetdeal................[][]     Martial Art 1: Sambo      [][6] See, pg 100 (Wrestling)
+                                   Martial Art 2             [][]
+[ATTR]                             Martial Art 3             [][]
+Personal Grooming.........[][]     Melee.....................[][]
+Wardrobe & Style..........[][]     Motorcycle................[][]
+                                   Operate Hvy. Machinery....[][]
+[BODY]                             Pilot(3)..................[][]
+Endurance.................[][]     Rifle.....................[][]
+Strength Feat.............[][]     Stealth(2)................[][4]
+Swimming..................[][]     Submachinegun.............[][]
+                                 
+[COOL]                             [TECH]
+Interrogation.............[][]     Aero Tech(2)..............[][]
+Initimidate...............[][]     AV Tech(3)................[][]
+Oratory...................[][]     Basic Tech(2)............x[][5]
+Resist Torture/Drugs......[][]     Cryotank Operation........[][]
+Streetwise................[][]     Cyberdeck Design(2).......[][]
+                                   CyberTech................x[][5]
+[EMPATHY]                          Demolitions(2)............[][]
+Human Perception..........[][]     Disguise..................[][]
+Interview.................[][]     Electronics..............x[][5]
+Leadership................[][]     Elect. Security(2).......x[][6]
+Seduction.................[][]     First Aid................x[][6]
+Social....................[][]     Forgery...................[][]
+Persuasion & Fast Talk....[][2]    Gyro Tech(3)..............[][]
+Perform...................[][]     Paint or Draw.............[][]
+                                   Photo & Film..............[][]
+[INT]                              Pharmaceuticals(2)........[][]
+Accounting................[][]     Pick Lock................x[][3]
+Anthropology..............[][]     Pick Pocket...............[][]
+Awareness/Notice.........x[][5]    Play Instrument...........[][]
+Biology...................[][]     Weaponsmith(2)............[][]
+Botany....................[][]
+Chemistry.................[][]
+Composition...............[][]
+Diagnose Illness..........[][]
+Education & Gen know.....x[][5]
+Expert....................[][]
+Gamble....................[][]
+geology...................[][]
+Hide/Evade................[][]
+History...................[][]
+Language Japanese         [][4]
+Language Russian          [][8]
+Language                  [][]
+Library Search............[][]
+Mathematics...............[][]
+Physics...................[][]
+Programming...............[][7]
+Shadow/Track..............[][]
+Stock Market..............[][]
+System Knowladge..........[][]
+Teaching.................x[][0]
+Wilderness Survival.......[][]
+Zoology...................[][]
+
+[CYBERNETICS]
+Type                  | HL | Cost |
+Voice Stress Analyzer |  1 | 200  | Lie detector +2 Human Perception and interrogation
+Cowl                  |  4 | 200  | Head SP 25 (NOT FACE)
+Realskin              |  0 | 200  | To make Cowl look Natural.
+Tech Hair             |  2 | 50   | See above
+Cyberoptics (left)    |  6 | 500  |
+ - Image enhancement  |  1 | 300  | Image Enhancement (+2 Awareness for visual queues)
+ - Times square       |  1 | 300  | Small led screen [Times Square] (hooks up to terminal)
+ - Teleoptics         | .5 | 150  | 20x zoom
+ - Low Lite           | .5 | 200  | See in low light
+
+Total HL and Cost     | 16  | 2100  |
+
+
+[GEAR]
+Type                | Cost |
+Med Armor Legs      | 200  | Covers: Legs : SP 18 : REF -1
+Med Armor Jacket    | 200  | Covers: Torso, Arms : SP 18 : REF -1
+Militech Arms Av.   | 350  |
+Knife               | 20   |
+Holster             | 20   |
+9mm x 12 x 12       | 35   |
+Terminal (Cyberdeck)| 400  |
+First Aid kit       | 10   |
+Sleeping Bag        | 50   |
+Rope (50ft)         | 0    |
+Electronics Kit     | 100  |
+
+Total HL and Cost   | 1785 |
+
+[WEAPONS]
+Name                | Type  | WA | Conc. | Avail. | Dam.  | Ammo | #Shots | ROF | Rel | Range
+Militech Arms Av.   | P     | +1 | P     | E      | 4d6+3 | 9mm  | 12     | 2   | VR  | 50m
+Knife               | Melee |  0 | P     | C      | 1d6   | NA   | NA     | NA  | NA  | 1m
+                    |       |    |       |        |       |      |        |     |     |
+                    |       |    |       |        |       |      |        |     |     |
+                    |       |    |       |        |       |      |        |     |     |
+                    |       |    |       |        |       |      |        |     |     |
+
+
+[LIFE PATH]
+
+[STYLE]
+Clothes: Biker Leathers
+Hair: Tinted (blue on black)
+Affectations: Mirror Shades
+Ethnicity: Russian
+Languages: Russian, English, Japanese
+
+[FAMILY BACKGROUND]
+Rank: (3) Corporate Technician
+Parents: (8) Something Happened
+Happened: (4) Your parents have amnesia and don't remember you
+Status: (2) In Danger
+Tragedy: (6) Family was murdered and you were the only survivor
+Enviroment: (8) In a large arcology city
+
+
+#SIBLING 2
+Name     | Sex | Age   | Feelings
+Irina    | F   | Older | They Worship
+Karolina | F   | Older | Dislike
+
+[MOTIVATIONS]
+Traits: (6) Stable and Serious
+Valued Person: (2) Karolina
+Value Most: (9) Having a good time
+Feel About People: (8) People are untrustworthy
+Valued Possession: (6) A recording
+
+AGE 22
+[LIFE EVENTS]
+YEAR |
+2000 | Born
+2016 | Hospitalised for two months (Hunt down those responsible)
+2017 | Made a Friend of an old enemy (Fredrick)
+2018 | Made a friend of a teacher or mentor (Simeon)
+2020 | Romantic involvement (Stean)
+2021 | Find a teacher (Simeon) +2 to INT skill
+2022 | Find a combat teacher [Fredrick] +2 Wrestling (Sambo)
+[FRIENDS]
+
+[Fredrick]
+Was the member of a Nomad group that trashed the neighbourhood Natasha grew up in, killing and looting as they went.
+This caused Natasha to be hospitalised and without a Family, chasing the Nomads without knowing what she would do, she was caught by Fredrick and adopted by him.
+He wears casual clothes mostly blue jeans and a wife beater and a cyberdeck you will never see him without. He is bald and has a tattoo of an egle spread across his back reminiscent of the old polish/german flags. He is Slovak in origin standing 6'5 with rippling muscles from his job as the main mechanic for the nomads he is a part of.
+At 45, he is getting old and just wants the best for those around him, he is ruthless but has small soft spots in his heart.
+
+[Simeon]
+A Large Samoan who is quite possibly the most tech savvie person on this side of the rockys, though he is deaf and and in his 70's he is the fixerupper of any and all tech the nomads pick up, generally to then be sold.
+Doesn't really have many friends but Frederick drags him around with him.
+
+[Stean]
+Not much to say, the two loved each other but it was a childhood fling that didn't amount to much.
+
+[ENEMIES]

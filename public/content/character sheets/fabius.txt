@@ -1,0 +1,211 @@
+HANDLE: Mikhail
+
+HEIGHT: 193cm
+WEIGHT: 103kg (mainly due to cyberware)
+CASH: 200eb
+
+[ROLE]
+[x] Solo
+[ ] Rocker
+[ ] Netrunner
+[ ] Media
+[ ] Nomad
+[ ] Fixer
+[ ] Cop
+[ ] Corp
+[ ] Techie
+[ ] Medtechie
+
+CHARACTER POINTS: 70
+
+[STATS]
+ATTR..[8]
+BODY..[12](10) +2 bone weave
+COOL..[10]
+EMP...[7]
+INT...[8]
+LUCK..[6]
+MA....[6]
+REF...[8](10) -2 from metal gear
+TECH..[5]
+
+RUN...[ ]
+LEAP..[ ]
+LIFT..[ ]
+CARRY.[ ]
+THROW.[ ]
+
+[Location]  | Head 1 | Torso 2-4 | R.Arm 5 | L.Arm 6 | R.Leg 7-8 | L.Leg 9-0 |
+[Armour SP] | 30     | 25        | 28      | 25      | 25        | 25        | (In full gear)
+            | 25     | 12        | 20      | 12      | 12        | 12        |
+SDP         | N/A    | N/A       | 30      | N/A     | N/A       | N/A       |
+
+[WOUNDS]
+LIGHT    SERIOUS  CRITICAL MORTAL0  MORTAL1
+[][][][] [][][][] [][][][] [][][][] [][][][]
+MORTAL0  MORTAL1  MORTAL2  MORTAL3  MORTAL4
+[][][][] [][][][] [][][][] [][][][] [][][][]
+
+SAVE:
+BTM: -5 (bone weave)
+
+REP: 2
+CURRENT IP:
+HUMANITY: 28 (70)
+
+[SKILLS]
+
+[Special Abilities]                [REF]
+Authority.................[][]     Archery...................[][]
+Charismatic Leadership....[][]     Athletics................*[][6]
+Combat Sense.............*[][8]    Brawling..................[][]
+Credibility...............[][]     Dance.....................[][]
+Family....................[][]     Dodge & Escape............[][]
+Interface.................[][]     Driving...................[][]
+Jury Rig..................[][]     Fencing...................[][]
+Medical Tech..............[][]     Handgun..................*[][4]
+Resources.................[][]     Heavy Weapons.............[][]
+Streetdeal................[][]     Martial Art 1             [][]
+                                   Martial Art 2             [][]
+[ATTR]                             Martial Art 3             [][]
+Personal Grooming.........[][]     Melee....................*[][10]
+Wardrobe & Style..........[][]     Motorcycle................[][]
+                                   Operate Hvy. Machinery....[][]
+[BODY]                             Pilot.....................[][]
+Endurance.................[][]     Rifle.....................[][]
+Strength Feat.............[][5]    Stealth...................[][6]
+Swimming..................[][]     Submachinegun............*[][10]
+                                                               
+[COOL]                             [TECH]                      
+Interrogation.............[][]     Aero Tech.................[][]
+Initimidate...............[][]     AV Tech...................[][]
+Oratory...................[][]     Basic Tech................[][]
+Resist Torture/Drugs......[][]     Cryotank Operation........[][]
+Streetwise................[][]     Cyberdeck Design..........[][]
+                                   CyberTech.................[][]
+[EMPATHY]                          Demolitions...............[][]
+Human Perception..........[][]     Disguise..................[][]
+Interview.................[][]     Electronics...............[][]
+Leadership................[][]     Elect. Security...........[][]
+Seduction.................[][]     First Aid.................[][4]
+Social....................[][]     Forgery...................[][]
+Persuasion & Fast Talk....[][6]    Gyro Tech.................[][]
+Perform...................[][]     Paint or Draw.............[][]
+                                   Photo & Film..............[][]
+[INT]                              Pharmaceuticals...........[][]
+Accounting................[][]     Pick Lock.................[][]
+Anthropology..............[][]     Pick Pocket...............[][]
+Awareness/Notice.........*[][2]    Play Instrument...........[][]
+Biology...................[][]     Weaponsmith...............[][]
+Botany....................[][]
+Chemistry.................[][]
+Composition...............[][]
+Diagnose Illness..........[][]
+Education & Gen know......[][]
+Expert....................[][]
+Gamble....................[][]
+geology...................[][]
+Hide/Evade................[][]
+History...................[][]
+Language..................[][]
+Language..................[][]
+Language..................[][]
+Library Search............[][]
+Mathematics...............[][]
+Physics...................[][]
+Programming...............[][]
+Shadow/Track..............[][]
+Stock Market..............[][]
+System Knowladge..........[][]
+Teaching..................[][]
+Wilderness Survival.......[][]
+Zoology...................[][]
+
+[CYBERNETICS]
+Type                 | HL | Cost  |
+Neural ware          |  4 | 1000  |
+ - Sadevistan        |  4 | 1600  | +3 Initiative for 5 turns
+Basic eye module     |  5 | 500   |
+ - Radar Sensor      |  2 | 200   | 100m range sonar, 70% effective
+ - Motion Detector   |  5 | 200   | 20sq/m area 70% eff
+ - Targetting scope  |  2 | 400   | +1 on all smart gun attacks
+ - Times Square (TS) |  1 | 300   | LED screen for messages in vision    
+Muscle and Bone Lace |  2 | 1500  | +2 Body type
+Cowl                 |  2 | 200   | 25 head SP
+Skin Weave           |  8 | 2000  | Armors body to SP 12
+Cyber Arm            |  5 | 3000  | SDP 30 (40) / SP 20 // Left Arm
+ - Hydraulic rams    |  2 | 200   | SDP 30, 3x melee damage
+ - Armor             |  3 | 200   | SP 20
+ - EMP Shield        |  1 | 300   | Limb is unaffected by Microwave side effects.
+ - RealSkinn         | -3 | 200   | 
+
+Total HL and Cost    | 42 | 7400 |
+
+[GEAR]
+Type                | HL | Cost |
+Metal Gear          | 0  | 600  | 25SP whole body 2EV cost
+Trench Coat         | 0  | 40   |
+Kendachi MonoKnife  | 0  | 200  |
+12mm x30 x4         | 0  | 48   |
+Holster             | 0  | 20   |
+Sleeping Bag        | 0  | 20   |
+                    |    |      |
+                    |    |      |
+
+Total HL and Cost   |    |      |
+
+AP rounds and edged weapons treat all Armor as 1/2xSP
+
+[WEAPONS]
+Name                | Type  | WA   | Conc. | Avail. | Dam.         | #Shots | ROF | Rel | Range
+H&K MPK-11          | SMG   | +1/3 | L     | C      | 4D6+1 (12mm) | 30     | 20  | ST  | 400m // Smart gun
+Kendachi MonoKnife  | Melee | +1   | J     | C      | 2D6          | -      | 1   | VR  | 1m
+                    |       |      |       |        |              |        |     |     |
+                    |       |      |       |        |              |        |     |     |
+                    |       |      |       |        |              |        |     |     |
+                    |       |      |       |        |              |        |     |     |
+
+[KEY] 
+WA: Weapon Accuracy
+Concealability: P=Pocket J=Jacket L=Long Coat N=can't be hidden 
+Availability: E=Excellent (can be found anywhere) C=Common (sports and gun shops) P=Poor (stolen, military, black market) R=Rare (one of a kind, special military issue, highly illegal)
+Damage/Ammo: 2000's weapons are rated in milimeters 
+#Shots: standard shots in a clip or load
+ROF: Rate of Fire per turn 
+Range: Long range 
+
+[LIFE PATH]
+
+[STYLE]
+Clothes: A somewhat garish suit in whatever colours he deigns on the day.
+Hair: Slick backed hair or rough matted (if he forgot the grease)
+Affectations:
+Ethnicity: American Russian
+Language: English
+
+[FAMILY BACKGROUND]
+His family were corporate executives, however they died under 'mysterious circumstances' and the board members of the firm somehow acquired all of his family's assets leaving him penniless on the streets of night city at the age of 16.
+He was however raised in the height of luxury and with his looks and skills seeks often to recreate this through fine dining and clothing, though this often leaves him off more broke then he was before.
+
+[SIBLING]
+SEX
+
+[MOTIVATIONS]
+Traits: He is a stable and serious person under stressfull situations but is otherwise a goofball.
+Valued Person: His friend Tony, the one person who he can talk to and confide in pretty much anything.
+Value Most: Honesty
+Feel About People: Happy to make acquaintences but not friends.
+Valued Possession: A small family portrait which he only possesses digitially within his brain chip.
+
+[LIFE EVENTS]
+YEAR |
+1995 | Born
+2011 | Family dies, however Mikhail was late to the gathering and so wasn't killed.
+2014 | Taken to jail for tresspassing (Though he actually had robbed a store).
+2016 | There was terrorist action which blew up half of the prison where he was being kept and he escaped, though due to his small sentence only local police officers would likely recognise him and barely any of them would bother to take him under custody unless he bothered them.
+2018 | Makes friends with the local fixers after beating them at a game of poker and though they tried to rob him, by being suave they ended up working together instead.
+2020 | Present day.
+
+[FRIENDS]
+Tony: Barkeep of the 'dancing robot', a bar in Pacifica known for the broken animatronic which is plastered over the front entrance presumably after an altercation, and was never taken down. Tony is an overweight half samoan half italian with a cybernetic arm with more cooking implements inside than your grandmothers pantry and if he isn't cooking then he is sure as hell drinking with his patrons.
+
