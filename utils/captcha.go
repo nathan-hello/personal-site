@@ -141,14 +141,14 @@ func (b *CaptchaBuilder) build() *Captcha {
 
 	var fontSize float64
 	if charCount <= 3 {
-		fontSize = 50
-	} else if charCount <= 5 {
 		fontSize = 42
-	} else {
+	} else if charCount <= 5 {
 		fontSize = 32
+	} else {
+		fontSize = 24
 	}
 
-	if err := dc.LoadFontFace("arial.ttf", fontSize); err != nil {
+	if err := dc.LoadFontFace("public/fonts/Terminus/TerminusTTF.ttf", fontSize); err != nil {
 		// fmt.Println("Warning: could not load font, using default settings:", err)
 	}
 
@@ -158,7 +158,7 @@ func (b *CaptchaBuilder) build() *Captcha {
 		angle := rand.Float64()*0.2 - 0.1 
         dc.Push()
 		dc.RotateAbout(angle, x, y)
-		dc.DrawStringAnchored(string(char), x, y, 0, 0.5)
+		dc.DrawStringAnchored(string(char), x, y, 0, 0.8)
 		dc.Pop()
 	}
 
@@ -202,7 +202,7 @@ func GenerateCaptcha() *Captcha {
 		Width(130).
 		Height(40).
 		DarkMode(false).
-		Complexity(1).
+		Complexity(3).
 		Compression(40).
 		build()
 	id := make([]byte, 16)
