@@ -40,11 +40,22 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+    captchaID := r.PostForm.Get("captcha-id")
+    userResponse := r.PostForm.Get("captcha-response")
+    expected, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
+    utils.GLOBAL_CAPTCHA_STORE.DeleteCaptcha(captchaID)
+    if !ok || userResponse != expected {
+        w.Header().Set("HX-Trigger", "refreshCaptcha")
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte("Captcha verification failed"))
+        return
+    }
+
 	author := r.PostForm.Get("comment-author")
 
-        if (author == "") {
-                author = "Anonymous"
-        }
+    if (author == "") {
+            author = "Anonymous"
+    }
 
 	text := r.PostForm.Get("comment-text")
 	escaped := render.EscapeHtml(text)
@@ -103,4 +114,10 @@ func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(buf.Bytes())
+}
+
+func ApiCaptcha(w http.ResponseWriter, r *http.Request) {
+    captcha := utils.GenerateCaptcha()
+    utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
+    components.CaptchaBox(*captcha).Render(r.Context(), w)
 }

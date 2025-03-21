@@ -20,6 +20,13 @@ var ApiRoutes = []Site{
 			Logging,
 			AllowMethods("GET", "POST"),
 		)},
+    {route: "/api/captcha",
+        hfunc: routes.ApiCaptcha,
+        middlewares: alice.New(
+            Logging,
+            AllowMethods("GET", "POST"),
+        ),
+    },
 }
 
 func RegisterApiHttpHandler() {

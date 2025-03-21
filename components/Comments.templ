@@ -46,6 +46,27 @@ templ Comments(blog utils.Blog) {
 						></textarea>
 					</td>
 				</tr>
+                <tr data-type="comment-captcha">
+                    <td class="px-2">captcha</td>
+                    <td
+                        id="captcha-go-here"
+                        hx-get="/api/captcha"
+                        hx-trigger="load, refreshCaptcha from:body"
+                        hx-swap="innerHTML"
+                        hx-target="this">
+                    </td>
+                       </tr>
+                <tr>
+                    <td/>
+                    <td class="flex flex-row justify-between my-4">
+                        <input
+                            type="text"
+                            name="captcha-response"
+                            placeholder="Enter captcha"
+                            class="bg-white h-full px-2 text-lg my-auto"
+                        />
+                    </td>
+                </tr>
 				<tr class="">
 					<td></td>
 					<td>
@@ -68,6 +89,11 @@ templ Comments(blog utils.Blog) {
                 }
         });
 </script>
+}
+
+templ CaptchaBox(params utils.Captcha) {
+    <img src={ params.ToBase64() } alt="captcha"/>
+    <input type="hidden" name="captcha-id" value={ params.Id }/>
 }
 
 templ commentBox(blogId int) {
