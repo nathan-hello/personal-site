@@ -103,6 +103,7 @@ func gatherRenderedHtmls(input string) ([]utils.Blog, error) {
 		if err != nil {
 			return err
 		}
+        b.Markdown = content
 
 		b.Frnt, err = parseFrontmatter(yml)
 		if err != nil {
@@ -240,6 +241,7 @@ func getImages(yml map[string]ymlImage, fm *utils.Frontmatter) error {
 		fm.Images = append(fm.Images,
 			utils.Image{
 				Name: k,
+                BytesCount: stat.Size(),
 				Size: utils.FormatSize(stat.Size()),
 				Ext:  filepath.Ext(k),
 				Url:  url,
