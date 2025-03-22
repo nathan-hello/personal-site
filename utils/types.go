@@ -5,6 +5,7 @@ import (
 )
 type Image struct {
 	Name     string
+    BytesCount int64
 	Size string
         Ext string
 	Url      string
@@ -27,6 +28,7 @@ type Blog struct {
 	Id   int
         Url string
 	Frnt Frontmatter
+    Markdown string
 	Html string
         Path string
         Comments []Comment

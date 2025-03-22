@@ -69,8 +69,13 @@ func generate(m map[string]string) {
 		log.Fatal(err)
 	}
 
-	_, err = render.Blogs(INPUT_BLOG, m["public"], true)
+    blogs, err := render.Blogs(INPUT_BLOG, m["public"], true)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+    err = render.Rss(blogs, m["public"])
+    if err != nil {
 		log.Fatal(err)
 	}
 
