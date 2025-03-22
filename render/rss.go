@@ -14,7 +14,7 @@ func Rss(blogs []utils.Blog, output string) error {
 		return b.Frnt.Date.Compare(a.Frnt.Date)
 	})
 
-    rssPath := fmt.Sprintf("%s/rss", output)
+    rssPath := fmt.Sprintf("%s/blog.rss", output)
     title := "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\"> <channel> <title> Nat/e </title> <link> https://reluekiss.com </link>"
    	f, err := os.OpenFile(rssPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
