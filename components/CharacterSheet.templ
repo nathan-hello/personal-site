@@ -5,53 +5,29 @@ import (
 	"strings"
 )
 
-var sheetOnce = templ.NewOnceHandle()
-
-templ sheetScript() {
-        @sheetOnce.Once() {
-        <script>
-                function showSheet(e) {
-                        const checkboxId = e.target.id;
-                        const preId = checkboxId.replace("checkbox", "pre");
-                        const pre = document.getElementById(preId);
-
-                        if (pre === null) {
-                                throw Error(`pre of preId ${preId} not found`)
-                        }
-
-                        if (e.target.checked) {
-                                pre.classList.remove("hidden");                               
-                        }
-                        if (!e.target.checked) {
-                                pre.classList.add("hidden");
-                        }
-                }
-        </script>
-        } 
-}
-
 templ CharacterSheet(label, character, version, text string) {
-        @sheetScript()
-	<div
-		class="w-full flex flex-col justify-center border-y border-white py-2"
-	>
-		<div>
-			<input
-				id={ fmt.Sprintf("checkbox-%s-%s", character, version) }
-				type="checkbox"
-                                onchange="showSheet(event)"
-			/>
-			<label
-				for={ fmt.Sprintf("checkbox-%s-%s", character, version) }
-			>
-				{label} { strings.ToTitle(character) }
-			</label>
-		</div>
+	<style>
+		.character-sheet-content { display: none; }
+		.character-sheet-toggle:checked + label + .character-sheet-content { display: block; }
+		.character-sheet-toggle,
+		.character-sheet-toggle + label {
+			display: inline-block;
+			vertical-align: middle;
+		}
+	</style>
+	<div class="w-full border-y border-white py-4">
+		<input
+			id={ fmt.Sprintf("checkbox-%s-%s", character, version) }
+			type="checkbox"
+			class="character-sheet-toggle"
+		/>
+		<label for={ fmt.Sprintf("checkbox-%s-%s", character, version) } class="px-2">
+			{label} { strings.ToTitle(character) }
+		</label>
 		<pre
 			id={ fmt.Sprintf("pre-%s-%s", character, version) }
-                        style="line-height: 1.5rem; font-size: .9rem;"
-
-			class="chroma-bg w-[90%] mx-auto hidden px-8 py-2 overflow-x-auto"
+			style="line-height: 1.5rem; font-size: .9rem;"
+			class="chroma-bg w-[90%] mx-auto px-8 py-2 character-sheet-content"
 		>
 			{ text }
 		</pre>

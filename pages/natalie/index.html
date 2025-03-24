@@ -89,15 +89,24 @@
 <a id="bottom" class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="#top">
         [top]
 </a>
-<div id="audio-box" class="p-4 fixed bottom-0 right-0 bg-neutral-800 ">
-        <p onclick="document.getElementById('audio-box').hidden = true;" class="cursor-pointer text-nat-white-c01">
-                Click me to hide audio.
-        </p>
-        <div id="audio">
-                <audio loop controls src="/audios/SadSvit-Небо.mp3"></audio>
-        </div>
-        <a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
-                href="https://youtube.com/watch?v=cPzhNzqt9LA">
-                [SadSvit - Небо]
-        </a>
+<div id="audio-box" class="p-4 fixed bottom-0 right-0 bg-neutral-800">
+	<input type="checkbox" id="audio-toggle" class="hidden" />
+	<label for="audio-toggle" class="cursor-pointer text-nat-white-c01">
+		Click me to hide audio.
+	</label>
+	<div id="audio" class="audio-content">
+		<audio loop controls src="/audios/SadSvit-Небо.mp3"></audio>
+	</div>
+	<a class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+	   href="https://youtube.com/watch?v=cPzhNzqt9LA">
+		[SadSvit - Небо]
+	</a>
+	<style>
+		#audio-box .audio-content {
+			display: block;
+		}
+		#audio-toggle:checked ~ .audio-content {
+			display: none;
+		}
+	</style>
 </div>
