@@ -4,6 +4,23 @@
 
 package db
 
+import (
+	"time"
+)
+
+type Chatroom struct {
+	ID        int64
+	Name      string
+	Creator   string
+	CreatedAt time.Time
+}
+
+type ChatroomMember struct {
+	ChatroomID    int64
+	UserID        string
+	ChatroomColor string
+}
+
 type Comment struct {
 	ID        int64
 	CreatedAt string
@@ -11,4 +28,36 @@ type Comment struct {
 	Text      string
 	Html      string
 	PostID    int64
+}
+
+type Message struct {
+	ID             int64
+	AuthorID       *string
+	AuthorUsername string
+	Message        string
+	RoomID         int64
+	CreatedAt      time.Time
+}
+
+type Token struct {
+	ID      int64
+	JwtType string
+	Jwt     string
+	Valid   bool
+	Family  string
+}
+
+type User struct {
+	ID                string
+	Email             string
+	Username          string
+	PasswordSalt      string
+	EncryptedPassword string
+	PasswordCreatedAt time.Time
+	GlobalChatColor   string
+}
+
+type UsersToken struct {
+	UserID  string
+	TokenID int64
 }

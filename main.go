@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,36 +11,37 @@ import (
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/render"
 	"github.com/nathan-hello/personal-site/router"
+	"github.com/nathan-hello/personal-site/utils"
 )
 
-var prod map[string]string = map[string]string{
-	"public":  "./dist/public",
-	"private": "./dist/private",
-	"db":      "/var/www/reluekiss.com/private/data.db",
-}
-
-var dev map[string]string = map[string]string{
-	"public":  "./dist/public",
-	"private": "./dist/private",
-	"db":      ":memory:",
-}
+const OUTPUT_PUBLIC = "./dist/public"
+const OUTPUT_PRIVATE = "./dist/private"
 
 const INPUT_BLOG = "./public/content/blog"
 const INPUT_PAGES = "./pages"
 const INPUT_PUBLIC = "./public"
 
+//go:embed .env
+var dotenv string
+
 func main() {
+
 	build := slices.Contains(os.Args, "--build")
 	serve := slices.Contains(os.Args, "--serve")
 
-	m := prod
-	if slices.Contains(os.Args, "--dev") {
-		m = dev
+	isDev := slices.Contains(os.Args, "--dev")
+
+	if isDev {
 		build = true
 		serve = true
 	}
 
-	_, err := db.InitDb(m["db"])
+	err := utils.ParseDotenv(dotenv)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.InitDb(utils.Env().DATABASE_URI)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,49 +51,51 @@ func main() {
 	}
 
 	if build {
-		generate(m)
+		generate()
 	}
 
 	if serve {
-		serveHttp(m)
+		serveHttp()
 	}
 
 }
 
-func generate(m map[string]string) {
+func generate() {
 
-	err := render.PagesHtml(INPUT_PAGES, m["public"])
+	err := render.PagesHtml(INPUT_PAGES, OUTPUT_PUBLIC)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = render.Public(INPUT_PUBLIC, m["public"])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-    blogs, err := render.Blogs(INPUT_BLOG, m["public"], true)
+	err = render.Public(INPUT_PUBLIC, OUTPUT_PUBLIC)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-    err = render.Rss(blogs, m["public"])
-    if err != nil {
+	blogs, err := render.Blogs(INPUT_BLOG, OUTPUT_PUBLIC, true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = render.Rss(blogs, OUTPUT_PUBLIC)
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Currently no static templs, but we could!
-	err = render.PagesTempl(m["public"], []render.TemplStaticPages{})
+	err = render.PagesTempl(OUTPUT_PUBLIC, []render.TemplStaticPages{
+		{},
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 }
 
-func serveHttp(m map[string]string) {
+func serveHttp() {
 	router.RegisterApiHttpHandler()
 
-        if slices.Contains(os.Args, "--dev") {
-		http.Handle("/", http.FileServer(http.Dir(m["public"])))
+	if slices.Contains(os.Args, "--dev") {
+		http.Handle("/", http.FileServer(http.Dir(OUTPUT_PUBLIC)))
 	}
 
 	fmt.Printf("Listening on port :3000 for routes: %#v\n", router.ApiRoutes)

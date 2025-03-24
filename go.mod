@@ -8,9 +8,13 @@ require (
 	github.com/a-h/templ v0.3.819
 	github.com/alecthomas/chroma/v2 v2.15.0
 	github.com/fogleman/gg v1.3.0
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/gomarkdown/markdown v0.0.0-20241205020045-f7e15b2f3e62
+	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/justinas/alice v1.2.0
 	github.com/mattn/go-sqlite3 v1.14.24
+	golang.org/x/crypto v0.36.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
