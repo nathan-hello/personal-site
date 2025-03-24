@@ -28,10 +28,12 @@ templ PostMini(blog utils.Blog) {
           cardColor(blog),
         ) }
 	>
+        <div class="front-matter">
 		<span class="text-[#a47996] font-bold font-vcrosdmono">{ blog.Frnt.Author }</span>
 		<span class="">{ " " }-{ " " }</span>
 		<span class="">{ blog.Frnt.Title } - { utils.DateFormatObject(blog.Frnt.Date) }</span>
-		<input type="checkbox"/>
+        <input type="checkbox"/>
+        </div>
 		<span>
 			@ImagesMini(blog)
 			<div class="max-h-[32rem] lg:max-h-72 overflow-clip text-ellipsis font-ibmplexserif">
