@@ -20,12 +20,12 @@ templ Comments(blog utils.Blog) {
 			<tbody>
 				<tr data-type="Author">
 					<td class="px-2">Author</td>
-					<td class="flex flex-row justify-between my-4">
+					<td>
 						<input
 							name="comment-author"
 							type="text"
 							tabindex="1"
-							class="bg-white h-full px-2 text-lg my-auto"
+							class="bg-white h-full px-2 text-lg"
 							placeholder="Anonymous"
 						/>
 					</td>
@@ -41,43 +41,19 @@ templ Comments(blog utils.Blog) {
 							cols="48"
 							rows="4"
 							wrap="soft"
-							tabindex="4"
-							class="bg-white text-black w-[90%]"
+							tabindex="2"
+							class="bg-white text-black w-[90%] px-2"
 						></textarea>
 					</td>
 				</tr>
-                <tr data-type="comment-captcha">
-                    <td class="px-2">captcha</td>
-                    <td
-                        id="captcha-go-here"
-                        hx-get="/api/captcha"
-                        hx-trigger="load, refreshCaptcha from:body"
-                        hx-swap="innerHTML"
-                        hx-target="this">
-                    </td>
-                       </tr>
-                <tr>
-                    <td/>
-                    <td class="flex flex-row justify-between my-4">
-                        <input
-                            type="text"
-                            name="captcha-response"
-                            placeholder="Enter captcha"
-                            class="bg-white h-full px-2 text-lg my-auto"
-                        />
-                    </td>
-                </tr>
-				<tr class="">
-					<td></td>
-					<td>
-						<input
-							class="w-16 h-full text-lg bg-white text-black ml-auto mr-4"
-							type="submit"
-							value="Post"
-							tabindex="10"
-						/>
-					</td>
-				</tr>
+            <tbody
+                id="captcha-box"
+                hx-get="/api/captcha"
+                hx-trigger="load, x-captcha-reload from:body"
+                hx-include="[name='captcha-id']"
+                hx-swap="innerHTML"
+                hx-target="this"
+            ></tbody>
 			</tbody>
 		</table>
 	</form>
@@ -92,8 +68,44 @@ templ Comments(blog utils.Blog) {
 }
 
 templ CaptchaBox(params utils.Captcha) {
-    <img src={ params.ToBase64() } alt="captcha"/>
-    <input type="hidden" name="captcha-id" value={ params.Id }/>
+    <tr>
+        <td class="px-2">Captcha</td>
+        <td>
+            <img height="56" width="180" src={ params.ToBase64() } alt="captcha"/>
+            <input type="hidden" name="captcha-id" value={ params.Id }/>
+        </td>
+    </tr>
+    <tr>
+        <td/>
+        <td>
+            <input
+                type="text"
+                name="captcha-response"
+                placeholder="Enter captcha"
+                class="bg-white h-full px-2 text-lg"
+                tabindex="3"
+            />
+        </td>
+    </tr>
+    <tr id="captcha-error">
+        <td></td>
+        <td>
+          if params.Error != "" {
+            <span class="mx-auto my-auto bg-red-500 p-1">{ params.Error }</span>
+          }
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <input
+                class="w-16 h-full text-lg bg-white text-black ml-auto mr-4"
+                type="submit"
+                value="Post"
+                tabindex="4"
+            />
+        </td>
+    </tr>
 }
 
 templ commentBox(blogId int) {
