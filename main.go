@@ -82,9 +82,7 @@ func generate() {
 	}
 
 	// Currently no static templs, but we could!
-	err = render.PagesTempl(OUTPUT_PUBLIC, []render.TemplStaticPages{
-		{},
-	})
+	err = render.PagesTempl(OUTPUT_PUBLIC, []render.TemplStaticPages{})
 	if err != nil {
 		log.Fatal(err)
 	}
