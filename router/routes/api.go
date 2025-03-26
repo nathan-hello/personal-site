@@ -34,28 +34,37 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	err = r.ParseForm()
-	if err != nil {
+	if err = r.ParseForm(); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-    captchaID := r.PostForm.Get("captcha-id")
-    userResponse := r.PostForm.Get("captcha-response")
-    expected, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
-    utils.GLOBAL_CAPTCHA_STORE.DeleteCaptcha(captchaID)
-    if !ok || userResponse != expected {
-        w.Header().Set("HX-Trigger", "refreshCaptcha")
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte("Captcha verification failed"))
-        return
+	captchaID := r.PostForm.Get("captcha-id")
+	userResponse := r.PostForm.Get("captcha-response")
+	commentText := r.PostForm.Get("comment-text")
+	entry, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
+	captchaError := ""
+    if !ok || userResponse != entry.Solution {
+    	captchaError = "Error: Captcha is incorrect."
     }
+    if userResponse == "" {
+		captchaError = "Error: Captcha is empty"
+	}
+	if commentText == "" {
+		captchaError = "Error: Body is empty."
+	}
+    w.Header().Set("HX-Trigger", "x-captcha-reload")
+	if captchaError != "" {
+		utils.GLOBAL_CAPTCHA_STORE.UpdateCaptchaError(captchaID, captchaError)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	utils.GLOBAL_CAPTCHA_STORE.DeleteCaptcha(captchaID)
 
 	author := r.PostForm.Get("comment-author")
-
-    if (author == "") {
-            author = "Anonymous"
-    }
+	if author == "" {
+		author = "Anonymous"
+	}
 
 	text := r.PostForm.Get("comment-text")
 	escaped := render.EscapeHtml(text)
@@ -70,7 +79,6 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		Html:      string(html),
 		PostID:    blogId,
 	})
-
 	if err != nil {
 		fmt.Printf("err apicommentsget: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -117,7 +125,19 @@ func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func ApiCaptcha(w http.ResponseWriter, r *http.Request) {
-    captcha := utils.GenerateCaptcha()
-    utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
-    components.CaptchaBox(*captcha).Render(r.Context(), w)
+	captchaID := string(r.URL.Query().Get("captcha-id"))
+	if captchaID != "" {
+        entry, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
+		if ok && entry.Error != "" {
+            captcha := utils.GenerateCaptcha()
+	        utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
+			captcha.Error = entry.Error
+            utils.GLOBAL_CAPTCHA_STORE.DeleteCaptcha(captchaID)
+			components.CaptchaBox(*captcha).Render(r.Context(), w)
+			return
+		}
+	}
+	captcha := utils.GenerateCaptcha()
+	utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
+	components.CaptchaBox(*captcha).Render(r.Context(), w)
 }

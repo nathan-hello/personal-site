@@ -22,6 +22,7 @@ type Captcha struct {
     Compression int
     DarkMode    bool
     Id          string
+    Error       string
 }
 
 
@@ -199,8 +200,8 @@ func (b *CaptchaBuilder) build() *Captcha {
 func GenerateCaptcha() *Captcha {
     captcha := NewCaptchaBuilder().
 		Length(5).
-		Width(130).
-		Height(40).
+		Width(180).
+		Height(56).
 		DarkMode(false).
 		Complexity(3).
 		Compression(40).
@@ -211,26 +212,39 @@ func GenerateCaptcha() *Captcha {
     return captcha
 }
 
+type storeEntry struct {
+    Solution string
+    Error    string
+}
 type captchaStore struct {
 	sync.RWMutex
-	store map[string]string
+	store map[string]storeEntry
 }
 
 var GLOBAL_CAPTCHA_STORE captchaStore = captchaStore{
-	store: make(map[string]string),
+	store: make(map[string]storeEntry),
 }
 
 func (c *captchaStore) SetCaptcha(id, solution string) {
 	c.Lock()
 	defer c.Unlock()
-	c.store[id] = solution
+	c.store[id] = storeEntry{Solution: solution, Error: ""}
 }
 
-func (c *captchaStore) GetCaptcha(id string) (string, bool) {
+func (c *captchaStore) GetCaptcha(id string) (storeEntry, bool) {
 	c.RLock()
 	defer c.RUnlock()
-	sol, ok := c.store[id]
-	return sol, ok
+	entry, ok := c.store[id]
+	return entry, ok
+}
+
+func (c *captchaStore) UpdateCaptchaError(id, errMsg string) {
+	c.Lock()
+	defer c.Unlock()
+	if entry, ok := c.store[id]; ok {
+		entry.Error = errMsg
+		c.store[id] = entry
+	}
 }
 
 func (c *captchaStore) DeleteCaptcha(id string) {
