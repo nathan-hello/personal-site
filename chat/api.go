@@ -100,7 +100,7 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 			})
 
 		buffMsg := &bytes.Buffer{}
-		components.ChatMessage(msg).Render(r.Context(), buffMsg) // write component to buffMsg
+		chatMessage(msg).Render(r.Context(), buffMsg) // write component to buffMsg
 		manager.BroadcastMessage(buffMsg.Bytes())
 	}
 }

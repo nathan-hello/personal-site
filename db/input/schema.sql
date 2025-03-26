@@ -17,20 +17,15 @@ CREATE TABLE IF NOT EXISTS users (
     global_chat_color TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS tokens (
+CREATE TABLE IF NOT EXISTS users_sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    jwt_type TEXT NOT NULL,
-    jwt TEXT NOT NULL,
-    valid BOOLEAN NOT NULL,
-    family TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS users_tokens (
-    user_id TEXT NOT NULL,
-    token_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (token_id) REFERENCES tokens(id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, token_id)
+    user_id INTEGER NOT NULL,
+    token TEXT NOT NULL UNIQUE,
+    created_at DATETIME NOT NULL,
+    expires_at DATETIME NOT NULL,
+    last_used DATETIME NOT NULL,
+    ip_address TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS chatrooms (
