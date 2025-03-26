@@ -45,7 +45,7 @@ func ParseDotenv(dotenv string) error {
 		asdf := strings.Split(v, "=")
 
 		if len(asdf) != 2 {
-			return fmt.Errorf("bad .env file at line %d", i)
+            return nil
 		}
 
 		key := asdf[0]
