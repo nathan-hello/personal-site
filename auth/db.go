@@ -3,70 +3,81 @@ package auth
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/nathan-hello/personal-site/db"
-	"github.com/nathan-hello/personal-site/utils"
 )
 
-func DbInsertNewToken(t string, jwt_type string) error {
-	claims, err := ParseToken(t)
+func dbInsertNewToken(t string, jwt_type string) error {
+	_, claims, err := ParseToken(t)
 	if err != nil {
 		return err
 	}
 	ctx := context.Background()
 
-	token, err := db.Db().InsertToken(ctx, db.InsertTokenParams{JwtType: jwt_type, Jwt: t, Valid: true, Family: claims.Family})
+	token, err := db.Db().InsertToken(ctx, db.InsertTokenParams{
+		JwtType:   jwt_type,
+		Jwt:       t,
+		Valid:     true,
+		Family:    claims.Family,
+		ExpiresAt: time.Now().Unix(),
+	})
+
 	if err != nil {
-		return utils.ErrDbInsertToken
+		return ErrDbInsertToken
 	}
 
-	err = db.Db().InsertUsersTokens(ctx, db.InsertUsersTokensParams{UserID: claims.UserId, TokenID: token.ID})
+	err = db.Db().InsertUsersTokens(ctx, db.InsertUsersTokensParams{
+		UserID:  claims.UserId,
+		TokenID: token.ID,
+	})
 	if err != nil {
-		return utils.ErrDbInsertUsersToken
+		return ErrDbInsertUsersToken
 	}
+
 	return nil
 }
 
-func DbValidateJwt(t string, user string) error {
+func dbValidateJwt(t string, user string) (*db.SelectUserByIdRow, error) {
 	ctx := context.Background()
 
 	token, err := db.Db().SelectTokenFromJwtString(ctx, t)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return utils.ErrJwtNotInDb
+			return nil, ErrJwtNotInDb
 		}
-		return utils.ErrDbSelectJwt
+		return nil, ErrDbSelectJwt
 	}
 	if !token.Valid {
-		return utils.ErrJwtInvalidInDb
+		return nil, ErrJwtInvalidInDb
 	}
 
-	_, err = db.Db().SelectUserById(context.Background(), user)
+	userObj, err := db.Db().SelectUserById(context.Background(), user)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &userObj, nil
 }
 
-func DbInvalidateJwtFamily(t string) error {
+func dbInvalidateJwtFamily(t string) error {
 
 	ctx := context.Background()
 
 	token, err := db.Db().SelectTokenFromJwtString(ctx, t)
 	if err != nil {
-		return utils.ErrDbSelectJwt
+		return ErrDbSelectJwt
 	}
 
-	claims, err := ParseToken(token.Jwt)
+	_, claims, err := ParseToken(token.Jwt)
 	if err != nil {
 		return err
 	}
 	err = db.Db().UpdateTokensFamilyInvalid(ctx, claims.Family)
 	if err != nil {
-		return utils.ErrDbUpdateTokensInvalid
+		return ErrDbUpdateTokensInvalid
 	}
 
 	return nil

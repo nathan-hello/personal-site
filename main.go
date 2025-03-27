@@ -96,7 +96,7 @@ func serveHttp() {
 		http.Handle("/", http.FileServer(http.Dir(OUTPUT_PUBLIC)))
 	}
 
-	fmt.Printf("Listening on port :3000 for routes: %#v\n", router.ApiRoutes)
+	fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
 
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {

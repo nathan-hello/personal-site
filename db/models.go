@@ -40,11 +40,12 @@ type Message struct {
 }
 
 type Token struct {
-	ID      int64
-	JwtType string
-	Jwt     string
-	Valid   bool
-	Family  string
+	ID        int64
+	JwtType   string
+	Jwt       string
+	Valid     bool
+	Family    string
+	ExpiresAt int64
 }
 
 type User struct {

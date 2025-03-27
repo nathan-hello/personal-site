@@ -44,16 +44,16 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 	commentText := r.PostForm.Get("comment-text")
 	entry, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
 	captchaError := ""
-    if !ok || userResponse != entry.Solution {
-    	captchaError = "Error: Captcha is incorrect."
-    }
-    if userResponse == "" {
+	if !ok || userResponse != entry.Solution {
+		captchaError = "Error: Captcha is incorrect."
+	}
+	if userResponse == "" {
 		captchaError = "Error: Captcha is empty"
 	}
 	if commentText == "" {
 		captchaError = "Error: Body is empty."
 	}
-    w.Header().Set("HX-Trigger", "x-captcha-reload")
+	w.Header().Set("HX-Trigger", "x-captcha-reload")
 	if captchaError != "" {
 		utils.GLOBAL_CAPTCHA_STORE.UpdateCaptchaError(captchaID, captchaError)
 		w.WriteHeader(http.StatusBadRequest)
@@ -127,12 +127,12 @@ func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
 func ApiCaptcha(w http.ResponseWriter, r *http.Request) {
 	captchaID := string(r.URL.Query().Get("captcha-id"))
 	if captchaID != "" {
-        entry, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
+		entry, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
 		if ok && entry.Error != "" {
-            captcha := utils.GenerateCaptcha()
-	        utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
+			captcha := utils.GenerateCaptcha()
+			utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
 			captcha.Error = entry.Error
-            utils.GLOBAL_CAPTCHA_STORE.DeleteCaptcha(captchaID)
+			utils.GLOBAL_CAPTCHA_STORE.DeleteCaptcha(captchaID)
 			components.CaptchaBox(*captcha).Render(r.Context(), w)
 			return
 		}

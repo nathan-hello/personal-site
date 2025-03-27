@@ -20,7 +20,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var cached_blogs []utils.Blog
+
 func Blogs(input, output string, write bool) ([]utils.Blog, error) {
+
+	if cached_blogs != nil {
+		return cached_blogs, nil
+	}
 
 	blogs, err := gatherRenderedHtmls(input)
 	if err != nil {
@@ -50,6 +56,8 @@ func Blogs(input, output string, write bool) ([]utils.Blog, error) {
 		}
 
 	}
+
+	cached_blogs = blogs
 
 	return blogs, nil
 }
@@ -81,7 +89,7 @@ func writeBlogPost(v utils.Blog, dist string) error {
 func gatherRenderedHtmls(input string) ([]utils.Blog, error) {
 	blogs := []utils.Blog{}
 	err := filepath.Walk(input, func(path string, info fs.FileInfo, err error) error {
-                fmt.Println("entering ", path)
+		fmt.Println("entering ", path)
 		if err != nil {
 			return err
 		}
@@ -103,29 +111,29 @@ func gatherRenderedHtmls(input string) ([]utils.Blog, error) {
 		if err != nil {
 			return err
 		}
-        b.Markdown = content
+		b.Markdown = content
 
 		b.Frnt, err = parseFrontmatter(yml)
 		if err != nil {
 			return err
 		}
 
-                var rendered string
+		var rendered string
 
-                if filepath.Ext(info.Name()) == ".md" || filepath.Ext(info.Name()) == ".mdx" {
-	                rendered = string(MarkdownRender([]byte(content)))
-                } else {
-                	rendered = content
-                }
-                
-                // This needs to be after MarkdownRender, so the code blocks are escaped.
-                // Otherwise, this will pick up on custom components that are in code blocks.
-                comps, err := RenderCustomComponents(rendered)
-                if err != nil {
-                	return err
-                }
-                
-                b.Html = comps
+		if filepath.Ext(info.Name()) == ".md" || filepath.Ext(info.Name()) == ".mdx" {
+			rendered = string(MarkdownRender([]byte(content)))
+		} else {
+			rendered = content
+		}
+
+		// This needs to be after MarkdownRender, so the code blocks are escaped.
+		// Otherwise, this will pick up on custom components that are in code blocks.
+		comps, err := RenderCustomComponents(rendered)
+		if err != nil {
+			return err
+		}
+
+		b.Html = comps
 
 		blogs = append(blogs, b)
 		return nil
@@ -240,12 +248,12 @@ func getImages(yml map[string]ymlImage, fm *utils.Frontmatter) error {
 
 		fm.Images = append(fm.Images,
 			utils.Image{
-				Name: k,
-                BytesCount: stat.Size(),
-				Size: utils.FormatSize(stat.Size()),
-				Ext:  filepath.Ext(k),
-				Url:  url,
-				Alt:  v.Alt,
+				Name:       k,
+				BytesCount: stat.Size(),
+				Size:       utils.FormatSize(stat.Size()),
+				Ext:        filepath.Ext(k),
+				Url:        url,
+				Alt:        v.Alt,
 			},
 		)
 

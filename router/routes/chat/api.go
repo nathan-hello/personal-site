@@ -8,8 +8,10 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	gws "github.com/gorilla/websocket"
+	"github.com/nathan-hello/personal-site/auth"
 	"github.com/nathan-hello/personal-site/components"
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/utils"
@@ -62,7 +64,7 @@ var manager = Manager{
 }
 
 func ChatSocket(w http.ResponseWriter, r *http.Request) {
-	state := utils.GetClientState(r)
+	user := auth.UserCtxDefaultAnon(r)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -78,12 +80,12 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-		color, err := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: state.UserId})
+		color, err := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: user.ID})
 		if err != nil {
 			color = "text-gray-500"
 		}
 
-		msg, err := utils.NewChatFromBytes(clientMsg, state.Username, state.UserId, color)
+		msg, err := newChatFromBytes(clientMsg, user.Username, user.ID, color)
 		if err != nil {
 			log.Println(err)
 			w.Write([]byte(err.Error()))
@@ -92,7 +94,7 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 		db.Db().InsertMessage(
 			r.Context(),
 			db.InsertMessageParams{
-				AuthorID:       &state.UserId,
+				AuthorID:       &user.ID,
 				AuthorUsername: msg.Username,
 				Message:        msg.Text,
 				CreatedAt:      msg.CreatedAt,
@@ -100,13 +102,13 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 			})
 
 		buffMsg := &bytes.Buffer{}
-		chatMessage(msg).Render(r.Context(), buffMsg) // write component to buffMsg
+		components.ChatMessage(msg).Render(r.Context(), buffMsg)
 		manager.BroadcastMessage(buffMsg.Bytes())
 	}
 }
 
 func ApiChat(w http.ResponseWriter, r *http.Request) {
-	state := utils.GetClientState(r)
+	user := auth.UserCtxDefaultAnon(r)
 	htmlResponse := r.Header.Get("Content-Type") == "text/html"
 	jsonResponse := r.Header.Get("Content-Type") == "application/json"
 	if !htmlResponse && !jsonResponse {
@@ -120,12 +122,12 @@ func ApiChat(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "{error: \"%v\"}", err)
 		}
 
-		color, _ := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: state.UserId})
+		color, _ := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: user.ID})
 		if color == "" {
 			color = "text-gray-500"
 		}
 
-		c, err := utils.NewChatFromBytes(body, state.Username, state.UserId, color)
+		c, err := newChatFromBytes(body, user.Username, user.ID, color)
 		if err != nil {
 			fmt.Fprintf(w, "{error: \"%v\"}\n", err)
 			return
@@ -166,7 +168,7 @@ func ApiChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func Chat(w http.ResponseWriter, r *http.Request) {
-	state := utils.GetClientState(r)
+	user := auth.UserCtxDefaultAnon(r)
 	embed := r.URL.Query().Get("embed") == "true"
 
 	if r.Method == "GET" {
@@ -207,6 +209,40 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 			renderedMessages = append(renderedMessages, m)
 		}
 
-		components.ChatRoot(state, embed, renderedMessages).Render(r.Context(), w)
+		components.ChatRoot(*user, embed, renderedMessages).Render(r.Context(), w)
 	}
 }
+
+func BearChat(w http.ResponseWriter, r *http.Request) {
+        components.ChatBear().Render(r.Context(), w)
+}
+
+type rawChatMessage struct {
+	Text string `json:"msg-text"`
+}
+
+func newChatFromBytes(bits []byte, username string, userId string, color string) (*utils.ChatMessage, error) {
+	var raw rawChatMessage
+	err := json.Unmarshal(bits, &raw)
+	if err != nil {
+		return nil, err
+	}
+	if raw.Text == "" {
+		return nil, utils.ErrNoTextInChatMsg
+	}
+
+	if username == "" {
+		username = "anon"
+	}
+
+	fmt.Println(color)
+
+	return &utils.ChatMessage{
+		UserId:    userId,
+		Username:  username,
+		Text:      raw.Text,
+		Color:     color,
+		CreatedAt: time.Now().UTC(),
+	}, nil
+}
+

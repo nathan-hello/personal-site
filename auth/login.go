@@ -14,14 +14,14 @@ import (
 )
 
 type User struct {
-	ID                string
-	Username          string
-        Email string
-	GlobalChatColor   string
+	ID              string
+	Username        string
+	Email           string
+	GlobalChatColor string
 }
 
 func passwordCheck(p string) bool {
-        return len(p) > 7
+	return len(p) > 7
 }
 
 type AuthHandler interface {
@@ -59,7 +59,7 @@ func (a *SignUp) FlushPasswords() {
 
 func (a *SignUp) validateStrings() bool {
 	if len(a.Username) < 3 {
-			a.UsernameErr = ErrUsernameTooShort.Error()
+		a.UsernameErr = ErrUsernameTooShort.Error()
 	}
 
 	if a.Username == "" && a.Email == "" {
@@ -135,7 +135,7 @@ func (a *SignUp) SignUp() *User {
 		return nil
 	}
 
-        newUser, err := db.Db().SelectUserById(ctx, userId)
+	newUser, err := db.Db().SelectUserById(ctx, userId)
 	if err != nil {
 		log.Println(err)
 		a.MiscErrs = append(a.MiscErrs, ErrDbInsertUser.Error())
@@ -143,11 +143,11 @@ func (a *SignUp) SignUp() *User {
 	}
 
 	return &User{
-                ID: newUser.ID,
-                Email: newUser.Email,
-                Username: newUser.Email,
-                GlobalChatColor: newUser.GlobalChatColor,
-        }
+		ID:              newUser.ID,
+		Email:           newUser.Email,
+		Username:        newUser.Email,
+		GlobalChatColor: newUser.GlobalChatColor,
+	}
 }
 
 type SignIn struct {
@@ -173,7 +173,7 @@ func (a *SignIn) FlushPassword() {
 	a.Password = ""
 }
 
-func (a *SignIn) SignIn() *db.InsertUserRow {
+func (a *SignIn) SignIn() *db.SelectUserByIdRow {
 	if a.UserOrEmail == "" || a.Password == "" {
 		a.MiscErrs = append(a.MiscErrs, ErrBadLogin.Error())
 		a.FlushPassword()
@@ -209,9 +209,12 @@ func (a *SignIn) SignIn() *db.InsertUserRow {
 
 	user.EncryptedPassword = ""
 
-	return &db.InsertUserRow{
-		ID:       user.ID,
-		Email:    user.Email,
-		Username: user.Username,
+	dbUser, err := db.Db().SelectUserById(ctx, user.ID)
+	if err != nil {
+		a.MiscErrs = append(a.MiscErrs, ErrDbSelectAfterInsert.Error())
+		a.FlushPassword()
+		return nil
 	}
+
+	return &dbUser
 }

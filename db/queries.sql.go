@@ -162,25 +162,27 @@ func (q *Queries) InsertMessage(ctx context.Context, arg InsertMessageParams) er
 }
 
 const insertToken = `-- name: InsertToken :one
-INSERT INTO tokens (jwt_type, jwt, valid, family) VALUES (?, ?, ?, ?) RETURNING id, jwt_type, jwt, valid, family
+INSERT INTO tokens (jwt_type, jwt, valid, family, expires_at) VALUES (?, ?, ?, ?, ?) RETURNING id, jwt_type, jwt, valid, family, expires_at
 `
 
 type InsertTokenParams struct {
-	JwtType string
-	Jwt     string
-	Valid   bool
-	Family  string
+	JwtType   string
+	Jwt       string
+	Valid     bool
+	Family    string
+	ExpiresAt int64
 }
 
 // InsertToken
 //
-//	INSERT INTO tokens (jwt_type, jwt, valid, family) VALUES (?, ?, ?, ?) RETURNING id, jwt_type, jwt, valid, family
+//	INSERT INTO tokens (jwt_type, jwt, valid, family, expires_at) VALUES (?, ?, ?, ?, ?) RETURNING id, jwt_type, jwt, valid, family, expires_at
 func (q *Queries) InsertToken(ctx context.Context, arg InsertTokenParams) (Token, error) {
 	row := q.db.QueryRowContext(ctx, insertToken,
 		arg.JwtType,
 		arg.Jwt,
 		arg.Valid,
 		arg.Family,
+		arg.ExpiresAt,
 	)
 	var i Token
 	err := row.Scan(
@@ -189,6 +191,7 @@ func (q *Queries) InsertToken(ctx context.Context, arg InsertTokenParams) (Token
 		&i.Jwt,
 		&i.Valid,
 		&i.Family,
+		&i.ExpiresAt,
 	)
 	return i, err
 }
@@ -376,8 +379,7 @@ func (q *Queries) SelectCommentsMany(ctx context.Context, postID int64) ([]Comme
 }
 
 const selectMessagesByChatroom = `-- name: SelectMessagesByChatroom :many
-SELECT messages.id, messages.author_id, messages.author_username, messages.message, messages.room_id, messages.created_at, chatroom_members.chatroom_color
-FROM messages
+SELECT messages.id, messages.author_id, messages.author_username, messages.message, messages.room_id, messages.created_at, chatroom_members.chatroom_color FROM messages
 LEFT JOIN chatroom_members ON messages.room_id = chatroom_members.chatroom_id
 WHERE messages.room_id = ?
 ORDER BY messages.created_at DESC
@@ -401,8 +403,7 @@ type SelectMessagesByChatroomRow struct {
 
 // table: messages
 //
-//	SELECT messages.id, messages.author_id, messages.author_username, messages.message, messages.room_id, messages.created_at, chatroom_members.chatroom_color
-//	FROM messages
+//	SELECT messages.id, messages.author_id, messages.author_username, messages.message, messages.room_id, messages.created_at, chatroom_members.chatroom_color FROM messages
 //	LEFT JOIN chatroom_members ON messages.room_id = chatroom_members.chatroom_id
 //	WHERE messages.room_id = ?
 //	ORDER BY messages.created_at DESC
@@ -481,12 +482,12 @@ func (q *Queries) SelectMessagesByUser(ctx context.Context, arg SelectMessagesBy
 }
 
 const selectTokenFromId = `-- name: SelectTokenFromId :one
-SELECT id, jwt_type, jwt, valid, family FROM tokens WHERE id = ?
+SELECT id, jwt_type, jwt, valid, family, expires_at FROM tokens WHERE id = ?
 `
 
 // table: tokens
 //
-//	SELECT id, jwt_type, jwt, valid, family FROM tokens WHERE id = ?
+//	SELECT id, jwt_type, jwt, valid, family, expires_at FROM tokens WHERE id = ?
 func (q *Queries) SelectTokenFromId(ctx context.Context, id int64) (Token, error) {
 	row := q.db.QueryRowContext(ctx, selectTokenFromId, id)
 	var i Token
@@ -496,17 +497,18 @@ func (q *Queries) SelectTokenFromId(ctx context.Context, id int64) (Token, error
 		&i.Jwt,
 		&i.Valid,
 		&i.Family,
+		&i.ExpiresAt,
 	)
 	return i, err
 }
 
 const selectTokenFromJwtString = `-- name: SelectTokenFromJwtString :one
-SELECT id, jwt_type, jwt, valid, family FROM tokens WHERE jwt = ?
+SELECT id, jwt_type, jwt, valid, family, expires_at FROM tokens WHERE jwt = ?
 `
 
 // SelectTokenFromJwtString
 //
-//	SELECT id, jwt_type, jwt, valid, family FROM tokens WHERE jwt = ?
+//	SELECT id, jwt_type, jwt, valid, family, expires_at FROM tokens WHERE jwt = ?
 func (q *Queries) SelectTokenFromJwtString(ctx context.Context, jwt string) (Token, error) {
 	row := q.db.QueryRowContext(ctx, selectTokenFromJwtString, jwt)
 	var i Token
@@ -516,6 +518,7 @@ func (q *Queries) SelectTokenFromJwtString(ctx context.Context, jwt string) (Tok
 		&i.Jwt,
 		&i.Valid,
 		&i.Family,
+		&i.ExpiresAt,
 	)
 	return i, err
 }

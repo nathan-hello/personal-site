@@ -66,7 +66,7 @@ func ParseDotenv(dotenv string) error {
 			parsed.REFRESH_EXPIRY_TIME = time.Hour * time.Duration(num)
 		case "JWT_SECRET":
 			parsed.JWT_SECRET = value
-		case "DATBASE_URI":
+		case "DATABASE_URI":
 			parsed.DATABASE_URI = value
 		default:
 			return fmt.Errorf("unknown key at line %d %s", i, v)

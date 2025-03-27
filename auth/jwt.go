@@ -1,10 +1,12 @@
 package auth
 
 import (
+	"context"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/utils"
 )
 
@@ -14,7 +16,15 @@ type JwtParams struct {
 	Family   string
 }
 
-func NewTokenPair(j *JwtParams) (string, string, error) {
+type CustomClaims struct {
+	jwt.RegisteredClaims
+	UserId   string `json:"sub"`
+	Username string `json:"username"`
+	JwtType  string `json:"jwt_type"`
+	Family   string `json:"family"`
+}
+
+func newTokenPair(j *JwtParams) (string, string, error) {
 	if j.Family == "" {
 		j.Family = uuid.New().String()
 	}
@@ -50,11 +60,11 @@ func NewTokenPair(j *JwtParams) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	err = DbInsertNewToken(as, "access")
+	err = dbInsertNewToken(as, "access")
 	if err != nil {
 		return "", "", err
 	}
-	err = DbInsertNewToken(rs, "refresh")
+	err = dbInsertNewToken(rs, "refresh")
 	if err != nil {
 		return "", "", err
 	}
@@ -62,55 +72,107 @@ func NewTokenPair(j *JwtParams) (string, string, error) {
 
 }
 
-func ParseToken(t string) (*utils.CustomClaims, error) {
+func ParseToken(t string) (*db.SelectUserByIdRow, *CustomClaims,  error) {
 	token, err := jwt.ParseWithClaims(
 		t,
-		&utils.CustomClaims{},
+		&CustomClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			ok := token.Method.Alg() == "HS256"
 			if !ok {
 				// this error will not show unless logged because
 				// the jwt library wraps this error
-				return nil, utils.ErrJwtMethodBad
+				return nil, ErrJwtMethodBad
 			}
 			return []byte(utils.Env().JWT_SECRET), nil
 		})
 
 	if err != nil {
-		return nil, err
+		return nil, nil,err
 	}
 
 	if !token.Valid {
-		return nil, err
+		return nil, nil,err
 	}
 
-	claims, ok := token.Claims.(*utils.CustomClaims)
+	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
-		return nil, utils.ErrParsingJwt
+		return nil, nil,ErrParsingJwt
 	}
 
-	return claims, nil
+	user, err := db.Db().SelectUserById(context.Background(), claims.UserId)
+	if err != nil {
+		return nil, nil,ErrDbSelectUserFromToken
+	}
+
+	return &user, claims, nil
 
 }
 
-func ValidateJwtFromString(t string) error {
+func newPairFromRefresh(r string) (string, string, error) {
+	_, claims, err := ParseToken(r)
+	if err != nil {
+		return "", "", err
+	}
+
+	access, refresh, err := newTokenPair(&JwtParams{UserId: claims.UserId, Username: claims.Username})
+	if err != nil {
+		return "", "", err
+	}
+	return access, refresh, nil
+
+}
+
+func validatePairOrRefresh(a string, r string) (string, string, error) {
+
+	err := validateJwtFromString(a)
+	// if access is good, let's just refresh
+	if err == nil {
+		err = validateJwtFromString(r)
+		// if refresh and access are good, return to sender
+		if err == nil {
+			return a, r, nil
+		}
+		// if access is good but refresh is bad, we don't refresh based off
+		// of access tokens, so it's better to just error and reauth
+		return "", "", ErrJwtGoodAccBadRef
+	}
+
+	// even if access was bad, maybe the refresh is good
+	err = validateJwtFromString(r)
+	if err != nil {
+		if err == ErrJwtInvalidInDb {
+			return "", "", dbInvalidateJwtFamily(r)
+		}
+		return "", "", err
+	}
+
+	// sweet, a good refresh jwt. let's make a new pair
+	access, refresh, err := newPairFromRefresh(r)
+	if err != nil {
+		return "", "", err
+	}
+
+	return access, refresh, nil
+}
+
+func validateJwtFromString(t string) error {
 	token, err := jwt.Parse(
 		t, func(token *jwt.Token) (interface{}, error) {
 			ok := token.Method.Alg() == "HS256"
 			if !ok {
 				// this error will not show unless logged because
 				// the jwt library wraps this error
-				return nil, utils.ErrJwtMethodBad
+				return nil, ErrJwtMethodBad
 			}
 			return []byte(utils.Env().JWT_SECRET), nil
 		})
 
 	if err != nil {
-		return utils.ErrParsingJwt
+		return ErrParsingJwt
 	}
 
 	if !token.Valid {
-		return utils.ErrInvalidToken
+		return ErrInvalidToken
 	}
 	sub, err := token.Claims.GetSubject()
 
@@ -118,53 +180,6 @@ func ValidateJwtFromString(t string) error {
 
 	}
 
-	err = DbValidateJwt(t, sub)
-	return nil
-}
-
-func NewPairFromRefresh(r string) (string, string, error) {
-	claims, err := ParseToken(r)
-	if err != nil {
-		return "", "", err
-	}
-
-	access, refresh, err := NewTokenPair(&JwtParams{UserId: claims.UserId, Username: claims.Username})
-	if err != nil {
-		return "", "", err
-	}
-	return access, refresh, nil
-
-}
-
-func ValidatePairOrRefresh(a string, r string) (string, string, error) {
-
-	err := ValidateJwtFromString(a)
-	// if access is good, let's just refresh
-	if err == nil {
-		err = ValidateJwtFromString(r)
-		// if refresh and access are good, return to sender
-		if err == nil {
-			return a, r, nil
-		}
-		// if access is good but refresh is bad, we don't refresh based off
-		// of access tokens, so it's better to just error and reauth
-		return "", "", utils.ErrJwtGoodAccBadRef
-	}
-
-	// even if access was bad, maybe the refresh is good
-	err = ValidateJwtFromString(r)
-	if err != nil {
-		if err == utils.ErrJwtInvalidInDb {
-			return "", "", DbInvalidateJwtFamily(r)
-		}
-		return "", "", err
-	}
-
-	// sweet, a good refresh jwt. let's make a new pair
-	access, refresh, err := NewPairFromRefresh(r)
-	if err != nil {
-		return "", "", err
-	}
-
-	return access, refresh, nil
+	_, err = dbValidateJwt(t, sub)
+	return err
 }

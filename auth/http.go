@@ -4,10 +4,26 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/utils"
 )
 
-func SetTokenCookies(w http.ResponseWriter, a string, r string) {
+var UserContextKey = struct{}{}
+
+func UserCtxDefaultAnon(r *http.Request) *db.SelectUserByIdRow {
+	user := r.Context().Value(UserContextKey).(*db.SelectUserByIdRow)
+	if user == nil {
+		user = &db.SelectUserByIdRow{
+			ID:              "anon",
+			Email:           "anon",
+			Username:        "Anonymous",
+			GlobalChatColor: "purple-500",
+		}
+	}
+	return user
+}
+
+func setTokenCookies(w http.ResponseWriter, a string, r string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "access_token",
 		Value:    a,
@@ -29,7 +45,7 @@ func SetTokenCookies(w http.ResponseWriter, a string, r string) {
 	})
 }
 
-func GetJwtsFromCookie(r *http.Request) (string, string, error) {
+func getJwtsFromCookie(r *http.Request) (string, string, error) {
 	access, err := r.Cookie("access_token")
 	if err != nil {
 		return "", "", err
@@ -43,7 +59,7 @@ func GetJwtsFromCookie(r *http.Request) (string, string, error) {
 	return access.Value, refresh.Value, nil
 }
 
-func DeleteCookie(w http.ResponseWriter, name string) {
+func deleteCookie(w http.ResponseWriter, name string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     name,
 		Value:    "",
@@ -55,9 +71,9 @@ func DeleteCookie(w http.ResponseWriter, name string) {
 	})
 }
 
-func DeleteJwtCookies(w http.ResponseWriter) {
-	DeleteCookie(w, "access_token")
-	DeleteCookie(w, "refresh_token")
+func deleteJwtCookies(w http.ResponseWriter) {
+	deleteCookie(w, "access_token")
+	deleteCookie(w, "refresh_token")
 }
 
 func ValidateJwtOrDelete(w http.ResponseWriter, r *http.Request) (string, bool) {
@@ -66,7 +82,7 @@ func ValidateJwtOrDelete(w http.ResponseWriter, r *http.Request) (string, bool) 
 		if err == http.ErrNoCookie {
 			return "", false
 		}
-		DeleteJwtCookies(w)
+		deleteJwtCookies(w)
 		return "", false
 	}
 
@@ -75,17 +91,17 @@ func ValidateJwtOrDelete(w http.ResponseWriter, r *http.Request) (string, bool) 
 		if err == http.ErrNoCookie {
 			return "", false
 		}
-		DeleteJwtCookies(w)
+		deleteJwtCookies(w)
 		return "", false
 	}
 
-	vAccess, vRefresh, err := ValidatePairOrRefresh(access.Value, refresh.Value)
+	vAccess, vRefresh, err := validatePairOrRefresh(access.Value, refresh.Value)
 
 	if err != nil {
-		DeleteJwtCookies(w)
+		deleteJwtCookies(w)
 		return "", false
 	}
 
-	SetTokenCookies(w, vAccess, vRefresh)
+	setTokenCookies(w, vAccess, vRefresh)
 	return vAccess, true
 }

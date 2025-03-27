@@ -1,12 +1,14 @@
 package router
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"slices"
 	"time"
 
 	"github.com/justinas/alice"
+	"github.com/nathan-hello/personal-site/auth"
 )
 
 func Logging(next http.Handler) http.Handler {
@@ -51,4 +53,41 @@ func RejectSubroute(path string) alice.Constructor {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func InjectClaimsOnValidToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		access, ok := auth.ValidateJwtOrDelete(w, r)
+		if !ok {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		user, _, err := auth.ParseToken(access)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if user == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+
+		wrapReq := r.WithContext(context.WithValue(r.Context(), auth.UserContextKey, user))
+
+		next.ServeHTTP(w, wrapReq)
+	})
+}
+
+func ProtectedRoute(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// user, ok := 
+		// if !ok || user != nil {
+		// 	// TODO: redirect
+		// }
+
+	})
 }

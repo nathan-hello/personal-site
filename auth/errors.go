@@ -1,19 +1,20 @@
 package auth
 
 import "errors"
+
 var (
-	ErrUsernameTooShort = errors.New("username too short")
-	ErrUsernameTaken = errors.New("username is taken")
-	ErrEmailTaken = errors.New("email is taken")
-	ErrPasswordTooShort = errors.New("password too short")
-	ErrEmailInvalid     = errors.New("invalid email")
-	ErrPasswordInvalid  = errors.New("password invalid")
-	ErrPassNoMatch      = errors.New("passwords don't match")
-	ErrEmailOrUsernameReq        = errors.New("please choose an email or a username")
-	ErrBadLogin         = errors.New("incorrect password or account does not exist")
-	ErrParseForm        = errors.New("internal Server Error - 13481")
-	ErrAuthStateNil        = errors.New("internal Server Error - 13483")
-	ErrHashPassword = errors.New("internal Server Error - 19283")
+	ErrUsernameTooShort   = errors.New("username too short")
+	ErrUsernameTaken      = errors.New("username is taken")
+	ErrEmailTaken         = errors.New("email is taken")
+	ErrPasswordTooShort   = errors.New("password too short")
+	ErrEmailInvalid       = errors.New("invalid email")
+	ErrPasswordInvalid    = errors.New("password invalid")
+	ErrPassNoMatch        = errors.New("passwords don't match")
+	ErrEmailOrUsernameReq = errors.New("please choose an email or a username")
+	ErrBadLogin           = errors.New("incorrect password or account does not exist")
+	ErrParseForm          = errors.New("internal Server Error - 13481")
+	ErrAuthStateNil       = errors.New("internal Server Error - 13483")
+	ErrHashPassword       = errors.New("internal Server Error - 19283")
 )
 var (
 	ErrBadReqTodosBodyShort = errors.New("todos have a minimum length of 3 characters")
@@ -30,14 +31,14 @@ var (
 	ErrJwtNotInDb       = errors.New("internal Server Error - 11004")
 	ErrJwtMethodBad     = errors.New("internal Server Error - 11005")
 	ErrJwtInvalidInDb   = errors.New("internal Server Error - 11007")
-	ErrJwtInsertInDb       = errors.New("internal Server Error - 11008")
-	ErrJwtGetSubject       = errors.New("internal Server Error - 11009")
+	ErrJwtInsertInDb    = errors.New("internal Server Error - 11008")
+	ErrJwtGetSubject    = errors.New("internal Server Error - 11009")
 	ErrJwtPairInvalid   = errors.New("internal Server Error - 11008")
 	ErrJwtGoodAccBadRef = errors.New("internal Server Error - 11013")
 )
 
 var (
-        ErrJwtInvalidType = errors.New("internal Server Error - 21013")
+	ErrJwtInvalidType = errors.New("internal Server Error - 21013")
 )
 
 var (
@@ -51,5 +52,5 @@ var (
 	ErrDbSelectUserFromToken = errors.New("internal Server Error - 12411")
 	ErrDbUpdateTokensInvalid = errors.New("internal Server Error - 12412")
 	ErrDbSelectTodosByUser   = errors.New("internal Server Error - 12413")
+	ErrDbSelectAfterInsert   = errors.New("internal Server Error - 12414")
 )
-

@@ -19,3 +19,5 @@ func (cmt Comment) NewBlogComment() utils.Comment {
 	c.Html = cmt.Html
 	return c
 }
+
+type UserRow = SelectUserByIdRow
