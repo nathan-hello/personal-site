@@ -2,16 +2,24 @@
 set -f
 
 patterns=( '*.html' '*.go' '*.templ' )
+ignore=( '*_templ*' './dist/*' )
 cmd="make build/css build/templ run/go"
 
-find_args=()
-for pat in "${patterns[@]}"; do
-    find_args+=( -name "$pat" -o )
+ignore_args=()
+for ign in "${ignore[@]}"; do
+    ignore_args+=( -path "$ign" -o )
 done
-unset 'find_args[-1]'
+unset 'ignore_args[-1]'
+
+pattern_args=()
+for pat in "${patterns[@]}"; do
+    pattern_args+=( -name "$pat" -o )
+done
+unset 'pattern_args[-1]'
 
 get_checksum() {
-    files=$(find . -type f \( "${find_args[@]}" \) | sort)
+files=$(find . -type f \( "${pattern_args[@]}" \) ! \( "${ignore_args[@]}" \) | sort)
+echo "$files" > gay
     if [ -z "$files" ]; then
         echo ""
     else

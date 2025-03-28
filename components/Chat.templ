@@ -1,0 +1,49 @@
+package components
+
+import "github.com/nathan-hello/personal-site/utils"
+
+templ ChatMessage(chat *ChatMessage) {
+	<div id={ chat.TimeToString(false) } class="">
+		<span class="text-white font-thin">{ chat.TimeToString(true) }</span>
+		<span class={ "font-semibold " + chat.Color }>{ chat.Username }</span>
+		<span class=" text-white">{ chat.Text }</span>
+	</div>
+}
+
+templ ChatBox() {
+<form 
+    class="flex flex-col h-full w-[320px] chroma-bg mx-auto my-auto"
+    id="chat-form"
+    hx-swap-oob="afterend:#messages-go-here scroll:bottom"
+    hx-post="/api/message"
+ >
+  <div id="messages-go-here" class="flex flex-col justify-end flex-1 p-2 overflow-y-auto">
+      <ul>
+        <li class="mb-2">User: This is a message</li>
+        <li class="mb-2">User: Another message</li>
+        <li class="mb-2">User: More messages...</li>
+      </ul>
+    </div>
+    <div class="flex flex-row items-stretch p-2 space-x-2">
+      <input
+        type="text"
+        name="message-box"
+        class="w-81 h-full p-1 text-lg style='back'"
+        style="background-color: #171717"
+      />
+      <input
+	      class="w-18 h-full text-lg"
+	      type="submit"
+	      value="Post"
+        style="background-color: #171717"
+	    />
+    </div>
+ </form>
+}
+
+templ LoginBox() {
+<div class="bg-black">
+        <form class="text-2xl gay-y-4 flex flex-col max-w-screen-md mx-auto" hx-post="/auth/signin" hx-target="this">
+        </form>
+</div>
+}

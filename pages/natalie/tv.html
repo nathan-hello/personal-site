@@ -28,35 +28,17 @@
     allowfullscreen
     src="https://tv.reluekiss.com/mystream"></iframe>
   <!-- Chat Window -->
-  <form 
-      class="flex flex-col h-full chroma-bg mx-auto my-auto"
-	  id="chat-form"
-	  hx-swap-oob="afterend:#messages-go-here scroll:bottom"
-      hx-post="/api/message"
-   >
-    <div id="messages-go-here" class="flex flex-col justify-end flex-1 p-2 overflow-y-auto">
-        <ul>
-          <li class="mb-2">User: This is a message</li>
-          <li class="mb-2">User: Another message</li>
-          <li class="mb-2">User: More messages...</li>
-          <!-- More list items -->
-        </ul>
-      </div>
-      <div class="flex flex-row items-stretch p-2 space-x-2">
-        <input
-          type="text"
-          name="message-box"
-          class="w-81 h-full p-1 text-lg style='back'"
-          style="background-color: #171717"
-        />
-        <input
-  	      class="w-18 h-full text-lg"
-  	      type="submit"
-  	      value="Post"
-          style="background-color: #171717"
-  	    />
-      </div>
-   </form>
+  <div class="flex flex-col w-[320px] space-x-2 p-2 h-full chroma-bg"
+       id="side-window"
+    >
+    <div class="mx-auto my-auto">
+        <h1>Would you like to login?</h1>
+        <div class="flex flex-row space-x-2 mx-auto">
+            <button style="background-color: #171717" class="p-1 cursor-pointer" hx-get="/login.html" hx-target="#side-window">Yes</button>
+            <button style="background-color: #171717" class="p-1 cursor-pointer" hx-get="/chat.html" hx-target="#side-window">No</button>
+        </div>
+    </div>
+  </div>
 </div>
 <br/>
 <p class="text-lg">
