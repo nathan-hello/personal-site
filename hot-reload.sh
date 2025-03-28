@@ -19,7 +19,6 @@ unset 'pattern_args[-1]'
 
 get_checksum() {
 files=$(find . -type f \( "${pattern_args[@]}" \) ! \( "${ignore_args[@]}" \) | sort)
-echo "$files" > gay
     if [ -z "$files" ]; then
         echo ""
     else
