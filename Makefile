@@ -10,6 +10,9 @@ build/sqlc:
 build/go:
 	go build .
 
+run/go:
+	go run . --dev & echo $! > personal-site.pid
+
 start:
 	./cicd.sh
 
