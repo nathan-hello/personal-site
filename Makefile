@@ -10,6 +10,9 @@ build/sqlc:
 build/go:
 	go build .
 
+asdf/go:
+	go run . --dev
+
 run/go:
 	go run . --dev & echo $! > personal-site.pid
 
@@ -22,7 +25,7 @@ watch/templ:
 watch/css:
 	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
 dev: 
-	make -j3 build/sqlc watch/css watch/templ 
+	make -j3 build/sqlc build/css build/templ asdf/go
 
 
 

@@ -34,7 +34,7 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if err = r.ParseForm(); err != nil {
+	if err = r.ParseMultipartForm(6*1024*1024); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

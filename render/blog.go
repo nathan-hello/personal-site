@@ -24,15 +24,17 @@ var cached_blogs []utils.Blog
 
 func Blogs(input, output string, write bool) ([]utils.Blog, error) {
 
+    blogs := []utils.Blog{}
+    var err error
 	if cached_blogs != nil {
-		return cached_blogs, nil
-	}
+        blogs = cached_blogs
+	} else {
+	    blogs, err = gatherRenderedHtmls(input)
+	    if err != nil {
+	    	return nil, err
+	    }
 
-	blogs, err := gatherRenderedHtmls(input)
-	if err != nil {
-		return nil, err
-	}
-
+    }
 	slices.SortFunc(blogs, func(a, b utils.Blog) int {
 		return a.Frnt.Date.Compare(b.Frnt.Date)
 	})
@@ -49,7 +51,7 @@ func Blogs(input, output string, write bool) ([]utils.Blog, error) {
 		blogs[i] = v
 
 		if write {
-			err = writeBlogPost(v, v.Path)
+            err := writeBlogPost(v, v.Path)
 			if err != nil {
 				return nil, err
 			}
