@@ -3,13 +3,22 @@ package render
 import "strings"
 
 func EscapeHtml(s string) string {
-
-        s= strings.ReplaceAll(s, "&", "&amp;")
-        s= strings.ReplaceAll(s, "<", "&lt;")
-        s= strings.ReplaceAll(s, ">", "&gt;")
-        s= strings.ReplaceAll(s, "\"", "&quot;")
-        s= strings.ReplaceAll(s, "'", "&#039;")
-
-        return s
+    var buf strings.Builder
+    for _, ch := range s {
+        switch ch {
+        case '&':
+            buf.WriteString("<span>&</span>")
+        case '<':
+            buf.WriteString("<span><</span>")
+        case '>':
+            buf.WriteString("<span>></span>")
+        case '"':
+            buf.WriteString("<span>\"</span>")
+        case '\'':
+            buf.WriteString("<span>'</span>")
+        default:
+            buf.WriteRune(ch)
+        }
+    }
+    return buf.String()
 }
-
