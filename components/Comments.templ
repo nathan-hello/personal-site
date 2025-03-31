@@ -12,37 +12,39 @@ templ Comments(blog utils.Blog) {
 	<hr/>
     <span id="Top" class="px-2">[<a href="/index.html">Index</a>] [<a href="#Bottom">Bottom</a>] [<button class="cursor-pointer" id="Update">Update</button>]</span>
     <hr/>
+    <div class="flex flex-row p-2 mx-auto" style="flex-wrap: wrap; overflow-x: auto;">
+    <pre>{ utils.AsciiRender(utils.AsciiCommentDesc) }</pre>
 	<form
 		id="comment-form"
 		enctype="multipart/form-data"
 		hx-swap="afterbegin"
 		hx-target="#comments-go-here"
 		hx-post={ fmt.Sprintf("/api/comments/%d", blog.Id) }
-		class="flex-col mx-auto p-2"
+		class="flex-col"
 	>
-		<div class="flex flex-col w-96  mx-auto px-4 bg-stone-800 space-y-2">
-        <div class="grid grid-cols-4 gap-x-2 h-6">
+		<div class="flex flex-col w-[350px] mx-auto px-4 bg-stone-800 space-y-2">
+        <div class="grid grid-cols-5 gap-x-2 h-6">
 					<div class="h-min mx-auto">Author</div>
 						<input
 							name="comment-author"
 							type="text"
 							tabindex="1"
-							class="bg-white h-full px-2 text-lg col-span-2"
+							class="text-black bg-white h-full px-2 text-lg col-span-2"
 							placeholder="Anonymous"
 						/>
         </div>
-        <div class="grid grid-cols-4 gap-x-2">
+        <div class="grid grid-cols-5 gap-x-2">
 					<div class="mx-auto">Body</div>
 						<textarea
 							name="comment-text"
 							cols="48"
-							rows="4"
+							rows="5"
 							wrap="soft"
 							tabindex="2"
-							class="bg-white text-black col-span-3"
+							class="bg-white text-black col-span-4"
 						></textarea>
         </div>
-        <div class="grid grid-cols-4 gap-x-2 h-6">
+        <div class="grid grid-cols-5 gap-x-2 h-6">
 					<div class="mx-auto">Image</div>
 						<input
 							name="comment-image"
@@ -53,7 +55,7 @@ templ Comments(blog utils.Blog) {
 							class="text-black bg-white h-full px-2 text-lg col-span-3 hover:border-1 hover:border-solid border-none cursor-pointer"
 						/>
         </div>
-        <div class="grid grid-cols-4 gap-x-2 h-6">
+        <div class="grid grid-cols-5 gap-x-2 h-6">
         <div class="col-span-1"/>
                     <span class="col-span-2">File size limit: 6MB</span>
                         </div>
@@ -67,6 +69,7 @@ templ Comments(blog utils.Blog) {
             ></div>
         </div>
 	</form>
+    </div>
 	@commentBox(blog.Id)
     <hr/>
     <span id="Bottom" class="px-2">[<a href="/index.html">Index</a>] [<a href="#Top">Top</a>]</span>
@@ -104,12 +107,12 @@ templ Comments(blog utils.Blog) {
 
 templ CaptchaBox(params utils.Captcha) {
         <div class="space-y-2">
-        <div class="grid grid-cols-4 gap-x-2">
+        <div class="grid grid-cols-5 gap-x-2">
         <div class="mx-auto">Captcha</div>
           <img height="56" width="180" src={ params.ToBase64() } alt="captcha" class="col-span-3"/>
           <input type="hidden" id="captcha-id" name="captcha-id" value={ params.Id }/>
     </div>
-        <div class="grid grid-cols-4 gap-x-2 h-6"> <div class="col-span-1"/>
+        <div class="grid grid-cols-5 gap-x-2 h-6"> <div class="col-span-1"/>
             <input
                 type="text"
                 name="captcha-response"
@@ -118,7 +121,7 @@ templ CaptchaBox(params utils.Captcha) {
                 tabindex="3"
             />
     </div>
-    <div class="grid grid-cols-4 gap-x-2" id="captcha-error">
+    <div class="grid grid-cols-5 gap-x-2" id="captcha-error">
         <div class="col-span-1"/>
         <div class="col-span-3">
           if params.Error != "" {
@@ -126,7 +129,7 @@ templ CaptchaBox(params utils.Captcha) {
           }
         </div>
     </div>
-        <div class="grid grid-cols-4 gap-x-2 h-6">
+        <div class="grid grid-cols-5 gap-x-2 h-6">
         <div class="col-span-1"/>
             <input
                 class="text-lg bg-white text-black w-12 hover:border-1 hover:border-solid border-none"
