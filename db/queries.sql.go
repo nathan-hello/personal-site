@@ -34,6 +34,18 @@ func (q *Queries) DeleteCommentById(ctx context.Context, id int64) error {
 	return err
 }
 
+const deleteImageById = `-- name: DeleteImageById :exec
+DELETE FROM Images WHERE id = ?
+`
+
+// table: Images
+//
+//	DELETE FROM Images WHERE id = ?
+func (q *Queries) DeleteImageById(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteImageById, id)
+	return err
+}
+
 const deleteMessage = `-- name: DeleteMessage :exec
 DELETE FROM messages WHERE id = ?
 `
@@ -417,6 +429,28 @@ func (q *Queries) SelectCommentsMany(ctx context.Context, postID int64) ([]Comme
 		return nil, err
 	}
 	return items, nil
+}
+
+const selectFromComment = `-- name: SelectFromComment :one
+SELECT id, created_at, author, text, html, post_id, image_id FROM Comments Where id = ?
+`
+
+// SelectFromComment
+//
+//	SELECT id, created_at, author, text, html, post_id, image_id FROM Comments Where id = ?
+func (q *Queries) SelectFromComment(ctx context.Context, id int64) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, selectFromComment, id)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Author,
+		&i.Text,
+		&i.Html,
+		&i.PostID,
+		&i.ImageID,
+	)
+	return i, err
 }
 
 const selectFromImage = `-- name: SelectFromImage :one

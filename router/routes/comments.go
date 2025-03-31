@@ -228,6 +228,16 @@ func ApiCommentsDelete(w http.ResponseWriter, r *http.Request) {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
+        comment, err := db.Conn.SelectFromComment(r.Context(), int64(id))
+        if err != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+        err = db.Conn.DeleteImageById(r.Context(), *comment.ImageID)
+        if err != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
         err = db.Conn.DeleteCommentById(r.Context(), int64(id))
         if err != nil {
             w.WriteHeader(http.StatusInternalServerError)

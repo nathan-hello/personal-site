@@ -30,4 +30,4 @@ dev:
 
 
 prod:
-	make install/js build/css build/templ build/go start
+	make install/js build/sqlc build/css build/templ build/go start
