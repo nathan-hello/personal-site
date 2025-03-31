@@ -125,7 +125,7 @@ func (q *Queries) InsertChatroomMember(ctx context.Context, arg InsertChatroomMe
 }
 
 const insertComment = `-- name: InsertComment :one
-INSERT INTO Comments (author,created_at,text,post_id,html,image_id) values (?,?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id, image_id
+INSERT INTO Comments (author,created_at,text,post_id,html,image_id) VALUES (?,?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id, image_id
 `
 
 type InsertCommentParams struct {
@@ -139,7 +139,7 @@ type InsertCommentParams struct {
 
 // InsertComment
 //
-//	INSERT INTO Comments (author,created_at,text,post_id,html,image_id) values (?,?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id, image_id
+//	INSERT INTO Comments (author,created_at,text,post_id,html,image_id) VALUES (?,?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id, image_id
 func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (Comment, error) {
 	row := q.db.QueryRowContext(ctx, insertComment,
 		arg.Author,
@@ -163,7 +163,7 @@ func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (C
 }
 
 const insertIntoImage = `-- name: InsertIntoImage :one
-INSERT INTO Images (image,size,ext) values (?,?,?) RETURNING id, image, size, ext
+INSERT INTO Images (image,size,ext) VALUES (?,?,?) RETURNING id, image, size, ext
 `
 
 type InsertIntoImageParams struct {
@@ -174,7 +174,7 @@ type InsertIntoImageParams struct {
 
 // InsertIntoImage
 //
-//	INSERT INTO Images (image,size,ext) values (?,?,?) RETURNING id, image, size, ext
+//	INSERT INTO Images (image,size,ext) VALUES (?,?,?) RETURNING id, image, size, ext
 func (q *Queries) InsertIntoImage(ctx context.Context, arg InsertIntoImageParams) (Image, error) {
 	row := q.db.QueryRowContext(ctx, insertIntoImage, arg.Image, arg.Size, arg.Ext)
 	var i Image
@@ -210,6 +210,23 @@ func (q *Queries) InsertMessage(ctx context.Context, arg InsertMessageParams) er
 		arg.RoomID,
 		arg.CreatedAt,
 	)
+	return err
+}
+
+const insertReply = `-- name: InsertReply :exec
+INSERT INTO CommentReplies (comment_id, reply_comment_id) VALUES (?,?)
+`
+
+type InsertReplyParams struct {
+	CommentID      *int64
+	ReplyCommentID *int64
+}
+
+// table: CommentReplies
+//
+//	INSERT INTO CommentReplies (comment_id, reply_comment_id) VALUES (?,?)
+func (q *Queries) InsertReply(ctx context.Context, arg InsertReplyParams) error {
+	_, err := q.db.ExecContext(ctx, insertReply, arg.CommentID, arg.ReplyCommentID)
 	return err
 }
 
@@ -326,6 +343,44 @@ func (q *Queries) SelectAllMembersByChatroom(ctx context.Context, chatroomID int
 	for rows.Next() {
 		var i SelectAllMembersByChatroomRow
 		if err := rows.Scan(&i.ID, &i.Username, &i.ChatroomColor); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const selectAllReplies = `-- name: SelectAllReplies :many
+SELECT c.id, c.created_at, c.author, c.text, c.html, c.post_id, c.image_id FROM Comments c JOIN CommentReplies cr ON c.id = cr.reply_comment_id WHERE cr.comment_id = ? ORDER BY cr.reply_comment_id ASC
+`
+
+// SelectAllReplies
+//
+//	SELECT c.id, c.created_at, c.author, c.text, c.html, c.post_id, c.image_id FROM Comments c JOIN CommentReplies cr ON c.id = cr.reply_comment_id WHERE cr.comment_id = ? ORDER BY cr.reply_comment_id ASC
+func (q *Queries) SelectAllReplies(ctx context.Context, commentID *int64) ([]Comment, error) {
+	rows, err := q.db.QueryContext(ctx, selectAllReplies, commentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Comment
+	for rows.Next() {
+		var i Comment
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Author,
+			&i.Text,
+			&i.Html,
+			&i.PostID,
+			&i.ImageID,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

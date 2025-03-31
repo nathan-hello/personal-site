@@ -102,7 +102,7 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		author = "Anonymous"
 	}
 
-	escaped := render.EscapeHtml(commentText)
+	escaped, replies := render.EscapeHtml(commentText)
 	html := render.MarkdownRender([]byte(escaped))
 	html = bytes.TrimPrefix(html, []byte("<br/>"))
 	html = append([]byte("<div class=\"py-2\"></div>"), html...)
@@ -120,8 +120,19 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	components.Comment(comment.NewBlogComment(), blogId).Render(r.Context(), w)
+    for _, v := range(replies) {
+        err = db.Conn.InsertReply(r.Context(), db.InsertReplyParams{
+            CommentID: &v,
+            ReplyCommentID: &comment.ID,
+        })
+	    if err != nil {
+	    	fmt.Printf("err reply insert: %s", err)
+	    	w.WriteHeader(http.StatusInternalServerError)
+	    	return
+	    }
+    }
+    clear(replies)
+	components.Comment(comment.NewBlogComment(), blogId, replies).Render(r.Context(), w)
 }
 
 func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
@@ -152,9 +163,19 @@ func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var buf bytes.Buffer
-
+    replyIds := []int64{}
 	for _, v := range uc {
-		components.Comment(v, blogId).Render(r.Context(), &buf)
+        clear(replyIds)
+        replies, err := db.Conn.SelectAllReplies(r.Context(), &v.Id)
+	    if err != nil {
+	    	fmt.Printf("err getting replies: %s", err)
+	    	w.WriteHeader(http.StatusInternalServerError)
+	    	return
+	    }
+        for _, v := range replies {
+           replyIds = append(replyIds, v.ID) 
+        }
+		components.Comment(v, blogId, replyIds).Render(r.Context(), &buf)
 	}
 
 	w.Write(buf.Bytes())

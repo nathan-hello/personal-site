@@ -16,6 +16,14 @@ CREATE TABLE IF NOT EXISTS Comments (
     FOREIGN KEY (image_id) REFERENCES Images(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS CommentReplies (
+    comment_id INTEGER,
+    reply_comment_id INTEGER,
+    PRIMARY KEY (comment_id, reply_comment_id),
+    FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (reply_comment_id) REFERENCES Comments(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY NOT NULL,
     email TEXT UNIQUE NOT NULL,

@@ -2,12 +2,14 @@ package render
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
-func EscapeHtml(s string) string {
+func EscapeHtml(s string) (string, []int64) {
 	var buf strings.Builder
     inTag := false
+    replies := []int64{}
 	for i := 0; i < len(s); {
         if strings.HasPrefix(s[i:], "```") {
         	end := strings.Index(s[i+3:], "```")
@@ -32,6 +34,8 @@ func EscapeHtml(s string) string {
 			}
 			token := s[i:j]
 			buf.WriteString(fmt.Sprintf(`<a href="#comment-%s">%s</a>`, token[2:], token))
+            id, _ := strconv.Atoi(token[2:])
+            replies = append(replies, int64(id))
 			i = j
 			continue
 		}
@@ -77,5 +81,5 @@ func EscapeHtml(s string) string {
 		}
 		i++
 	}
-	return buf.String()
+	return buf.String(), replies
 }

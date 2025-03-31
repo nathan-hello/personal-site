@@ -10,7 +10,7 @@ templ Comments(blog utils.Blog) {
     <hr/>
 	<h2 class="px-2">Comments</h2>
 	<hr/>
-    <span id="Top" class="px-2">[<a href="/index.html">Index</a>] [<a href="#Bottom">Bottom</a>] [<button class="cursor-pointer" id="Update">Update</button>]</span>
+    <span id="Top" class="px-2">[<a href={ templ.URL(fmt.Sprintf("/%s", blog.Frnt.Author)) }>Index</a>] [<a href="#Bottom">Bottom</a>] [<button class="cursor-pointer" id="Update">Update</button>]</span>
     <hr/>
 	<form
 		id="comment-form"
@@ -70,7 +70,7 @@ templ Comments(blog utils.Blog) {
 	</form>
 	@commentBox(blog.Id)
     <hr/>
-    <span id="Bottom" class="px-2">[<a href="/index.html">Index</a>] [<a href="#Top">Top</a>]</span>
+    <span id="Bottom" class="px-2">[<a href={ templ.URL(fmt.Sprintf("/%s", blog.Frnt.Author)) }>Index</a>] [<a href="#Top">Top</a>]</span>
     <hr/>
     <form		
       id="comment-delete-form"
@@ -147,7 +147,7 @@ templ commentBox(blogId int) {
 	<hr/>
 }
 
-templ Comment(v utils.Comment, blog int64) {
+templ Comment(v utils.Comment, blog int64, replies []int64) {
   <div class="py-2 flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg comment-card" id={ fmt.Sprintf("comment-%d", v.Id) }>
     <div class="flex flex-col">
       <div class="flex flex-row px-4 w-full items-center">
@@ -157,9 +157,14 @@ templ Comment(v utils.Comment, blog int64) {
           value={ strconv.Itoa(int(v.Id)) } 
           form="comment-delete-form" 
           class="mr-2"/>
-        <span class="font-semibold">
-          {strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }
-        </span>
+          <span class="font-semibold">
+            { strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }
+          </span>
+            for _, r := range replies {
+              if r != 0 {
+                <a class="ml-2" href={ templ.URL("#comment-" + strconv.Itoa(int(r))) }> >>{ strconv.Itoa(int(r)) } </a>
+              }
+            }
       </div>
       <hr/>
       <!-- unescape for the function defined in Meta.templ -->

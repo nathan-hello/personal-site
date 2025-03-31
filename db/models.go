@@ -31,6 +31,11 @@ type Comment struct {
 	ImageID   *int64
 }
 
+type CommentReply struct {
+	CommentID      *int64
+	ReplyCommentID *int64
+}
+
 type Image struct {
 	ID    int64
 	Image string
