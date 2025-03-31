@@ -86,6 +86,9 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 	if commentText == "" {
 		captchaError = "Error: Body is empty."
 	}
+    if imageID.Size > 6*1024*1024 {
+        captchaError = "Error: Maximium file size is 6MB."
+    }
 	w.Header().Set("HX-Trigger", "x-captcha-reload")
 	if captchaError != "" {
 		utils.GLOBAL_CAPTCHA_STORE.UpdateCaptchaError(captchaID, captchaError)
