@@ -7,24 +7,7 @@ import (
 
 func EscapeHtml(s string) string {
 	var buf strings.Builder
-	inTag := false
 	for i := 0; i < len(s); {
-		// If we're inside an HTML tag, output as-is.
-		if inTag {
-			buf.WriteByte(s[i])
-			if s[i] == '>' {
-				inTag = false
-			}
-			i++
-			continue
-		}
-		// Check if we're starting an HTML tag.
-		if s[i] == '<' {
-			inTag = true
-			buf.WriteByte(s[i])
-			i++
-			continue
-		}
 		// >> case: link delimited by space (or non-digit)
 		if i+1 < len(s) && s[i] == '>' && s[i+1] == '>' {
 			j := i + 2
@@ -34,8 +17,8 @@ func EscapeHtml(s string) string {
 			}
 			// If no digits were found, fall back to normal escaping.
 			if j == i+2 {
-				buf.WriteString("<span>></span>")
-				i++
+				buf.WriteString(`<span class="text-lime-400">></span><span class="text-lime-400">></span>`)
+				i += 2
 				continue
 			}
 			token := s[i:j]
@@ -55,8 +38,9 @@ func EscapeHtml(s string) string {
 			i = j
 			continue
 		}
-		// Normal escaping for other special characters.
 		switch s[i] {
+		case '<':
+			buf.WriteString("<span><</span>")
 		case '&':
 			buf.WriteString("<span>&</span>")
 		case '"':
