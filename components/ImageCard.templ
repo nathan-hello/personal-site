@@ -13,7 +13,11 @@ templ ImageCard(image utils.Image, toggleSize bool) {
 				{ image.Name }
 			</a>
 			<br/>
-			({ image.Size }, image/{ image.Ext })
+            if image.Ext[0] == '.' {
+            ({ image.Size }, image/{ image.Ext[1:] })
+            } else {
+            ({ image.Size }, image/{ image.Ext })
+            }
 			<hr/>
 			<img
 				if toggleSize {
