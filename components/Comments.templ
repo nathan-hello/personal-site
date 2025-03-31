@@ -7,8 +7,11 @@ import (
 )
 
 templ Comments(blog utils.Blog) {
-	<h2 class="px-4">Comments</h2>
+    <hr/>
+	<h2 class="px-2">Comments</h2>
 	<hr/>
+    <span id="Top" class="px-2">[<a href="/index.html">Index</a>] [<a href="#Bottom">Bottom</a>] [<button class="cursor-pointer" id="Update">Update</button>]</span>
+    <hr/>
 	<form
 		id="comment-form"
 		enctype="multipart/form-data"
@@ -47,7 +50,7 @@ templ Comments(blog utils.Blog) {
 							accept="image/*"
                             value="Choose file:"
 							tabindex="3"
-							class="text-black bg-white h-full px-2 text-lg col-span-3 hover:border-1 hover:border-solid border-none"
+							class="text-black bg-white h-full px-2 text-lg col-span-3 hover:border-1 hover:border-solid border-none cursor-pointer"
 						/>
         </div>
         <div class="grid grid-cols-4 gap-x-2 h-6">
@@ -66,15 +69,17 @@ templ Comments(blog utils.Blog) {
 	</form>
 	@commentBox(blog.Id)
     <hr/>
-    <br/>
+    <span id="Bottom" class="px-2">[<a href="/index.html">Index</a>] [<a href="#Top">Top</a>]</span>
+    <hr/>
     <form		
       id="comment-delete-form"
       hx-post="/api/comment-delete"
       class="flex-row p-2"
+      style="float: right;"
       hx-boost="true"
       hx-swap="none"
     >
-      <div>Deletions</div>
+      <span>Delete Post</span>
       <input
         name="delete-password"
         type="text"
@@ -82,7 +87,7 @@ templ Comments(blog utils.Blog) {
         tabindex="5"
       />
       <input
-        class="text-lg bg-white text-black w-16 hover:border-1 hover:border-solid border-none"
+        class="text-lg bg-white text-black w-16 hover:border-1 hover:border-solid border-none cursor-pointer"
         type="submit"
         value="Submit"
         tabindex="6"
@@ -137,7 +142,7 @@ templ commentBox(blogId int) {
 	<div
 		class="gap-y-12"
 		id="comments-go-here"
-		hx-trigger="load"
+		hx-trigger="load, click from:#Update"
 		hx-swap="innerHTML"
 		hx-get={ fmt.Sprintf("/api/comments/%d", blogId) }
 	></div>
