@@ -8,6 +8,18 @@ import (
 func EscapeHtml(s string) string {
 	var buf strings.Builder
 	for i := 0; i < len(s); {
+        if strings.HasPrefix(s[i:], "```") {
+        	end := strings.Index(s[i+3:], "```")
+        	if end != -1 {
+        		end += i + 3
+        		buf.WriteString(s[i : end+3])
+        		i = end + 3
+        		continue
+        	}
+        	// No closing backticks; output the rest unchanged.
+        	buf.WriteString(s[i:])
+        	break
+        }
 		// >> case: link delimited by space (or non-digit)
 		if i+1 < len(s) && s[i] == '>' && s[i+1] == '>' {
 			j := i + 2
