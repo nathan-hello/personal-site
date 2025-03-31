@@ -22,6 +22,18 @@ func (q *Queries) DeleteChatroom(ctx context.Context, id int64) error {
 	return err
 }
 
+const deleteCommentById = `-- name: DeleteCommentById :exec
+DELETE FROM Comments WHERE id = ?
+`
+
+// DeleteCommentById
+//
+//	DELETE FROM Comments WHERE id = ?
+func (q *Queries) DeleteCommentById(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteCommentById, id)
+	return err
+}
+
 const deleteMessage = `-- name: DeleteMessage :exec
 DELETE FROM messages WHERE id = ?
 `
@@ -101,7 +113,7 @@ func (q *Queries) InsertChatroomMember(ctx context.Context, arg InsertChatroomMe
 }
 
 const insertComment = `-- name: InsertComment :one
-INSERT INTO Comments (author,created_at,text,post_id,html) values (?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id
+INSERT INTO Comments (author,created_at,text,post_id,html,image_id) values (?,?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id, image_id
 `
 
 type InsertCommentParams struct {
@@ -110,11 +122,12 @@ type InsertCommentParams struct {
 	Text      string
 	PostID    int64
 	Html      string
+	ImageID   *int64
 }
 
 // InsertComment
 //
-//	INSERT INTO Comments (author,created_at,text,post_id,html) values (?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id
+//	INSERT INTO Comments (author,created_at,text,post_id,html,image_id) values (?,?,?,?,?,?) RETURNING id, created_at, author, text, html, post_id, image_id
 func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (Comment, error) {
 	row := q.db.QueryRowContext(ctx, insertComment,
 		arg.Author,
@@ -122,6 +135,7 @@ func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (C
 		arg.Text,
 		arg.PostID,
 		arg.Html,
+		arg.ImageID,
 	)
 	var i Comment
 	err := row.Scan(
@@ -131,6 +145,32 @@ func (q *Queries) InsertComment(ctx context.Context, arg InsertCommentParams) (C
 		&i.Text,
 		&i.Html,
 		&i.PostID,
+		&i.ImageID,
+	)
+	return i, err
+}
+
+const insertIntoImage = `-- name: InsertIntoImage :one
+INSERT INTO Images (image,size,ext) values (?,?,?) RETURNING id, image, size, ext
+`
+
+type InsertIntoImageParams struct {
+	Image string
+	Size  int64
+	Ext   string
+}
+
+// InsertIntoImage
+//
+//	INSERT INTO Images (image,size,ext) values (?,?,?) RETURNING id, image, size, ext
+func (q *Queries) InsertIntoImage(ctx context.Context, arg InsertIntoImageParams) (Image, error) {
+	row := q.db.QueryRowContext(ctx, insertIntoImage, arg.Image, arg.Size, arg.Ext)
+	var i Image
+	err := row.Scan(
+		&i.ID,
+		&i.Image,
+		&i.Size,
+		&i.Ext,
 	)
 	return i, err
 }
@@ -342,12 +382,12 @@ func (q *Queries) SelectColorFromUserAndRoom(ctx context.Context, arg SelectColo
 }
 
 const selectCommentsMany = `-- name: SelectCommentsMany :many
-SELECT id, created_at, author, text, html, post_id FROM Comments WHERE post_id = ?
+SELECT id, created_at, author, text, html, post_id, image_id FROM Comments WHERE post_id = ?
 `
 
 // table: Comments
 //
-//	SELECT id, created_at, author, text, html, post_id FROM Comments WHERE post_id = ?
+//	SELECT id, created_at, author, text, html, post_id, image_id FROM Comments WHERE post_id = ?
 func (q *Queries) SelectCommentsMany(ctx context.Context, postID int64) ([]Comment, error) {
 	rows, err := q.db.QueryContext(ctx, selectCommentsMany, postID)
 	if err != nil {
@@ -364,6 +404,7 @@ func (q *Queries) SelectCommentsMany(ctx context.Context, postID int64) ([]Comme
 			&i.Text,
 			&i.Html,
 			&i.PostID,
+			&i.ImageID,
 		); err != nil {
 			return nil, err
 		}
@@ -376,6 +417,25 @@ func (q *Queries) SelectCommentsMany(ctx context.Context, postID int64) ([]Comme
 		return nil, err
 	}
 	return items, nil
+}
+
+const selectFromImage = `-- name: SelectFromImage :one
+SELECT id, image, size, ext FROM Images WHERE id = ? LIMIT 1
+`
+
+// SelectFromImage
+//
+//	SELECT id, image, size, ext FROM Images WHERE id = ? LIMIT 1
+func (q *Queries) SelectFromImage(ctx context.Context, id int64) (Image, error) {
+	row := q.db.QueryRowContext(ctx, selectFromImage, id)
+	var i Image
+	err := row.Scan(
+		&i.ID,
+		&i.Image,
+		&i.Size,
+		&i.Ext,
+	)
+	return i, err
 }
 
 const selectMessagesByChatroom = `-- name: SelectMessagesByChatroom :many

@@ -15,7 +15,7 @@ templ Comments(blog utils.Blog) {
 		hx-swap="afterbegin"
 		hx-target="#comments-go-here"
 		hx-post={ fmt.Sprintf("/api/comments/%d", blog.Id) }
-		class="flex-col mx-auto"
+		class="flex-col mx-auto p-2"
 	>
 		<div class="flex flex-col w-96  mx-auto px-4 bg-stone-800 space-y-2">
         <div class="grid grid-cols-4 gap-x-2 h-6">
@@ -45,9 +45,9 @@ templ Comments(blog utils.Blog) {
 							name="comment-image"
 							type="file"
 							accept="image/*"
-                            value="Choose file"
+                            value="Choose file:"
 							tabindex="3"
-							class="text-black bg-white h-full px-2 text-lg col-span-3"
+							class="text-black bg-white h-full px-2 text-lg col-span-3 hover:border-1 hover:border-solid border-none"
 						/>
         </div>
         <div class="grid grid-cols-4 gap-x-2 h-6">
@@ -65,6 +65,29 @@ templ Comments(blog utils.Blog) {
         </div>
 	</form>
 	@commentBox(blog.Id)
+    <hr/>
+    <br/>
+    <form		
+      id="comment-delete-form"
+      hx-post="/api/comment-delete"
+      class="flex-row p-2"
+      hx-boost="true"
+      hx-swap="none"
+    >
+      <div>Deletions</div>
+      <input
+        name="delete-password"
+        type="text"
+        class="bg-white text-black px-2 text-lg"
+        tabindex="5"
+      />
+      <input
+        class="text-lg bg-white text-black w-16 hover:border-1 hover:border-solid border-none"
+        type="submit"
+        value="Submit"
+        tabindex="6"
+      />
+    </form>
 	<script>
 	document.getElementById("comment-form").addEventListener('htmx:afterRequest', function(event) {
                 if (event.detail.successful) {
@@ -94,14 +117,14 @@ templ CaptchaBox(params utils.Captcha) {
         <div class="col-span-1"/>
         <div>
           if params.Error != "" {
-            <span class="mx-auto my-auto bg-red-500 col-span-2">{ params.Error }</span>
+            <span class="bg-red-500 col-span-3">{ params.Error }</span>
           }
         </div>
     </div>
         <div class="grid grid-cols-4 gap-x-2 h-6">
         <div class="col-span-1"/>
             <input
-                class="text-lg bg-white text-black"
+                class="text-lg bg-white text-black w-12 hover:border-1 hover:border-solid border-none"
                 type="submit"
                 value="Post"
                 tabindex="4"
@@ -122,16 +145,29 @@ templ commentBox(blogId int) {
 }
 
 templ Comment(v utils.Comment, blog int64) {
-	<div class="flex flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg" id={ fmt.Sprintf("%d-%d", blog, v.Id) }>
-		<div class="flex flex flex-col">
-			<div class="flex flex flex-row px-4 w-full">
-				<span class="font-semibold">{strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }</span>
-			</div>
-			<hr/>
-                        // unescape for the function defined in Meta.templ
-			<div class="unescape mx-4 text-xl">
-				@templ.Raw(v.Html)
-			</div>
-		</div>
-	</div>
+  <div class="flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg comment-card" id={ fmt.Sprintf("comment-%d", v.Id) }>
+    <div class="flex flex-col">
+      <div class="flex flex-row px-4 w-full items-center">
+        <input 
+          type="checkbox" 
+          name="selected-comments" 
+          value={ strconv.Itoa(int(v.Id)) } 
+          form="comment-delete-form" 
+          class="mr-2"/>
+        <span class="font-semibold">
+          {strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }
+        </span>
+      </div>
+      <hr/>
+      <!-- unescape for the function defined in Meta.templ -->
+      <div class="px-2 flex flex-row">
+      if v.Image.Url != "" {
+        @ImageCard(v.Image, true)
+      }
+        <div class="unescape mx-4 text-xl">
+          @templ.Raw(v.Html)
+        </div>
+      </div>
+    </div>
+  </div>
 }

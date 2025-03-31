@@ -28,6 +28,14 @@ type Comment struct {
 	Text      string
 	Html      string
 	PostID    int64
+	ImageID   *int64
+}
+
+type Image struct {
+	ID    int64
+	Image string
+	Size  int64
+	Ext   string
 }
 
 type Message struct {

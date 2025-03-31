@@ -21,6 +21,13 @@ var ApiRoutes = []Site{
 			Logging,
 			AllowMethods("GET", "POST"),
 		)},
+    {route: "/api/comment-delete",
+        hfunc: routes.ApiCommentsDelete,
+        middlewares: alice.New(
+            Logging,
+            AllowMethods("POST"),
+        ),
+    },
 	{route: "/api/captcha",
 		hfunc: routes.ApiCaptcha,
 		middlewares: alice.New(
@@ -28,6 +35,13 @@ var ApiRoutes = []Site{
 			AllowMethods("GET", "POST"),
 		),
 	},
+    {route: "/i/{id}",
+        hfunc: routes.ApiCommentImage,
+        middlewares: alice.New(
+            Logging,
+            AllowMethods("GET"),
+        ),
+    },
         {route: "/api/chat",
                 hfunc: chat.ApiChat,
                 middlewares: alice.New(
