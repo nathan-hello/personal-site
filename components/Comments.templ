@@ -115,9 +115,9 @@ templ CaptchaBox(params utils.Captcha) {
     </div>
     <div class="grid grid-cols-4 gap-x-2" id="captcha-error">
         <div class="col-span-1"/>
-        <div>
+        <div class="col-span-3">
           if params.Error != "" {
-            <span class="bg-red-500 col-span-3">{ params.Error }</span>
+            <span class="bg-red-500">{ params.Error }</span>
           }
         </div>
     </div>
