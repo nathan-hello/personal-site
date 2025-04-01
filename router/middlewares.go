@@ -15,7 +15,7 @@ func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		defer func() {
-			log.Printf("IP: %v, ROUTE REQUESTED: %v, RESPONSE TIME: %v\n", r.Host, r.URL.Path, time.Since(start))
+			log.Printf("IP: %v, ROUTE REQUESTED: %v, RESPONSE TIME: %v\n", r.RemoteAddr, r.URL.Path, time.Since(start))
 		}()
 		next.ServeHTTP(w, r)
 	})
