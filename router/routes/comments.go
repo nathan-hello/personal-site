@@ -88,6 +88,9 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 	}
     if imageID.Size > 6*1024*1024 {
         captchaError = "Error: Maximium file size is 6MB."
+		utils.GLOBAL_CAPTCHA_STORE.UpdateCaptchaError(captchaID, captchaError)
+		w.WriteHeader(http.StatusRequestEntityTooLarge)
+        return
     }
 	w.Header().Set("HX-Trigger", "x-captcha-reload")
 	if captchaError != "" {

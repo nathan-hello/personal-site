@@ -93,7 +93,7 @@ func serveHttp() {
 	router.RegisterApiHttpHandler()
 
 	if slices.Contains(os.Args, "--dev") {
-		http.Handle("/", http.FileServer(http.Dir(OUTPUT_PUBLIC)))
+        router.Index(true, OUTPUT_PUBLIC)
 	}
 
 	fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
