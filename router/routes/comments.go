@@ -244,7 +244,7 @@ func ApiCommentsDelete(w http.ResponseWriter, r *http.Request) {
     passAttempt := r.FormValue("delete-password")
     err = bcrypt.CompareHashAndPassword([]byte(adminPass), []byte(passAttempt))
     if err != nil {
-        w.WriteHeader(http.StatusUnauthorized)
+        utils.ShowStatusCode(w, r, http.StatusUnauthorized)
         return
     }
 
