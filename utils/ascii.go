@@ -2,7 +2,7 @@ package utils
 
 import "strings"
 
-const AsciiCommentDesc = "There are a couple markup options available: \n - Use markdown styling like codeblocks:\n```C \n     int main(void) { \n     printf(\"Hello, World\\n\"); \n    return 0; \n    } \n``` \n - Write inline latex:\n$R_{\\mu \\nu} - \\frac{1}{2} R \\, g_{\\mu \\nu} \n + \\Lambda g_{\\mu \\nu} = \\frac{8 \\pi G}{c^4} \\, T_{\\mu \\nu}$ \n - basic green text and post linking: \n    with > and >> respectively \n\nAll rendered without any client side js."
+const AsciiCommentDesc = "There are a couple markup options available: \n - Use markdown styling like codeblocks:\n```C \nint main(void) { \n    printf(\"Hello, World\\n\"); \n    return 0; \n} \n``` \n - Write inline latex:\n$R_{\\mu \\nu} - \\frac{1}{2} R \\, g_{\\mu \\nu} \n + \\Lambda g_{\\mu \\nu} = \\frac{8 \\pi G}{c^4} \\, T_{\\mu \\nu}$ \n - basic green text and post linking: \n    with > and >> respectively \n\nAll rendered without any client side js."
 
 const AsciiNat_e = `
  _   _       _       __   
