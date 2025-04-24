@@ -47,16 +47,20 @@ templ Comments(blog utils.Blog) {
                             placeholder={ utils.AsciiRender(utils.AsciiCommentDesc) }
 						></textarea>
         </div>
-        <div class="grid grid-cols-5 gap-x-2 h-6">
+        <div class="grid grid-cols-5 gap-x-2">
             <div class="bg-stone-700 flex items-center justify-center">
 					<div>Image</div>
             </div>
         <label class="w-26 text-black bg-white h-full px-2 text-lg col-span-1 hover:bg-gray-200 transition cursor-pointer inline-block">
           Choose file
-          <input name="comment-image" type="file" accept="image/*" tabindex="3" class="hidden" 
+          <input id="comment-image-input" name="comment-image" type="file" accept="image/*" tabindex="3" class="hidden"
                  onchange="document.getElementById('fileName').textContent = this.files[0]?.name || ''" />
         </label>
         <span id="fileName" class="ml-6 col-span-2">No file Chosen</span>
+        <button id="draw-btn" type="button"
+            class="w-12 text-black bg-white h-full px-2 text-lg col-span-1 hover:bg-gray-200 transition cursor-pointer inline-block">
+          Draw
+        </button>
         </div>
             <div
                 id="captcha-box"
@@ -94,13 +98,36 @@ templ Comments(blog utils.Blog) {
         tabindex="6"
       />
     </form>
-	<script>
-	document.getElementById("comment-form").addEventListener('htmx:afterRequest', function(event) {
-                if (event.detail.successful) {
-                        event.target.reset();
-                }
-        });
-</script>
+    <script>
+    	document.getElementById("comment-form").addEventListener('htmx:afterRequest', function(event) {
+                    if (event.detail.successful) {
+                            event.target.reset();
+                    }
+            });
+    </script>
+    <!-- TODO: figure out the way to have the official tegaki on a cdn -->
+    <script src="https://cdn.jsdelivr.net/gh/satopian/poti-kaini/potiboard5/tegaki/tegaki.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/satopian/poti-kaini/potiboard5/tegaki/tegaki.min.css">
+    <script>
+    document.body.addEventListener('click', e => {
+      if (e.target.id === 'draw-btn') {
+        Tegaki.open({
+          onDone: () => {
+            Tegaki.flatten().toBlob(blob => {
+              const dt = new DataTransfer();
+              dt.items.add(new File([blob], 'drawing.png', { type: 'image/png' }));
+              const input = document.getElementById('comment-image-input');
+              input.files = dt.files;
+              document.getElementById('fileName').textContent = 'drawing.png';
+              Tegaki.hide();
+            }, 'image/png');
+          }
+        , onCancel: () => {}
+        , width: 480, height: 480 });
+      }
+    });
+    </script>
 }
 
 templ CaptchaBox(params utils.Captcha) {
