@@ -3,7 +3,6 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +10,8 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"syscall"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 
@@ -146,43 +147,38 @@ func watchFiles() {
         log.Fatal(err)
     }
 
-	for {
-		select {
-		case event, ok := <-watcher.Events:
-			if !ok {
-				return
-			}
-
-			if event.Op&(fsnotify.Write|fsnotify.Create) != 0 {
-				ext := filepath.Ext(event.Name)
-				if ext == ".mdx" {
-					make("build/css")
-					generate()
-				}
-				if ext == ".go" || ext == ".sql" || ext == ".templ"  {
-					// TODO: why does this loop?
-					// make("build/css")
-					// make("build/templ")
-					// make("build/sqlc")
-					// TODO: make project rebuild and run itself
-				}
-			}
-		case err, ok := <-watcher.Errors:
-			if !ok {
-				return
-			}
-			log.Println("error:", err)
-		}
-	}
-}
-
-func make(arg string) {
-	cmd := exec.Command("make", arg)
-	cmd.Stdout = io.Discard
-	cmd.Stderr = io.Discard
-	fmt.Printf("INFO: rebuild called make %s\n", arg)
-	if err := cmd.Start(); err != nil {
-        log.Printf("Rebuild failed: %v", err)
-        return
+    var rebuildTimer *time.Timer
+    
+    for {
+        select {
+        case event := <-watcher.Events:
+            ext := filepath.Ext(event.Name)
+            if ext == ".mdx" {
+                if rebuildTimer != nil {
+                    rebuildTimer.Stop()
+                }
+                rebuildTimer = time.AfterFunc(200*time.Millisecond, func() {
+                    exec.Command("bun", "run", "tailwindcss", "-i", "./public/css/tw-input.css", "-o", "./public/css/tw-output.css").Run()
+                    generate()
+                })
+            }
+            if ext == ".go" || ext == ".sql" || ext == ".templ" {
+                if rebuildTimer != nil {
+                    rebuildTimer.Stop()
+                }
+                rebuildTimer = time.AfterFunc(200*time.Millisecond, func() {
+                    exec.Command("go", "run", "github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0", "generate").Run()
+                    exec.Command("templ", "generate").Run()
+    
+                    exe, _ := os.Executable()
+                    exec.Command("go", "build", "-o", exe, ".").Run()
+    
+                    syscall.Exec(exe, append([]string{exe}, os.Args[1:]...), os.Environ())
+                })
+            }
+    
+        case err := <-watcher.Errors:
+            log.Println("watcher error:", err)
+        }
     }
 }
