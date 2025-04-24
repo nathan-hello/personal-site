@@ -3,11 +3,16 @@ package main
 import (
 	_ "embed"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"slices"
+	"strings"
+
+	"github.com/fsnotify/fsnotify"
 
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/render"
@@ -26,10 +31,8 @@ const INPUT_PUBLIC = "./public"
 var dotenv string
 
 func main() {
-
 	build := slices.Contains(os.Args, "--build")
 	serve := slices.Contains(os.Args, "--serve")
-
 	isDev := slices.Contains(os.Args, "--dev")
 
 	if isDev {
@@ -56,9 +59,10 @@ func main() {
 	}
 
 	if serve {
-		serveHttp()
+		go watchFiles()
+		go serveHttp()
+		select {}
 	}
-
 }
 
 func generate() {
@@ -114,4 +118,71 @@ func serveHttp() {
    fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
    log.Fatal(http.ListenAndServe(":3000", mux))
 
+}
+
+func watchFiles() {
+    watcher, err := fsnotify.NewWatcher()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer watcher.Close()
+
+	err = filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+        if err != nil {
+            return err
+        }
+        if info.IsDir() {
+            if info.Name() == "dist" {
+                return filepath.SkipDir
+            }
+            return watcher.Add(path)
+        }
+        if strings.Contains(info.Name(), "_templ") {
+            return nil
+        }
+        return nil
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+	for {
+		select {
+		case event, ok := <-watcher.Events:
+			if !ok {
+				return
+			}
+
+			if event.Op&(fsnotify.Write|fsnotify.Create) != 0 {
+				ext := filepath.Ext(event.Name)
+				if ext == ".mdx" {
+					make("build/css")
+					generate()
+				}
+				if ext == ".go" || ext == ".sql" || ext == ".templ"  {
+					// TODO: why does this loop?
+					// make("build/css")
+					// make("build/templ")
+					// make("build/sqlc")
+					// TODO: make project rebuild and run itself
+				}
+			}
+		case err, ok := <-watcher.Errors:
+			if !ok {
+				return
+			}
+			log.Println("error:", err)
+		}
+	}
+}
+
+func make(arg string) {
+	cmd := exec.Command("make", arg)
+	cmd.Stdout = io.Discard
+	cmd.Stderr = io.Discard
+	fmt.Printf("INFO: rebuild called make %s\n", arg)
+	if err := cmd.Start(); err != nil {
+        log.Printf("Rebuild failed: %v", err)
+        return
+    }
 }
