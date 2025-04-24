@@ -2,7 +2,7 @@ tmp
 
 *_templ.txt
 *_templ.go
-
+*.sql.go
 
 # build output
 dist/

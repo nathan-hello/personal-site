@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"slices"
 
 	"github.com/nathan-hello/personal-site/db"
@@ -90,17 +91,27 @@ func generate() {
 }
 
 func serveHttp() {
-	router.RegisterApiHttpHandler()
+   mux := http.NewServeMux()
+   for _, v := range router.ApiRoutes {
+       if v.Route == "/" {
+           continue
+       }
+       mux.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
+   }
 
-	if slices.Contains(os.Args, "--dev") {
-        router.Index(true, OUTPUT_PUBLIC)
-	}
+   if slices.Contains(os.Args, "--dev") {
+       mux.Handle("/", http.FileServer(http.Dir(OUTPUT_PUBLIC)))
+   } else {
+       mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+           if r.URL.Path != "/" {
+               http.Redirect(w, r, utils.StatusCodes[404], http.StatusMovedPermanently)
+               return
+           }
+           http.ServeFile(w, r, filepath.Join(OUTPUT_PUBLIC, "index.html"))
+       })
+   }
 
-	fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
-
-	err := http.ListenAndServe(":3000", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+   fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
+   log.Fatal(http.ListenAndServe(":3000", mux))
 
 }

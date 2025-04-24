@@ -9,88 +9,88 @@ import (
 )
 
 type Site struct {
-	route       string
-	hfunc       http.HandlerFunc
-	middlewares alice.Chain
+	Route       string
+	Hfunc       http.HandlerFunc
+	Middlewares alice.Chain
 }
 
 var ApiRoutes = []Site{
-	{route: "/",
-		hfunc: Index(false, ""),
-		middlewares: alice.New(
+	{Route: "/",
+		Hfunc: Index(false, ""),
+		Middlewares: alice.New(
 			Logging,
 		),
 	},
-	{route: "/api/comments/{id}",
-		hfunc: routes.ApiComments,
-		middlewares: alice.New(
+	{Route: "/api/comments/{id}",
+		Hfunc: routes.ApiComments,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 		)},
-	{route: "/api/comment-delete",
-		hfunc: routes.ApiCommentsDelete,
-		middlewares: alice.New(
+	{Route: "/api/comment-delete",
+		Hfunc: routes.ApiCommentsDelete,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("POST"),
 		),
 	},
-	{route: "/api/captcha",
-		hfunc: routes.ApiCaptcha,
-		middlewares: alice.New(
+	{Route: "/api/captcha",
+		Hfunc: routes.ApiCaptcha,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 		),
 	},
-	{route: "/i/{id}",
-		hfunc: routes.ApiCommentImage,
-		middlewares: alice.New(
+	{Route: "/i/{id}",
+		Hfunc: routes.ApiCommentImage,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET"),
 		),
 	},
-	{route: "/api/chat",
-		hfunc: chat.ApiChat,
-		middlewares: alice.New(
+	{Route: "/api/chat",
+		Hfunc: chat.ApiChat,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
 	},
-	{route: "/bear/chat",
-		hfunc: chat.BearChat,
-		middlewares: alice.New(
+	{Route: "/bear/chat",
+		Hfunc: chat.BearChat,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
 	},
-	{route: "/bear/login",
-		hfunc: routes.BearLogin,
-		middlewares: alice.New(
+	{Route: "/bear/login",
+		Hfunc: routes.BearLogin,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
 	},
-	{route: "/bear/signout",
-		hfunc: routes.BearSignOut,
-		middlewares: alice.New(
+	{Route: "/bear/signout",
+		Hfunc: routes.BearSignOut,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
 	},
-	{route: "/login",
-		hfunc: routes.Login,
-		middlewares: alice.New(
+	{Route: "/login",
+		Hfunc: routes.Login,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
 	},
-	{route: "/signout",
-		hfunc: routes.SignOut,
-		middlewares: alice.New(
+	{Route: "/signout",
+		Hfunc: routes.SignOut,
+		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
@@ -100,6 +100,6 @@ var ApiRoutes = []Site{
 
 func RegisterApiHttpHandler() {
 	for _, v := range ApiRoutes {
-		http.Handle(v.route, v.middlewares.ThenFunc(v.hfunc))
+		http.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
 	}
 }
