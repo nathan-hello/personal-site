@@ -16,7 +16,7 @@ templ ChatBox() {
     class="flex flex-col h-full w-[320px] chroma-bg mx-auto my-auto"
     id="chat-form"
     hx-swap-oob="afterend:#messages-go-here scroll:bottom"
-    hx-post="/api/message"
+    hx-post="/api/chat"
  >
   <div id="messages-go-here" class="flex flex-col justify-end flex-1 p-2 overflow-y-auto">
       <ul>

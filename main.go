@@ -153,7 +153,7 @@ func watchFiles() {
         select {
         case event := <-watcher.Events:
             ext := filepath.Ext(event.Name)
-            if ext == ".mdx" {
+            if ext == ".mdx" || ext == ".html" {
                 if rebuildTimer != nil {
                     rebuildTimer.Stop()
                 }

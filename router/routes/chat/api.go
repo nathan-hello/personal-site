@@ -213,10 +213,6 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func BearChat(w http.ResponseWriter, r *http.Request) {
-        components.ChatBear().Render(r.Context(), w)
-}
-
 type rawChatMessage struct {
 	Text string `json:"msg-text"`
 }

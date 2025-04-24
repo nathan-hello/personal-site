@@ -56,30 +56,6 @@ var ApiRoutes = []Site{
 			InjectClaimsOnValidToken,
 		),
 	},
-	{Route: "/bear/chat",
-		Hfunc: chat.BearChat,
-		Middlewares: alice.New(
-			Logging,
-			AllowMethods("GET", "POST"),
-			InjectClaimsOnValidToken,
-		),
-	},
-	{Route: "/bear/login",
-		Hfunc: routes.BearLogin,
-		Middlewares: alice.New(
-			Logging,
-			AllowMethods("GET", "POST"),
-			InjectClaimsOnValidToken,
-		),
-	},
-	{Route: "/bear/signout",
-		Hfunc: routes.BearSignOut,
-		Middlewares: alice.New(
-			Logging,
-			AllowMethods("GET", "POST"),
-			InjectClaimsOnValidToken,
-		),
-	},
 	{Route: "/login",
 		Hfunc: routes.Login,
 		Middlewares: alice.New(
@@ -95,7 +71,14 @@ var ApiRoutes = []Site{
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
-	},
+    },
+	{Route: "/chat",
+         Hfunc: chat.Chat,
+         Middlewares: alice.New(
+             Logging,
+             AllowMethods("GET"),
+        ),
+    },
 }
 
 func RegisterApiHttpHandler() {
