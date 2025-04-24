@@ -56,6 +56,16 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
             w.WriteHeader(http.StatusBadRequest)
             return
         }
+        head := imageBuf
+        if len(head) > 512 {
+            head = head[:512]
+        }
+        
+        ct := http.DetectContentType(head)
+        if !strings.HasPrefix(ct, "image/") {
+            w.WriteHeader(http.StatusBadRequest)
+            return
+        }
 
         imageb64 := base64.StdEncoding.EncodeToString(imageBuf)
         ext := strings.TrimPrefix(filepath.Ext(imageInfo.Filename), ".")
