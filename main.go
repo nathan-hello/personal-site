@@ -168,6 +168,7 @@ func watchFiles() {
                 }
                 rebuildTimer = time.AfterFunc(200*time.Millisecond, func() {
                     exec.Command("go", "run", "github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0", "generate").Run()
+                    exec.Command("bun", "run", "tailwindcss", "-i", "./public/css/tw-input.css", "-o", "./public/css/tw-output.css").Run()
                     exec.Command("templ", "generate").Run()
     
                     exe, _ := os.Executable()
