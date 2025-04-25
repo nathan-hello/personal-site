@@ -14,6 +14,11 @@ import (
 func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
+		// TODO:
+		// r.URL.Host is always blank
+		// code is always blank even if i put in context (or did i????)
+		// json is always blank even if i put in context (or did i????)
+
 		defer func() {
 
 			code, ok := r.Context().Value(utils.AnalyticsContextKeyHttpResponseStatus).(int)

@@ -65,14 +65,14 @@ var ApiRoutes = []Site{
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
-    },
+	},
 	{Route: "/chat",
-         Hfunc: chat.Chat,
-         Middlewares: alice.New(
-             Logging,
-             AllowMethods("GET"),
-        ),
-    },
+		Hfunc: chat.Chat,
+		Middlewares: alice.New(
+			Logging,
+			AllowMethods("GET"),
+		),
+	},
 }
 
 func RegisterApiHttpHandler() {
