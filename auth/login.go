@@ -120,7 +120,7 @@ func (a *SignUp) SignUp() *User {
 	err = db.Db().InsertUser(
 		ctx,
 		db.InsertUserParams{
-			GlobalChatColor:   "text-gray-500",
+			GlobalChatColor:   "#ffffff",
 			ID:                userId,
 			Email:             a.Email,
 			Username:          a.Username,
