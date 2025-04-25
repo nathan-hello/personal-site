@@ -30,7 +30,7 @@ const INPUT_PUBLIC = "./public"
 
 //go:embed .env
 var dotenv string
-
+//cicd
 func main() {
 	build := slices.Contains(os.Args, "--build")
 	serve := slices.Contains(os.Args, "--serve")
