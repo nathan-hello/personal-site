@@ -37,7 +37,7 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if push, ok := event.(*github.PushEvent); ok && push.GetRef() == "refs/heads/main" {
+    if push, ok := event.(*github.PushEvent); ok && push.GetRef() == "refs/heads/chat" {
         go deploy()
     }
 
