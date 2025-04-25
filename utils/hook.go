@@ -61,7 +61,7 @@ func validateSignature(sigHeader string, body []byte, secret string) bool {
 
 // TODO: is this necerssary if watch files exists?
 func deploy() {
-    if err := exec.Command("git", "pull", "origin", "main").Run(); err != nil {
+    if err := exec.Command("git", "pull").Run(); err != nil {
         log.Println("git pull:", err)
         return
     }
