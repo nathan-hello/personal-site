@@ -26,7 +26,12 @@ func Logging(next http.Handler) http.Handler {
 				json = "{}"
 			}
 
-			utils.HttpAnalytic(time.Now(), r.URL.Host, code, r.Method, r.URL.Path, start, json)
+			host := r.URL.Host
+			if host == "" {
+				host = "0.0.0.0"
+			}
+
+			utils.HttpAnalytic(time.Now(), host, code, r.Method, r.URL.Path, start, json)
 		}()
 		next.ServeHTTP(w, r)
 	})
