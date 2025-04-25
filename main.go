@@ -59,9 +59,11 @@ func main() {
 		generate()
 	}
 
+	nameCh := make(chan string)
 	if serve {
-		go watchFiles()
-		go serveHttp()
+		go watchFiles(nameCh)
+		go serveHttp(nameCh)
+		nameCh <- "Initial Start"
 		select {}
 	}
 }
@@ -94,7 +96,7 @@ func generate() {
 
 }
 
-func serveHttp() {
+func serveHttp(nameCh chan string) {
    mux := http.NewServeMux()
    for _, v := range router.ApiRoutes {
        mux.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
@@ -118,12 +120,13 @@ func serveHttp() {
 
    mux.HandleFunc("/git-hook", utils.HookHandler)
 
-   fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
+   fileName := <- nameCh
+   fmt.Printf("%v Listening on port :3000 due to change in %v for routes: %v\n", time.Now().Format("15:04:05"), fileName, router.ApiRoutes)
    log.Fatal(http.ListenAndServe(":3000", mux))
 
 }
 
-func watchFiles() {
+func watchFiles(nameCh chan string) {
     watcher, err := fsnotify.NewWatcher()
     if err != nil {
         log.Fatal(err)
@@ -153,7 +156,8 @@ func watchFiles() {
     
     for {
         select {
-        case event := <-watcher.Events:
+        case event := <- watcher.Events:
+			nameCh <- event.Name
             ext := filepath.Ext(event.Name)
             if ext == ".mdx" || ext == ".html" {
                 if rebuildTimer != nil {
