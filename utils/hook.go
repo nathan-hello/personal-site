@@ -23,7 +23,6 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     defer r.Body.Close()
-	log.Printf("CICD: payload: %s", payload)
 
 	sig := r.Header.Get("X-Hub-Signature-256")
     if !validateSignature(sig, payload, parsed.WEBHOOK_SECRET) {
@@ -32,10 +31,9 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	hookType := github.WebHookType(r)
-    event, err := github.ParseWebHook(hookType, payload)
+    event, err := github.ParseWebHook(github.WebHookType(r), payload)
     if err != nil {
-		log.Printf("CICD: parse error on: %v, %v, %v", event, hookType, err)
+		log.Printf("CICD: parse error on: %v, %v", event, err)
         w.WriteHeader(http.StatusBadRequest)
         return
     }
