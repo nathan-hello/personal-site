@@ -1,13 +1,22 @@
 package utils
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
+type AnalyticsContextKeyHttpResponseStatusType struct{}
+
+var AnalyticsContextKeyHttpResponseStatus = AnalyticsContextKeyHttpResponseStatusType{}
+
+type JsonContextKeyType struct{}
+
+var JsonContextKey = JsonContextKeyType{}
 
 var (
-        ErrNoTextInChatMsg = errors.New("illegal message - no text in chat message")
+	ErrNoTextInChatMsg = errors.New("illegal message - no text in chat message")
 )
 
 var StatusCodes = map[int]string{
@@ -22,5 +31,14 @@ var StatusCodes = map[int]string{
 }
 
 func ShowStatusCode(w http.ResponseWriter, r *http.Request, code int) {
+	ctx := context.WithValue(r.Context(), AnalyticsContextKeyHttpResponseStatus, StatusCodes[code])
+	r = r.WithContext(ctx)
+
 	http.Redirect(w, r, StatusCodes[code], http.StatusMovedPermanently)
+}
+
+func JsonAddError(r *http.Request, s string) *http.Request {
+	ctx := context.WithValue(r.Context(), JsonContextKey, fmt.Sprintf("{\"error\":\"%s\"}", s))
+	r = r.WithContext(ctx)
+	return r
 }

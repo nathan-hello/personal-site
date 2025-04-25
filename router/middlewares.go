@@ -2,20 +2,31 @@ package router
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"slices"
 	"time"
 
 	"github.com/justinas/alice"
 	"github.com/nathan-hello/personal-site/auth"
+	"github.com/nathan-hello/personal-site/utils"
 )
 
 func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		defer func() {
-			log.Printf("IP: %v, ROUTE REQUESTED: %v, RESPONSE TIME: %v\n", r.RemoteAddr, r.URL.Path, time.Since(start))
+
+			code, ok := r.Context().Value(utils.AnalyticsContextKeyHttpResponseStatus).(int)
+			if !ok || code == 0 {
+				code = 200
+			}
+
+			json, ok := r.Context().Value(utils.JsonContextKey).(string)
+			if !ok || json == "" {
+				json = "{}"
+			}
+
+			utils.HttpAnalytic(time.Now(), r.URL.Host, code, r.Method, r.URL.Path, start, json)
 		}()
 		next.ServeHTTP(w, r)
 	})

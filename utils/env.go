@@ -13,7 +13,7 @@ var env struct {
 	access_expiry_time_hours  int
 	refresh_expiry_time_hours int
 	jwt_secret                string
-	webhook_secret			  string
+	webhook_secret            string
 }
 
 type parsed_env struct {
@@ -21,8 +21,9 @@ type parsed_env struct {
 	REFRESH_EXPIRY_TIME time.Duration
 	JWT_SECRET          string
 	DATABASE_URI        string
-    ADMIN_PASS          string
-	WEBHOOK_SECRET		string
+	ADMIN_PASS          string
+	WEBHOOK_SECRET      string
+	LOG_PATH            string
 }
 
 var parsed = parsed_env{}
@@ -79,6 +80,8 @@ func ParseDotenv(dotenv string) error {
 			parsed.ADMIN_PASS = value
 		case "WEBHOOK_SECRET":
 			parsed.WEBHOOK_SECRET = value
+		case "LOG_PATH":
+			parsed.LOG_PATH = value
 		default:
 			return fmt.Errorf("unknown key on line %d: %s", i+1, key)
 		}
