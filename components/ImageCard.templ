@@ -3,7 +3,6 @@ package components
 import (
 	"fmt"
 	"github.com/nathan-hello/personal-site/utils"
-	"strings"
 )
 
 templ ImageCard(image utils.Image, toggleSize bool) {
@@ -14,7 +13,11 @@ templ ImageCard(image utils.Image, toggleSize bool) {
 				{ image.Name }
 			</a>
 			<br/>
-			({ image.Size }, image/{ strings.Split(image.Ext, ".")[1] })
+            if image.Ext[0] == '.' {
+            ({ image.Size }, image/{ image.Ext[1:] })
+            } else {
+            ({ image.Size }, image/{ image.Ext })
+            }
 			<hr/>
 			<img
 				if toggleSize {

@@ -11,19 +11,19 @@ import (
 var UserContextKey = struct{}{}
 
 func UserCtxDefaultAnon(r *http.Request) *db.SelectUserByIdRow {
-	user := r.Context().Value(UserContextKey).(*db.SelectUserByIdRow)
-	if user == nil {
-		user = &db.SelectUserByIdRow{
-			ID:              "anon",
-			Email:           "anon",
-			Username:        "Anonymous",
-			GlobalChatColor: "purple-500",
-		}
-	}
-	return user
+   val := r.Context().Value(UserContextKey)
+   if u, ok := val.(*db.SelectUserByIdRow); ok && u != nil {
+       return u
+   }
+   return &db.SelectUserByIdRow{
+       ID:              "anon",
+       Email:           "anon",
+       Username:        "Anonymous",
+       GlobalChatColor: "purple-500",
+   }
 }
 
-func setTokenCookies(w http.ResponseWriter, a string, r string) {
+func SetTokenCookies(w http.ResponseWriter, a string, r string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "access_token",
 		Value:    a,
@@ -71,7 +71,7 @@ func deleteCookie(w http.ResponseWriter, name string) {
 	})
 }
 
-func deleteJwtCookies(w http.ResponseWriter) {
+func DeleteJwtCookies(w http.ResponseWriter) {
 	deleteCookie(w, "access_token")
 	deleteCookie(w, "refresh_token")
 }
@@ -82,7 +82,7 @@ func ValidateJwtOrDelete(w http.ResponseWriter, r *http.Request) (string, bool) 
 		if err == http.ErrNoCookie {
 			return "", false
 		}
-		deleteJwtCookies(w)
+		DeleteJwtCookies(w)
 		return "", false
 	}
 
@@ -91,17 +91,17 @@ func ValidateJwtOrDelete(w http.ResponseWriter, r *http.Request) (string, bool) 
 		if err == http.ErrNoCookie {
 			return "", false
 		}
-		deleteJwtCookies(w)
+		DeleteJwtCookies(w)
 		return "", false
 	}
 
 	vAccess, vRefresh, err := validatePairOrRefresh(access.Value, refresh.Value)
 
 	if err != nil {
-		deleteJwtCookies(w)
+		DeleteJwtCookies(w)
 		return "", false
 	}
 
-	setTokenCookies(w, vAccess, vRefresh)
+	SetTokenCookies(w, vAccess, vRefresh)
 	return vAccess, true
 }

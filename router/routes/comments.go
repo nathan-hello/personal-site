@@ -2,12 +2,19 @@ package routes
 
 import (
 	"bytes"
+	"context"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
+	"mime"
 	"net/http"
+	"path/filepath"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/nathan-hello/personal-site/components"
 	"github.com/nathan-hello/personal-site/db"
@@ -34,14 +41,50 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if err = r.ParseForm(); err != nil {
+	if err = r.ParseMultipartForm(6*1024*1024); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	captchaID := r.PostForm.Get("captcha-id")
-	userResponse := r.PostForm.Get("captcha-response")
-	commentText := r.PostForm.Get("comment-text")
+    // TODO: integrate NSFW check?
+    imageID := db.Image{}
+    image, imageInfo, err := r.FormFile("comment-image")
+    if err != http.ErrMissingFile {
+        imageBuf := make([]byte, imageInfo.Size)
+        size, err := image.Read(imageBuf)
+        if err != nil || int64(size) != imageInfo.Size {
+            w.WriteHeader(http.StatusBadRequest)
+            return
+        }
+        // head := imageBuf
+        // if len(head) > 512 {
+        //     head = head[:512]
+        // }
+        //
+        // ct := http.DetectContentType(head)
+        // if !strings.HasPrefix(ct, "image/") {
+        //     w.WriteHeader(http.StatusBadRequest)
+        //     return
+        // }
+
+        imageb64 := base64.StdEncoding.EncodeToString(imageBuf)
+        ext := strings.TrimPrefix(filepath.Ext(imageInfo.Filename), ".")
+
+        imageID, err = db.Conn.InsertIntoImage(r.Context(), db.InsertIntoImageParams{
+            Image:  imageb64,
+            Size:   imageInfo.Size,
+            Ext:    ext,
+        })
+        if err != nil {
+		    fmt.Printf("err apiimageinsert: %s", err)
+		    w.WriteHeader(http.StatusInternalServerError)
+		    return
+        }
+    }
+
+	captchaID := r.FormValue("captcha-id")
+	userResponse := r.FormValue("captcha-response")
+	commentText := r.FormValue("comment-text")
 	entry, ok := utils.GLOBAL_CAPTCHA_STORE.GetCaptcha(captchaID)
 	captchaError := ""
 	if !ok || userResponse != entry.Solution {
@@ -53,6 +96,12 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 	if commentText == "" {
 		captchaError = "Error: Body is empty."
 	}
+    if imageID.Size > 6*1024*1024 {
+        captchaError = "Error: Maximium file size is 6MB."
+		utils.GLOBAL_CAPTCHA_STORE.UpdateCaptchaError(captchaID, captchaError)
+		w.WriteHeader(http.StatusRequestEntityTooLarge)
+        return
+    }
 	w.Header().Set("HX-Trigger", "x-captcha-reload")
 	if captchaError != "" {
 		utils.GLOBAL_CAPTCHA_STORE.UpdateCaptchaError(captchaID, captchaError)
@@ -66,26 +115,37 @@ func apiCommentsPost(w http.ResponseWriter, r *http.Request) {
 		author = "Anonymous"
 	}
 
-	text := r.PostForm.Get("comment-text")
-	escaped := render.EscapeHtml(text)
+	escaped, replies := render.EscapeHtml(commentText)
 	html := render.MarkdownRender([]byte(escaped))
 	html = bytes.TrimPrefix(html, []byte("<br/>"))
 	html = append([]byte("<div class=\"py-2\"></div>"), html...)
 
-	n, err := db.Conn.InsertComment(r.Context(), db.InsertCommentParams{
+	comment, err := db.Conn.InsertComment(r.Context(), db.InsertCommentParams{
 		CreatedAt: time.Now().UTC().Format(time.RFC3339),
 		Author:    author,
-		Text:      text,
+		Text:      commentText,
 		Html:      string(html),
 		PostID:    blogId,
+        ImageID:   &imageID.ID,
 	})
 	if err != nil {
 		fmt.Printf("err apicommentsget: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	components.Comment(n.NewBlogComment(), blogId).Render(r.Context(), w)
+    for _, v := range(replies) {
+        err = db.Conn.InsertReply(r.Context(), db.InsertReplyParams{
+            CommentID: &v,
+            ReplyCommentID: &comment.ID,
+        })
+	    if err != nil {
+	    	fmt.Printf("err reply insert: %s", err)
+	    	w.WriteHeader(http.StatusInternalServerError)
+	    	return
+	    }
+    }
+    clear(replies)
+	components.Comment(comment.NewBlogComment(), blogId, replies).Render(r.Context(), w)
 }
 
 func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
@@ -116,9 +176,19 @@ func apiCommentsGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var buf bytes.Buffer
-
+    replyIds := []int64{}
 	for _, v := range uc {
-		components.Comment(v, blogId).Render(r.Context(), &buf)
+        clear(replyIds)
+        replies, err := db.Conn.SelectAllReplies(r.Context(), &v.Id)
+	    if err != nil {
+	    	fmt.Printf("err getting replies: %s", err)
+	    	w.WriteHeader(http.StatusInternalServerError)
+	    	return
+	    }
+        for _, v := range replies {
+           replyIds = append(replyIds, v.ID) 
+        }
+		components.Comment(v, blogId, replyIds).Render(r.Context(), &buf)
 	}
 
 	w.Write(buf.Bytes())
@@ -140,4 +210,76 @@ func ApiCaptcha(w http.ResponseWriter, r *http.Request) {
 	captcha := utils.GenerateCaptcha()
 	utils.GLOBAL_CAPTCHA_STORE.SetCaptcha(captcha.Id, captcha.Text)
 	components.CaptchaBox(*captcha).Render(r.Context(), w)
+}
+
+func ApiCommentImage(w http.ResponseWriter, r *http.Request) {
+	i, err := strconv.Atoi(strings.Split(r.PathValue("id"), ".")[0])
+	imageID := int64(i)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+    image, err := db.Conn.SelectFromImage(context.Background(), imageID)
+    if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+    }
+    imageBuf := make([]byte, image.Size)
+    n, err := base64.StdEncoding.Decode(imageBuf, []byte(image.Image))
+    if err != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+
+    ext := "." + image.Ext
+    mimeType := mime.TypeByExtension(ext)
+    if mimeType == "" {
+        mimeType = "application/octet-stream"
+    }
+
+    w.Header().Set("Content-Type", mimeType)
+    w.Header().Set("Content-Length", strconv.Itoa(n))
+    w.WriteHeader(http.StatusOK)
+    w.Write(imageBuf[:n])
+}
+
+func ApiCommentsDelete(w http.ResponseWriter, r *http.Request) {
+    err := r.ParseForm()
+    if err != nil {
+        http.Error(w, "Error parsing form", http.StatusBadRequest)
+        return
+    }
+
+    adminPass := utils.Env().ADMIN_PASS
+    passAttempt := r.FormValue("delete-password")
+    err = bcrypt.CompareHashAndPassword([]byte(adminPass), []byte(passAttempt))
+    if err != nil {
+        utils.ShowStatusCode(w, r, http.StatusUnauthorized)
+        return
+    }
+
+    selectedComments := r.Form["selected-comments"]
+    for _, idStr := range selectedComments {
+        id, err := strconv.Atoi(idStr)
+        if err != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+        comment, err := db.Conn.SelectFromComment(r.Context(), int64(id))
+        if err != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+        err = db.Conn.DeleteImageById(r.Context(), *comment.ImageID)
+        if err != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+        err = db.Conn.DeleteCommentById(r.Context(), int64(id))
+        if err != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+    }
+    w.Header().Set("HX-Refresh", "true")
 }

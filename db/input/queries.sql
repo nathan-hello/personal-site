@@ -1,8 +1,26 @@
 -- table: Comments
 -- name: SelectCommentsMany :many
 SELECT * FROM Comments WHERE post_id = ?;
+-- name: SelectFromComment :one
+SELECT * FROM Comments Where id = ?;
 -- name: InsertComment :one
-INSERT INTO Comments (author,created_at,text,post_id,html) values (?,?,?,?,?) RETURNING *;
+INSERT INTO Comments (author,created_at,text,post_id,html,image_id) VALUES (?,?,?,?,?,?) RETURNING *;
+-- name: DeleteCommentById :exec
+DELETE FROM Comments WHERE id = ?;
+
+-- table: Images
+-- name: DeleteImageById :exec
+DELETE FROM Images WHERE id = ?;
+-- name: SelectFromImage :one
+SELECT * FROM Images WHERE id = ? LIMIT 1;
+-- name: InsertIntoImage :one
+INSERT INTO Images (image,size,ext) VALUES (?,?,?) RETURNING *;
+
+-- table: CommentReplies
+-- name: InsertReply :exec
+INSERT INTO CommentReplies (comment_id, reply_comment_id) VALUES (?,?);
+-- name: SelectAllReplies :many
+SELECT c.* FROM Comments c JOIN CommentReplies cr ON c.id = cr.reply_comment_id WHERE cr.comment_id = ? ORDER BY cr.reply_comment_id ASC;
 
 -- table: users
 -- name: InsertUser :exec

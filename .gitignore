@@ -2,7 +2,7 @@ tmp
 
 *_templ.txt
 *_templ.go
-
+*.sql.go
 
 # build output
 dist/
@@ -26,6 +26,7 @@ pnpm-debug.log*
 .env
 .env.production
 !.env.local
+data.db
 
 # macOS-specific files
 .DS_Store

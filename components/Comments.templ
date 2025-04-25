@@ -7,129 +7,202 @@ import (
 )
 
 templ Comments(blog utils.Blog) {
-	<h2 class="px-4">Comments</h2>
+    <hr/>
+	<h2 class="px-2">Comments</h2>
 	<hr/>
+    <span id="Top" class="px-2">[<a href={ templ.URL(fmt.Sprintf("/%s", blog.Frnt.Author)) }>Index</a>] [<a href="#Bottom">Bottom</a>] [<button class="cursor-pointer" id="Update">Update</button>]</span>
+    <hr/>
 	<form
 		id="comment-form"
+		enctype="multipart/form-data"
 		hx-swap="afterbegin"
 		hx-target="#comments-go-here"
 		hx-post={ fmt.Sprintf("/api/comments/%d", blog.Id) }
-		class="flex-col  "
+		class="flex-col mx-auto py-2"
 	>
-		<table class="mx-auto px-4 bg-stone-800">
-			<tbody>
-				<tr data-type="Author">
-					<td class="px-2">Author</td>
-					<td>
+		<div class="flex flex-col w-[480px] mx-auto px-4 bg-stone-800 space-y-2">
+        <div class="grid grid-cols-5 gap-x-2 h-6">
+                    <div class="bg-stone-700 flex items-center justify-center">
+					<div>Author</div>
+                    </div>
 						<input
 							name="comment-author"
 							type="text"
 							tabindex="1"
-							class="bg-white h-full px-2 text-lg"
+							class="text-black bg-white h-full px-2 text-lg col-span-4"
 							placeholder="Anonymous"
 						/>
-					</td>
-				</tr>
-				<tr
-					class="mx-2"
-					data-type="body"
-				>
-					<td class="px-2">Body</td>
-					<td>
+        </div>
+        <div class="grid grid-cols-5 gap-x-2">
+                    <div class="bg-stone-700 flex items-center justify-center">
+					<div>Comment</div>
+                    </div>
 						<textarea
 							name="comment-text"
 							cols="48"
-							rows="4"
+							rows="5"
 							wrap="soft"
 							tabindex="2"
-							class="bg-white text-black w-[90%] px-2"
+							class="bg-white text-black col-span-4"
+                            placeholder={ utils.AsciiRender(utils.AsciiCommentDesc) }
 						></textarea>
-					</td>
-				</tr>
-            <tbody
+        </div>
+        <div class="grid grid-cols-5 gap-x-2">
+            <div class="bg-stone-700 flex items-center justify-center">
+					<div>Image</div>
+            </div>
+        <label class="w-30 text-black bg-white h-full px-2 col-span-1 hover:bg-gray-200 transition cursor-pointer inline-block">
+          Choose file
+          <input id="comment-image-input" name="comment-image" type="file" accept="image/*" tabindex="3" class="hidden"
+                 onchange="document.getElementById('fileName').textContent = this.files[0]?.name || ''" />
+        </label>
+        <span id="fileName" class="px-3 ml-6 col-span-2">No file Chosen</span>
+        <button id="draw-btn" type="button"
+            class="w-12 text-black bg-white h-full px-2 col-span-1 hover:bg-gray-200 transition cursor-pointer inline-block">
+          Draw
+        </button>
+        </div>
+            <div
                 id="captcha-box"
                 hx-get="/api/captcha"
                 hx-trigger="load, x-captcha-reload from:body"
                 hx-include="[name='captcha-id']"
                 hx-swap="innerHTML"
                 hx-target="this"
-            ></tbody>
-			</tbody>
-		</table>
+            ></div>
+        </div>
 	</form>
 	@commentBox(blog.Id)
-	<script>
-	document.getElementById("comment-form").addEventListener('htmx:afterRequest', function(event) {
-                if (event.detail.successful) {
-                        event.target.reset();
-                }
-        });
-</script>
+    <hr/>
+    <span id="Bottom" class="px-2">[<a href={ templ.URL(fmt.Sprintf("/%s", blog.Frnt.Author)) }>Index</a>] [<a href="#Top">Top</a>]</span>
+    <hr/>
+    <form		
+      id="comment-delete-form"
+      hx-post="/api/comment-delete"
+      class="flex-row p-2"
+      style="float: right;"
+      hx-boost="true"
+      hx-swap="none"
+    >
+      <span>Delete Post</span>
+      <input
+        name="delete-password"
+        type="text"
+        class="bg-white text-black px-2 text-lg"
+        tabindex="5"
+      />
+      <input
+        class="text-lg bg-white text-black w-16 hover:border-1 hover:border-solid border-none cursor-pointer"
+        type="submit"
+        value="Submit"
+        tabindex="6"
+      />
+    </form>
+    <script>
+    	document.getElementById("comment-form").addEventListener('htmx:afterRequest', function(event) {
+                    if (event.detail.successful) {
+                            event.target.reset();
+                    }
+            });
+    </script>
+    <!-- TODO: figure out the way to have the official tegaki on a cdn -->
+    <script src="https://cdn.jsdelivr.net/gh/satopian/poti-kaini/potiboard5/tegaki/tegaki.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/satopian/poti-kaini/potiboard5/tegaki/tegaki.min.css">
+    <script>
+    document.body.addEventListener('click', e => {
+      if (e.target.id === 'draw-btn') {
+        Tegaki.open({
+          onDone: () => {
+            Tegaki.flatten().toBlob(blob => {
+              const dt = new DataTransfer();
+              dt.items.add(new File([blob], 'drawing.png', { type: 'image/png' }));
+              const input = document.getElementById('comment-image-input');
+              input.files = dt.files;
+              document.getElementById('fileName').textContent = 'drawing.png';
+              Tegaki.hide();
+            }, 'image/png');
+          }
+        , onCancel: () => {}
+        , width: 480, height: 480 });
+      }
+    });
+    </script>
 }
 
 templ CaptchaBox(params utils.Captcha) {
-    <tr>
-        <td class="px-2">Captcha</td>
-        <td>
-            <img height="56" width="180" src={ params.ToBase64() } alt="captcha"/>
-            <input type="hidden" name="captcha-id" value={ params.Id }/>
-        </td>
-    </tr>
-    <tr>
-        <td/>
-        <td>
+        <div class="space-y-2">
+        <div class="grid grid-cols-5 gap-x-2">
+        <div class="bg-stone-700 flex items-center justify-center">
+        <div>Captcha</div>
+        </div>
+          <img height="56" width="180" src={ params.ToBase64() } alt="captcha" class="col-span-3"/>
+          <input type="hidden" id="captcha-id" name="captcha-id" value={ params.Id }/>
+    </div>
+        <div class="grid grid-cols-5 gap-x-2 h-6"> <div class="col-span-1"/>
             <input
                 type="text"
                 name="captcha-response"
                 placeholder="Enter captcha"
-                class="bg-white h-full px-2 text-lg"
+                class="bg-white text-black h-full px-2 text-lg col-span-2"
                 tabindex="3"
             />
-        </td>
-    </tr>
-    <tr id="captcha-error">
-        <td></td>
-        <td>
+            <label class="w-12 text-black bg-white h-full px-2 text-lg col-span-1 hover:bg-gray-200 transition cursor-pointer inline-block">
+            Post
+            <input class="hidden" type="submit" value="Post" tabindex="4"/>
+            </label>
+    </div>
+    <div class="grid grid-cols-5 gap-x-2" id="captcha-error">
+        <div class="col-span-1"/>
+        <div class="col-span-4">
           if params.Error != "" {
-            <span class="mx-auto my-auto bg-red-500 p-1">{ params.Error }</span>
+            <span class="bg-red-500">{ params.Error }</span>
           }
-        </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>
-            <input
-                class="w-16 h-full text-lg bg-white text-black ml-auto mr-4"
-                type="submit"
-                value="Post"
-                tabindex="4"
-            />
-        </td>
-    </tr>
+        </div>
+    </div>
+    </div>
 }
 
 templ commentBox(blogId int) {
 	<div
 		class="gap-y-12"
 		id="comments-go-here"
-		hx-trigger="load"
+		hx-trigger="load, click from:#Update"
 		hx-swap="innerHTML"
 		hx-get={ fmt.Sprintf("/api/comments/%d", blogId) }
 	></div>
 	<hr/>
 }
 
-templ Comment(v utils.Comment, blog int64) {
-	<div class="flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg" id={ fmt.Sprintf("%d-%d", blog, v.Id) }>
-		<div class="flex flex-col">
-			<div class="flex flex-row px-4 w-full">
-				<span class="font-semibold">{strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }</span>
-			</div>
-			<hr/>
-                        // unescape for the function defined in Meta.templ
-			<div class="unescape mx-4 text-xl">
-				@templ.Raw(v.Html)
-			</div>
-		</div>
-	</div>
+templ Comment(v utils.Comment, blog int64, replies []int64) {
+  <div class="py-2 flex flex-col bg-stone-700 w-[80%] my-4 mx-8 text-lg comment-card" id={ fmt.Sprintf("comment-%d", v.Id) }>
+    <div class="flex flex-col">
+      <div class="flex flex-row px-4 w-full items-center">
+        <input 
+          type="checkbox" 
+          name="selected-comments" 
+          value={ strconv.Itoa(int(v.Id)) } 
+          form="comment-delete-form" 
+          class="mr-2"/>
+          <span class="font-semibold">
+            { strconv.Itoa(int(v.Id))} - { v.Author } - { utils.DateFormatObject(v.Date) }
+          </span>
+            for _, r := range replies {
+              if r != 0 {
+                <a class="ml-2" href={ templ.URL("#comment-" + strconv.Itoa(int(r))) }> >>{ strconv.Itoa(int(r)) } </a>
+              }
+            }
+      </div>
+      <hr/>
+      <!-- unescape for the function defined in Meta.templ -->
+      <div class="px-2 flex flex-row">
+      if v.Image.Url != "" {
+        @ImageCard(v.Image, true)
+      }
+        <div class="unescape mx-4 text-xl">
+          @templ.Raw(v.Html)
+        </div>
+      </div>
+    </div>
+  </div>
 }

@@ -24,7 +24,7 @@ type CustomClaims struct {
 	Family   string `json:"family"`
 }
 
-func newTokenPair(j *JwtParams) (string, string, error) {
+func NewTokenPair(j *JwtParams) (string, string, error) {
 	if j.Family == "" {
 		j.Family = uuid.New().String()
 	}
@@ -114,7 +114,7 @@ func newPairFromRefresh(r string) (string, string, error) {
 		return "", "", err
 	}
 
-	access, refresh, err := newTokenPair(&JwtParams{UserId: claims.UserId, Username: claims.Username})
+	access, refresh, err := NewTokenPair(&JwtParams{UserId: claims.UserId, Username: claims.Username})
 	if err != nil {
 		return "", "", err
 	}

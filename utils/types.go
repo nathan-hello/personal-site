@@ -40,4 +40,5 @@ type Comment struct {
         Date time.Time
         PostId int64
         Html string
+        Image Image
 }
