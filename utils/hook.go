@@ -23,6 +23,7 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     defer r.Body.Close()
+	log.Printf("payload: %v", payload)
 
     if !validateSignature(r.Header.Get("X-Hub-Signature-256"), payload, parsed.WEBHOOK_SECRET) {
         log.Println("invalid signature")
