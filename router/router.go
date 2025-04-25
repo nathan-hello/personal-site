@@ -56,15 +56,15 @@ var ApiRoutes = []Site{
 			InjectClaimsOnValidToken,
 		),
 	},
-	{Route: "/login",
-		Hfunc: routes.Login,
+	{Route: "/signin",
+		Hfunc: routes.SignIn,
 		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
 			InjectClaimsOnValidToken,
 		),
 	},
-	{Route: "/signout",
+	{Route: "/auth/signout",
 		Hfunc: routes.SignOut,
 		Middlewares: alice.New(
 			Logging,

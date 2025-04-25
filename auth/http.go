@@ -11,16 +11,16 @@ import (
 var UserContextKey = struct{}{}
 
 func UserCtxDefaultAnon(r *http.Request) *db.SelectUserByIdRow {
-	user := r.Context().Value(UserContextKey).(*db.SelectUserByIdRow)
-	if user == nil {
-		user = &db.SelectUserByIdRow{
-			ID:              "anon",
-			Email:           "anon",
-			Username:        "Anonymous",
-			GlobalChatColor: "purple-500",
-		}
-	}
-	return user
+   val := r.Context().Value(UserContextKey)
+   if u, ok := val.(*db.SelectUserByIdRow); ok && u != nil {
+       return u
+   }
+   return &db.SelectUserByIdRow{
+       ID:              "anon",
+       Email:           "anon",
+       Username:        "Anonymous",
+       GlobalChatColor: "purple-500",
+   }
 }
 
 func SetTokenCookies(w http.ResponseWriter, a string, r string) {

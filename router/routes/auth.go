@@ -8,7 +8,7 @@ import (
 	"github.com/nathan-hello/personal-site/router/routes/chat"
 )
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func SignIn(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodGet {
         components.SignIn(auth.SignIn{}).Render(r.Context(), w)
         return
