@@ -13,6 +13,7 @@ var env struct {
 	access_expiry_time_hours  int
 	refresh_expiry_time_hours int
 	jwt_secret                string
+	webhook_secret			  string
 }
 
 type parsed_env struct {
@@ -21,6 +22,7 @@ type parsed_env struct {
 	JWT_SECRET          string
 	DATABASE_URI        string
     ADMIN_PASS          string
+	WEBHOOK_SECRET		string
 }
 
 var parsed = parsed_env{}
@@ -30,7 +32,7 @@ func testStruct() error {
 	for i := range reflected.NumField() {
 		good := reflected.Field(i).IsValid()
 		if !good {
-			return fmt.Errorf("there was a zero value int he dotenv struct: %#v", parsed)
+			return fmt.Errorf("there was a zero value in the dotenv struct: %#v", parsed)
 		}
 	}
 	return nil
@@ -75,6 +77,8 @@ func ParseDotenv(dotenv string) error {
 			parsed.DATABASE_URI = value
 		case "ADMIN_PASS":
 			parsed.ADMIN_PASS = value
+		case "WEBHOOK_SECRET":
+			parsed.WEBHOOK_SECRET = value
 		default:
 			return fmt.Errorf("unknown key on line %d: %s", i+1, key)
 		}

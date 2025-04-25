@@ -67,7 +67,6 @@ func main() {
 }
 
 func generate() {
-
 	err := render.PagesHtml(INPUT_PAGES, OUTPUT_PUBLIC)
 	if err != nil {
 		log.Fatal(err)
@@ -115,6 +114,8 @@ func serveHttp() {
            http.ServeFile(w, r, filepath.Join(OUTPUT_PUBLIC, "index.html"))
        })
    }
+
+   mux.HandleFunc("/git-hook", utils.HookHandler)
 
    fmt.Printf("Listening on port :3000 for routes: %v\n", router.ApiRoutes)
    log.Fatal(http.ListenAndServe(":3000", mux))
