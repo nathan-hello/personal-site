@@ -15,6 +15,7 @@ import (
 	"github.com/google/go-github/v45/github"
 )
 
+// TODO: doesn't seem to work
 func HookHandler(w http.ResponseWriter, r *http.Request) {
     payload, err := io.ReadAll(r.Body)
     if err != nil {
@@ -23,7 +24,6 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     defer r.Body.Close()
-	log.Printf("payload: %v", payload)
 
     if !validateSignature(r.Header.Get("X-Hub-Signature-256"), payload, parsed.WEBHOOK_SECRET) {
         log.Println("invalid signature")
@@ -59,6 +59,7 @@ func validateSignature(sigHeader string, body []byte, secret string) bool {
     return hmac.Equal(mac.Sum(nil), sig)
 }
 
+// TODO: is this necerssary if watch files exists?
 func deploy() {
     if err := exec.Command("git", "pull", "origin", "main").Run(); err != nil {
         log.Println("git pull:", err)
