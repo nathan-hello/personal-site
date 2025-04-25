@@ -97,12 +97,13 @@ func generate() {
 func serveHttp() {
    mux := http.NewServeMux()
    for _, v := range router.ApiRoutes {
-       if v.Route == "/" {
-           continue
-       }
        mux.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
    }
 
+   // If dev server, serve /dist as a FileServer
+   // If prod, 404 on things that don't match a known route
+   // Nginx is responsible for handling static routes without .html
+   // E.g. /tv instead of /tv.html
    if slices.Contains(os.Args, "--dev") {
        mux.Handle("/", http.FileServer(http.Dir(OUTPUT_PUBLIC)))
    } else {

@@ -75,7 +75,6 @@ func InjectClaimsOnValidToken(next http.Handler) http.Handler {
 			return
 		}
 
-
 		wrapReq := r.WithContext(context.WithValue(r.Context(), auth.UserContextKey, user))
 
 		next.ServeHTTP(w, wrapReq)
@@ -84,7 +83,7 @@ func InjectClaimsOnValidToken(next http.Handler) http.Handler {
 
 func ProtectedRoute(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// user, ok := 
+		// user, ok :=
 		// if !ok || user != nil {
 		// 	// TODO: redirect
 		// }

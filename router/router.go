@@ -15,12 +15,6 @@ type Site struct {
 }
 
 var ApiRoutes = []Site{
-	{Route: "/",
-		Hfunc: Index(false, ""),
-		Middlewares: alice.New(
-			Logging,
-		),
-	},
 	{Route: "/api/comments/{id}",
 		Hfunc: routes.ApiComments,
 		Middlewares: alice.New(
