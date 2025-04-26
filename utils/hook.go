@@ -15,25 +15,27 @@ import (
 	"github.com/google/go-github/v45/github"
 )
 
-// TODO: doesn't seem to work
 func HookHandler(w http.ResponseWriter, r *http.Request) {
     payload, err := io.ReadAll(r.Body)
     if err != nil {
-        log.Printf("read error: %v", err)
+		log.Printf("CICD: git payload read error: %v", err)
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
     defer r.Body.Close()
+	log.Printf("CICD: payload: %v", payload)
 
-    if !validateSignature(r.Header.Get("X-Hub-Signature-256"), payload, parsed.WEBHOOK_SECRET) {
-        log.Println("invalid signature")
+	sig := r.Header.Get("X-Hub-Signature-256")
+    if !validateSignature(sig, payload, parsed.WEBHOOK_SECRET) {
+		log.Printf("CICD: invalid signature %v", sig)
         w.WriteHeader(http.StatusUnauthorized)
         return
     }
 
-    event, err := github.ParseWebHook(github.WebHookType(r), payload)
+	hookType := github.WebHookType(r)
+    event, err := github.ParseWebHook(hookType, payload)
     if err != nil {
-        log.Printf("parse error: %v", err)
+		log.Printf("CICD: parse error on: %v, %v, %v", event, hookType, err)
         w.WriteHeader(http.StatusBadRequest)
         return
     }
