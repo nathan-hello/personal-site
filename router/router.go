@@ -73,6 +73,13 @@ var ApiRoutes = []Site{
 			AllowMethods("GET"),
 		),
 	},
+	{Route: "/weather",
+	    Hfunc: routes.Weather,
+	    Middlewares: alice.New(
+	        Logging,
+	        AllowMethods("GET"),
+	    ),
+	},
 	{Route: "/weather/{location}",
 	    Hfunc: routes.Weather,
 	    Middlewares: alice.New(
