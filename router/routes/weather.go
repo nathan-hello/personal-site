@@ -17,7 +17,7 @@ func Weather(w http.ResponseWriter, r *http.Request) {
     if len(pathParts) > 2 {
         location = pathParts[2]
     } else {
-        location = "default"
+        location = "London"
     }
 
     cmd := exec.Command("wego", location)

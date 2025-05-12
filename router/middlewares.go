@@ -31,7 +31,7 @@ func Logging(next http.Handler) http.Handler {
 				json = "{}"
 			}
 
-			host := r.URL.Host
+			host := utils.RealIP(r)
 			if host == "" {
 				host = "0.0.0.0"
 			}
