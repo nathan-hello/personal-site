@@ -6,36 +6,56 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"regexp"
 	"strings"
 
 	"github.com/nathan-hello/personal-site/utils"
 )
 
 func Weather(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "GET" {
-        w.WriteHeader(http.StatusMethodNotAllowed)
-        return
-    }
+  if r.Method != http.MethodGet {
+    w.WriteHeader(http.StatusMethodNotAllowed)
+    return
+  }
 
-    pathParts := strings.Split(r.URL.Path, "/")
-    var location string
-    if len(pathParts) > 2 {
-        location = pathParts[2]
-    } else {
-		addr := utils.RealIP(r)
-	    location = getLocation(addr)
-    }
+  pathParts := strings.Split(r.URL.Path, "/")
+  var location string
+  if len(pathParts) > 2 && pathParts[2] != "" {
+    location = pathParts[2]
+  } else {
+    addr := utils.RealIP(r)
+    location = getLocation(addr)
+  }
 
-    cmd := exec.Command("wego", location)
-    
-    output, err := cmd.Output()
-    if err != nil {
-        http.Error(w, "Error executing weather command: "+err.Error(), http.StatusInternalServerError)
-        return
-    }
-    
-    w.Header().Set("Content-Type", "text/plain")
-    w.Write(output)
+  cmd := exec.Command("wego", location)
+  rawOutput, err := cmd.Output()
+  if err != nil {
+    http.Error(w, "Error executing weather command: "+err.Error(),
+      http.StatusInternalServerError)
+    return
+  }
+
+  output := string(rawOutput)
+  ua := r.Header.Get("User-Agent")
+  if isBrowserUA(ua) {
+    output = ansiRegexp.ReplaceAllString(output, "")
+  }
+
+  w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+  w.WriteHeader(http.StatusOK)
+  w.Write([]byte(output))
+}
+
+var ansiRegexp = regexp.MustCompile("\x1b\\[[0-9;]*[a-zA-Z]")
+
+func isBrowserUA(ua string) bool {
+  ua = strings.ToLower(ua)
+  return strings.Contains(ua, "mozilla") ||
+    strings.Contains(ua, "chrome") ||
+    strings.Contains(ua, "safari") ||
+    strings.Contains(ua, "firefox") ||
+    strings.Contains(ua, "edge") ||
+    strings.Contains(ua, "opr") // Opera
 }
 
 type ipAPIResponse struct {
