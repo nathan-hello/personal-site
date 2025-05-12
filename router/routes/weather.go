@@ -3,7 +3,6 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"os/exec"
@@ -39,11 +38,7 @@ func Weather(w http.ResponseWriter, r *http.Request) {
  
   ua := r.Header.Get("User-Agent")
   if isBrowserUA(ua) {
-  	clean := ansiRegexp.ReplaceAllString(output, "")
-  	htmlOut := "<pre>" + html.EscapeString(clean) + "</pre>"
-  	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-  	w.Write([]byte(htmlOut))
-  	return
+    output = ansiRegexp.ReplaceAllString(output, "")
   }
 
   w.Header().Set("Content-Type", "text/plain; charset=utf-8")
