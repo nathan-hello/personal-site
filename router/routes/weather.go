@@ -41,14 +41,11 @@ func Weather(w http.ResponseWriter, r *http.Request) {
 type ipAPIResponse struct {
     Status     string `json:"status"`
     City       string `json:"city"`
-    RegionName string `json:"regionName"`
-    Country    string `json:"country"`
 }
 
-// getLocation calls ip-api.com and returns "City, Region, Country"
 func getLocation(ip string) string {
     url := fmt.Sprintf(
-        "http://ip-api.com/json/%s?fields=status,city,regionName,country",
+        "http://ip-api.com/json/%s?fields=status,city",
         ip,
     )
     resp, err := http.Get(url)
@@ -68,15 +65,5 @@ func getLocation(ip string) string {
         return ip
     }
 
-    parts := []string{}
-    if data.City != "" {
-        parts = append(parts, data.City)
-    }
-    if data.RegionName != "" {
-        parts = append(parts, data.RegionName)
-    }
-    if data.Country != "" {
-        parts = append(parts, data.Country)
-    }
-    return strings.Join(parts, ", ")
+    return data.City
 }
