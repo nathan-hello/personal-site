@@ -34,8 +34,8 @@ func Weather(w http.ResponseWriter, r *http.Request) {
       http.StatusInternalServerError)
     return
   }
-
   output := string(rawOutput)
+ 
   ua := r.Header.Get("User-Agent")
   if isBrowserUA(ua) {
     output = ansiRegexp.ReplaceAllString(output, "")
