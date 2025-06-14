@@ -22,22 +22,35 @@ INSERT INTO CommentReplies (comment_id, reply_comment_id) VALUES (?,?);
 -- name: SelectAllReplies :many
 SELECT c.* FROM Comments c JOIN CommentReplies cr ON c.id = cr.reply_comment_id WHERE cr.comment_id = ? ORDER BY cr.reply_comment_id ASC;
 
--- table: users
--- name: InsertUser :exec
-INSERT INTO users (id, email, username, password_salt, encrypted_password, password_created_at, global_chat_color)
-VALUES (?, ?, ?, ?, ?, ?, ?);
--- name: SelectUserByEmail :one
-SELECT id, email, username, global_chat_color FROM users WHERE email = ?;
--- name: SelectUserByUsername :one
-SELECT id, email, username, global_chat_color FROM users WHERE username = ?;
--- name: SelectUserById :one
-SELECT id, email, username, global_chat_color FROM users WHERE id = ?;
--- name: SelectUserByEmailWithPassword :one
-SELECT * FROM users WHERE email = ?;
--- name: SelectUserByUsernameWithPassword :one
-SELECT * FROM users WHERE username = ?;
--- name: DeleteUser :exec
-DELETE FROM users WHERE id = ?;
+-- table: auth_users
+-- name: InsertAuthUser :exec
+INSERT INTO auth_users (id, email, password_salt, encrypted_password, password_created_at)
+VALUES (?, ?, ?, ?, ?);
+-- name: SelectAuthUserByEmail :one
+SELECT * FROM auth_users WHERE email = ?;
+-- name: SelectAuthUserById :one
+SELECT * FROM auth_users WHERE id = ?;
+-- name: DeleteAuthUser :exec
+DELETE FROM auth_users WHERE id = ?;
+-- name: UpdateAuthUserPassword :exec
+UPDATE auth_users SET encrypted_password = ?, password_salt = ? WHERE id = ?;
+
+-- table: profiles
+-- name: InsertUserProfile :exec
+INSERT INTO profiles (id, username, global_chat_color)
+VALUES (?, ?, ?);
+-- name: SelectUserProfileById :one
+SELECT * FROM profiles WHERE id = ?;
+-- name: SelectUserProfileByUsername :one
+SELECT * FROM profiles WHERE username = ?;
+-- name: UpdateUserProfile :one
+UPDATE profiles 
+SET username = ?, global_chat_color = ? 
+WHERE id = ? 
+RETURNING *;
+
+-- name: DeleteUserProfile :exec
+DELETE FROM profiles WHERE id = ?;
 
 -- table: chatrooms
 -- name: SelectChatrooms :many
@@ -71,9 +84,9 @@ UPDATE messages SET message = ? WHERE id = ? RETURNING *;
 -- name: InsertChatroomMember :exec
 INSERT OR IGNORE INTO chatroom_members (chatroom_id, user_id, chatroom_color) VALUES (?, ?, ?);
 -- name: SelectAllMembersByChatroom :many
-SELECT users.id, users.username, chatroom_members.chatroom_color 
+SELECT profiles.id, profiles.username, chatroom_members.chatroom_color 
 FROM chatroom_members 
-JOIN users ON chatroom_members.user_id = users.id 
+JOIN profiles ON chatroom_members.user_id = profiles.id 
 WHERE chatroom_members.chatroom_id = ?;
 -- name: SelectUsersJoinedChatrooms :many
 SELECT chatroom_members.chatroom_color, chatroom_members.chatroom_id
@@ -113,4 +126,31 @@ SELECT * FROM users_tokens WHERE user_id = ?;
 SELECT user_id FROM users_tokens WHERE token_id = ? LIMIT 1;
 -- name: InsertUsersTokens :exec
 INSERT INTO users_tokens (user_id, token_id) VALUES (?, ?);
+
+-- name: SelectUserActiveTokens :many
+SELECT t.* FROM tokens t
+JOIN users_tokens ut ON t.id = ut.token_id
+WHERE ut.user_id = ? AND t.valid = true
+ORDER BY t.expires_at DESC;
+
+-- name: UpdateTokenInvalid :exec
+UPDATE tokens SET valid = false WHERE id = ?;
+
+-- name: UpdateAllUserTokensInvalid :exec
+UPDATE tokens SET valid = false 
+WHERE id IN (
+    SELECT token_id FROM users_tokens WHERE user_id = ?
+);
+
+-- name: UpdateUserTokensInvalidExceptFamily :exec
+UPDATE tokens SET valid = false 
+WHERE id IN (
+    SELECT token_id FROM users_tokens WHERE user_id = ?
+) AND family != ?;
+
+-- name: UpdateTokenExpiry :exec
+UPDATE tokens SET expires_at = ? WHERE id = ?;
+
+-- name: SelectTokenByID :one
+SELECT * FROM tokens WHERE id = ?;
 

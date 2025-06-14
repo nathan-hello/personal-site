@@ -9,38 +9,41 @@ import (
 )
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
-    if r.Method == http.MethodGet {
-        components.SignIn(auth.SignIn{}).Render(r.Context(), w)
-        return
-    }
+	if r.Method == http.MethodGet {
+		components.SignIn(auth.AuthResult{}, auth.SignInData{}).Render(r.Context(), w)
+		return
+	}
 
-    if err := r.ParseForm(); err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    form := auth.SignIn{
-        UserOrEmail: r.FormValue("user"),
-        Password:    r.FormValue("password"),
-    }
-    user := form.SignIn()
-    if errs := form.RenderErrs(); len(errs) > 0 {
-        components.SignIn(form).Render(r.Context(), w)
-        return
-    }
+	if err := r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res := auth.SignIn(auth.SignInData{
+		UserOrEmail: r.FormValue("user"),
+		Password:    r.FormValue("password"),
+	})
 
-    access, refresh, err := auth.NewTokenPair(&auth.JwtParams{
-        UserId:   user.ID,
-        Username: user.Username,
-    })
-    if err != nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    auth.SetTokenCookies(w, access, refresh)
-    chat.Chat(w, r)
+	if len(res.Errors) > 0 {
+		components.SignIn(res, auth.SignInData{
+			UserOrEmail: r.FormValue("user"),
+			Password:    r.FormValue("password"),
+		}).Render(r.Context(), w)
+		return
+	}
+
+	access, refresh, err := auth.NewTokenPair(&auth.JwtParams{
+		UserId:   res.User.ID,
+		Username: res.User.Username,
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	auth.SetTokenCookies(w, access, refresh)
+	chat.Chat(w, r)
 }
 
 func SignOut(w http.ResponseWriter, r *http.Request) {
-    auth.DeleteJwtCookies(w)
-    components.SignIn(auth.SignIn{}).Render(r.Context(), w)
+	auth.DeleteJwtCookies(w)
+	components.SignIn(auth.AuthResult{}, auth.SignInData{}).Render(r.Context(), w)
 }

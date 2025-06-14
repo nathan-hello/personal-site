@@ -10,17 +10,16 @@ import (
 
 var UserContextKey = struct{}{}
 
-func UserCtxDefaultAnon(r *http.Request) *db.SelectUserByIdRow {
-   val := r.Context().Value(UserContextKey)
-   if u, ok := val.(*db.SelectUserByIdRow); ok && u != nil {
-       return u
-   }
-   return &db.SelectUserByIdRow{
-       ID:              "anon",
-       Email:           "anon",
-       Username:        "Anonymous",
-       GlobalChatColor: "purple-500",
-   }
+func DefaultProfile(r *http.Request) *db.Profile {
+	val := r.Context().Value(UserContextKey)
+	if u, ok := val.(*db.Profile); ok && u != nil {
+		return u
+	}
+	return &db.Profile{
+		ID:              "anon",
+		Username:        "Anonymous",
+		GlobalChatColor: "purple-500",
+	}
 }
 
 func SetTokenCookies(w http.ResponseWriter, a string, r string) {
@@ -43,20 +42,6 @@ func SetTokenCookies(w http.ResponseWriter, a string, r string) {
 		Path:     "/",
 		SameSite: http.SameSiteStrictMode,
 	})
-}
-
-func getJwtsFromCookie(r *http.Request) (string, string, error) {
-	access, err := r.Cookie("access_token")
-	if err != nil {
-		return "", "", err
-	}
-
-	refresh, err := r.Cookie("refresh_token")
-	if err != nil {
-		return "", "", err
-	}
-
-	return access.Value, refresh.Value, nil
 }
 
 func deleteCookie(w http.ResponseWriter, name string) {
