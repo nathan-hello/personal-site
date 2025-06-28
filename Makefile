@@ -8,10 +8,10 @@ build/css:
 build/sqlc:
 	go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0 generate
 build/go:
-	go build .
+	go build . -o personal-site
 
-asdf/go:
-	go run . --dev
+build:
+	make build/sqlc build/css build/templ build/go
 
 run/go:
 	go run . --dev & echo $! > personal-site.pid

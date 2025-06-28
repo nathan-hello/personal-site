@@ -64,7 +64,7 @@ var manager = Manager{
 }
 
 func ChatSocket(w http.ResponseWriter, r *http.Request) {
-	user := auth.UserCtxDefaultAnon(r)
+	user := auth.DefaultProfile(r)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -108,7 +108,7 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func ApiChat(w http.ResponseWriter, r *http.Request) {
-	user := auth.UserCtxDefaultAnon(r)
+	user := auth.DefaultProfile(r)
 	htmlResponse := r.Header.Get("Content-Type") == "text/html"
 	jsonResponse := r.Header.Get("Content-Type") == "application/json"
 	if !htmlResponse && !jsonResponse {
@@ -168,7 +168,7 @@ func ApiChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func Chat(w http.ResponseWriter, r *http.Request) {
-	user := auth.UserCtxDefaultAnon(r)
+	user := auth.DefaultProfile(r)
 	embed := r.URL.Query().Get("embed") == "true"
 
 	if r.Method == "GET" {
@@ -241,4 +241,3 @@ func newChatFromBytes(bits []byte, username string, userId string, color string)
 		CreatedAt: time.Now().UTC(),
 	}, nil
 }
-

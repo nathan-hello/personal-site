@@ -72,7 +72,7 @@ func NewTokenPair(j *JwtParams) (string, string, error) {
 
 }
 
-func ParseToken(t string) (*db.SelectUserByIdRow, *CustomClaims,  error) {
+func ParseToken(t string) (*db.Profile, *CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(
 		t,
 		&CustomClaims{},
@@ -87,21 +87,21 @@ func ParseToken(t string) (*db.SelectUserByIdRow, *CustomClaims,  error) {
 		})
 
 	if err != nil {
-		return nil, nil,err
+		return nil, nil, err
 	}
 
 	if !token.Valid {
-		return nil, nil,err
+		return nil, nil, err
 	}
 
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
-		return nil, nil,ErrParsingJwt
+		return nil, nil, ErrParsingJwt
 	}
 
-	user, err := db.Db().SelectUserById(context.Background(), claims.UserId)
+	user, err := db.Db().SelectUserProfileById(context.Background(), claims.UserId)
 	if err != nil {
-		return nil, nil,ErrDbSelectUserFromToken
+		return nil, nil, ErrDbSelectUserFromToken
 	}
 
 	return &user, claims, nil

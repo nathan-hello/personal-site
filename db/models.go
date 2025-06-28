@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+type AuthUser struct {
+	ID                string
+	Email             string
+	PasswordSalt      string
+	EncryptedPassword string
+	PasswordCreatedAt time.Time
+}
+
 type Chatroom struct {
 	ID        int64
 	Name      string
@@ -52,6 +60,12 @@ type Message struct {
 	CreatedAt      time.Time
 }
 
+type Profile struct {
+	ID              string
+	Username        string
+	GlobalChatColor string
+}
+
 type Token struct {
 	ID        int64
 	JwtType   string
@@ -59,16 +73,9 @@ type Token struct {
 	Valid     bool
 	Family    string
 	ExpiresAt int64
-}
-
-type User struct {
-	ID                string
-	Email             string
-	Username          string
-	PasswordSalt      string
-	EncryptedPassword string
-	PasswordCreatedAt time.Time
-	GlobalChatColor   string
+	Device    *string
+	Ip        *string
+	CreatedAt int64
 }
 
 type UsersToken struct {

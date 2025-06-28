@@ -108,55 +108,55 @@ templ authRedirect(s string, link string) {
 	<p class="float-left my-2 mx-auto text-blue-950 w-min whitespace-nowrap mt-5  underline"><a href={ templ.URL(link) }>{ s }</a></p>
 }
 
-templ renderErrs(action auth.AuthHandler) {
-	if errs := action.RenderErrs(); len(errs) > 0 {
+templ renderErrs(action auth.AuthResult) {
+	if len(action.Errors) > 0 {
 		<div id="errors-container">
-			for _, v := range errs {
-				@AlertBox(v)
+			for _, v := range action.Errors {
+				@AlertBox(v.Message)
 			}
 		</div>
 	}
 }
 
-templ SignUpForm(a auth.SignUp) {
+templ SignUpForm(a auth.AuthResult, previousForm auth.SignUpData) {
 	<form class="text-2xl gap-y-4 flex flex-col max-w-screen-md mx-auto" hx-post="/auth/signup" hx-target="this">
 		<p class="font-semibold text-gray-100 text-center text-2xl mx-auto  border-b border-white w-min whitespace-nowrap px-20 pb-2 mb-6">
 			Create an account
 		</p>
-		@email(a.EmailErr != "", a.Email)
-		@username(a.UsernameErr != "", a.Username)
-		@password(a.PassErr != "")
-		@passwordConfirm(a.PassConfErr != "")
+		@email(len(auth.GetErrorByCategory(a.Errors, "email")) > 0, previousForm.Email)
+		@username(len(auth.GetErrorByCategory(a.Errors, "username")) > 0, previousForm.Username)
+		@password(len(auth.GetErrorByCategory(a.Errors, "password")) > 0)
+		@passwordConfirm(len(auth.GetErrorByCategory(a.Errors, "password_confirmation")) > 0)
 		@submitFormButton()
 		@authRedirect("Already have an account?", "/auth/signin")
 		<div class="py-2"></div>
-		@renderErrs(&a)
+		@renderErrs(a)
 	</form>
 }
 
-templ SignUp(a auth.SignUp) {
+templ SignUp(a auth.AuthResult, previousForm auth.SignUpData) {
 		<div class="pt-8">
-			@SignUpForm(a)
+			@SignUpForm(a, previousForm)
 		</div>
 }
 
-templ SignInForm(a auth.SignIn) {
+templ SignInForm(a auth.AuthResult, previousForm auth.SignInData) {
 	<form class="text-2xl gayp-y-4 flex flex-col max-w-screen-md mx-auto" hx-post="/auth/signin" hx-target="this">
 		<p class="font-semibold text-gray-100 text-center text-2xl mx-auto  border-b border-white w-min whitespace-nowrap px-20 pb-2 mb-6">
 			Sign In
 		</p>
-		@user(a.UserOrEmailErr != "", a.UserOrEmail)
-		@password(a.PassErr != "")
+		@user(len(auth.GetErrorByCategory(a.Errors, "username"))>1, previousForm.UserOrEmail)
+		@password(len(auth.GetErrorByCategory(a.Errors, "password"))>1)
 		@submitFormButton()
 		@authRedirect("Need an account?", "/auth/signup")
 		<div class="py-2"></div>
-		@renderErrs(&a)
+		@renderErrs(a)
 	</form>
 }
 
-templ SignIn(a auth.SignIn) {
+templ SignIn(a auth.AuthResult, previousForm auth.SignInData) {
 		<div class="pt-8">
-			@SignInForm(a)
+			@SignInForm(a, previousForm)
 		</div>
 }
 

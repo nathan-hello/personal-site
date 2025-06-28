@@ -24,14 +24,19 @@ CREATE TABLE IF NOT EXISTS CommentReplies (
     FOREIGN KEY (reply_comment_id) REFERENCES Comments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS auth_users (
     id TEXT PRIMARY KEY NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    username TEXT UNIQUE NOT NULL,
     password_salt TEXT NOT NULL,
     encrypted_password TEXT NOT NULL,
-    password_created_at TIMESTAMP NOT NULL,
-    global_chat_color TEXT NOT NULL
+    password_created_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS profiles (
+    id TEXT PRIMARY KEY NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    global_chat_color TEXT NOT NULL,
+    FOREIGN KEY (id) REFERENCES auth_users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS chatrooms (
@@ -48,7 +53,7 @@ CREATE TABLE IF NOT EXISTS chatroom_members (
     chatroom_color TEXT NOT NULL,
     PRIMARY KEY (chatroom_id, user_id),
     FOREIGN KEY (chatroom_id) REFERENCES chatrooms(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES auth_users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -59,7 +64,7 @@ CREATE TABLE IF NOT EXISTS messages (
     room_id INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES chatrooms(id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (author_id) REFERENCES auth_users(id) ON DELETE CASCADE
     -- No foreign key constraint for author_username in case they change their username, we don't have to rewrite the messages they sent under a different username with a join.
 );
 
@@ -69,13 +74,16 @@ CREATE TABLE IF NOT EXISTS tokens (
     jwt TEXT NOT NULL,
     valid BOOLEAN NOT NULL,
     family TEXT NOT NULL,
-    expires_at INTEGER NOT NULL
+    expires_at INTEGER NOT NULL,
+    device TEXT,
+    ip TEXT,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
 
 CREATE TABLE IF NOT EXISTS users_tokens (
     user_id TEXT NOT NULL,
     token_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES auth_users(id) ON DELETE CASCADE,
     FOREIGN KEY (token_id) REFERENCES tokens(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, token_id)
 );
