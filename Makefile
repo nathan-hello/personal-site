@@ -18,7 +18,7 @@ build:
 	make build/sqlc build/css build/templ build/go
 
 run/go:
-	go run . --dev & echo $! > personal-site.pid
+	go run . --dev
 
 start:
 	./cicd.sh
@@ -26,7 +26,7 @@ start:
 watch/templ:
 	templ generate --watch --cmd="go run . --dev" --proxy="http://localhost:3000" --open-browser=false
 dev: 
-	make -j3 build/sqlc build/css build/templ asdf/go
+	make -j3 build/sqlc build/css build/templ run/go
 
 prod:
 	make build/sqlc build/templ build/go start
