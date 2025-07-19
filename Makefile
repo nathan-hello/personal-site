@@ -1,14 +1,18 @@
-install/js:
+js/install:
 	bun install
+js/tailwind:
+	bun run tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css
+js/tailwind/watch:
+	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
+js/prod:
+	make js/install js/tailwind
 
 build/templ:
 	templ generate
-build/css:
-	bun run tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css
 build/sqlc:
 	go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0 generate
 build/go:
-	go build . -o personal-site
+	go build -o personal-site .
 
 build:
 	make build/sqlc build/css build/templ build/go
@@ -19,15 +23,10 @@ run/go:
 start:
 	./cicd.sh
 
-
 watch/templ:
 	templ generate --watch --cmd="go run . --dev" --proxy="http://localhost:3000" --open-browser=false
-watch/css:
-	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
 dev: 
 	make -j3 build/sqlc build/css build/templ asdf/go
 
-
-
 prod:
-	make install/js build/sqlc build/css build/templ build/go start
+	make build/sqlc build/templ build/go start

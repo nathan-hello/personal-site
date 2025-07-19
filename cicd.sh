@@ -17,3 +17,5 @@ doas cp -r ./dist/public /var/www/reluekiss.com/public
 doas chown -R reluekiss:reluekiss /var/www/reluekiss.com
 
 ./personal-site --serve
+#doas cp data.db /etc/sv/personal-site/data.db
+#doas sv restart personal-site
