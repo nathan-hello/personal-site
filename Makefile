@@ -14,7 +14,7 @@ build:
 	make build/sqlc build/css build/templ build/go
 
 run/go:
-	go run . --dev & echo $! > personal-site.pid
+	go run . --dev
 
 start:
 	./cicd.sh
@@ -25,7 +25,7 @@ watch/templ:
 watch/css:
 	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
 dev: 
-	make -j3 build/sqlc build/css build/templ asdf/go
+	make -j3 build/sqlc build/css build/templ run/go
 
 
 
