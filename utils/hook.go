@@ -59,23 +59,13 @@ func validateSignature(sigHeader string, body []byte, secret string) bool {
     return hmac.Equal(mac.Sum(nil), sig)
 }
 
-// TODO: is this necerssary if watch files exists?
 func deploy() {
     if err := exec.Command("git", "pull").Run(); err != nil {
         log.Println("git pull:", err)
         return
     }
 
-    exec.Command("bun", "run", "tailwindcss", "-i", "./public/css/tw-input.css", "-o", "./public/css/tw-output.css").Run()
-    exec.Command("go", "run", "github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0", "generate").Run()
-    exec.Command("templ", "generate").Run()
+    exec.Command("make", "build").Run()
 
-    exe, err := os.Executable()
-    if err != nil {
-        log.Fatal(err)
-    }
-    if err := exec.Command("go", "build", "-o", exe, ".").Run(); err != nil {
-        log.Fatal(err)
-    }
-    syscall.Exec(exe, append([]string{exe, "--serve"}, os.Args[1:]...), os.Environ())
+    syscall.Exec("./personal-site", []string{"--build", "--serve"}, os.Environ())
 }

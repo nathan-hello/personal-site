@@ -2,18 +2,11 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"slices"
-	"strings"
-	"syscall"
-	"time"
-
-	"github.com/fsnotify/fsnotify"
 
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/render"
@@ -59,12 +52,8 @@ func main() {
 		generate()
 	}
 
-	nameCh := make(chan string)
 	if serve {
-		go watchFiles(nameCh)
-		go serveHttp(nameCh)
-		nameCh <- "Initial Start"
-		select {}
+		serveHttp()
 	}
 }
 
@@ -96,7 +85,7 @@ func generate() {
 
 }
 
-func serveHttp(nameCh chan string) {
+func serveHttp() {
 	mux := http.NewServeMux()
 	for _, v := range router.ApiRoutes {
 		mux.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
@@ -120,72 +109,10 @@ func serveHttp(nameCh chan string) {
 
 	mux.HandleFunc("/git-hook", utils.HookHandler)
 
-	fileName := <-nameCh
-	fmt.Printf("%v Listening on port :3000 due to change in %v for routes: %v\n", time.Now().Format("15:04:05"), fileName, router.ApiRoutes)
+
+
+
+	log.Println("Starting webserver on :3000")
 	log.Fatal(http.ListenAndServe(":3000", mux))
-
 }
 
-func watchFiles(nameCh chan string) {
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer watcher.Close()
-
-	err = filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			if info.Name() == "dist" {
-				return filepath.SkipDir
-			}
-			return watcher.Add(path)
-		}
-		if strings.Contains(info.Name(), "_templ") {
-			return nil
-		}
-		return nil
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var rebuildTimer *time.Timer
-
-	for {
-		select {
-		case event := <-watcher.Events:
-			nameCh <- event.Name
-			ext := filepath.Ext(event.Name)
-			if ext == ".mdx" || ext == ".html" {
-				if rebuildTimer != nil {
-					rebuildTimer.Stop()
-				}
-				rebuildTimer = time.AfterFunc(200*time.Millisecond, func() {
-					exec.Command("bun", "run", "tailwindcss", "-i", "./public/css/tw-input.css", "-o", "./public/css/tw-output.css").Run()
-					generate()
-				})
-			}
-			if ext == ".go" || ext == ".sql" || ext == ".templ" {
-				if rebuildTimer != nil {
-					rebuildTimer.Stop()
-				}
-				rebuildTimer = time.AfterFunc(200*time.Millisecond, func() {
-					exec.Command("go", "run", "github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0", "generate").Run()
-					exec.Command("bun", "run", "tailwindcss", "-i", "./public/css/tw-input.css", "-o", "./public/css/tw-output.css").Run()
-					exec.Command("templ", "generate").Run()
-
-					exe, _ := os.Executable()
-					exec.Command("go", "build", "-o", exe, ".").Run()
-
-					syscall.Exec(exe, append([]string{exe}, os.Args[1:]...), os.Environ())
-				})
-			}
-
-		case err := <-watcher.Errors:
-			log.Println("watcher error:", err)
-		}
-	}
-}
