@@ -11,7 +11,6 @@ import (
 	"time"
 
 	gws "github.com/gorilla/websocket"
-	"github.com/nathan-hello/personal-site/auth"
 	"github.com/nathan-hello/personal-site/components"
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/utils"
@@ -64,7 +63,7 @@ var manager = Manager{
 }
 
 func ChatSocket(w http.ResponseWriter, r *http.Request) {
-	user := auth.DefaultProfile(r)
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -230,8 +229,6 @@ func newChatFromBytes(bits []byte, username string, userId string, color string)
 	if username == "" {
 		username = "anon"
 	}
-
-	fmt.Println(color)
 
 	return &utils.ChatMessage{
 		UserId:    userId,
