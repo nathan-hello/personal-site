@@ -15,21 +15,19 @@ import (
 	"github.com/fogleman/gg"
 )
 
-
 type Captcha struct {
-    Text        string
-    Image       image.Image
-    Compression int
-    DarkMode    bool
-    Id          string
-    Error       string
+	Text        string
+	Image       image.Image
+	Compression int
+	DarkMode    bool
+	Id          string
+	Error       string
 }
-
 
 var (
 	BasicChars = []rune("23456789ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz")
-    LightBg = color.RGBA{224, 238, 253, 255}
-    DarkBg  = color.RGBA{18, 18, 18, 255}
+	LightBg    = color.RGBA{224, 238, 253, 255}
+	DarkBg     = color.RGBA{18, 18, 18, 255}
 )
 
 var LightBasicColors = []color.RGBA{
@@ -56,9 +54,9 @@ func getColor(darkMode bool) color.Color {
 }
 
 func (c *Captcha) ToBase64() string {
-    var buf bytes.Buffer
-    jpeg.Encode(&buf, c.Image, &jpeg.Options{Quality: c.Compression})
-    return "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
+	var buf bytes.Buffer
+	jpeg.Encode(&buf, c.Image, &jpeg.Options{Quality: c.Compression})
+	return "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
 }
 
 type CaptchaBuilder struct {
@@ -156,8 +154,8 @@ func (b *CaptchaBuilder) build() *Captcha {
 	for i, char := range b.text {
 		dc.SetColor(getColor(b.darkMode))
 		x := 5 + float64(i)*cSpacing
-		angle := rand.Float64()*0.2 - 0.1 
-        dc.Push()
+		angle := rand.Float64()*0.2 - 0.1
+		dc.Push()
 		dc.RotateAbout(angle, x, y)
 		dc.DrawStringAnchored(string(char), x, y, 0, 0.8)
 		dc.Pop()
@@ -198,7 +196,7 @@ func (b *CaptchaBuilder) build() *Captcha {
 }
 
 func GenerateCaptcha() *Captcha {
-    captcha := NewCaptchaBuilder().
+	captcha := NewCaptchaBuilder().
 		Length(5).
 		Width(180).
 		Height(56).
@@ -208,13 +206,13 @@ func GenerateCaptcha() *Captcha {
 		build()
 	id := make([]byte, 16)
 	cr.Read(id)
-    captcha.Id = hex.EncodeToString(id)
-    return captcha
+	captcha.Id = hex.EncodeToString(id)
+	return captcha
 }
 
 type storeEntry struct {
-    Solution string
-    Error    string
+	Solution string
+	Error    string
 }
 type captchaStore struct {
 	sync.RWMutex

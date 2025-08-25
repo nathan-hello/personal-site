@@ -17,7 +17,7 @@ templ Header(s string) {
 templ ascii(s string) {
 	<a href="/" class="leading-5 no-underline text-nat-white-c01 visited:text-nat-white-c01 whitespace-nowrap">
 		<b>
-			<pre class="leading-[15px] font-[Terminus]">{ utils.AsciiRender(s) }</pre>
+			<pre class="leading-[15px]">{ utils.AsciiRender(s) }</pre>
 		</b>
 	</a>
 }
@@ -60,6 +60,12 @@ templ links() {
 			href="/natalie/tv"
 		>
 			/tv/
+		</a>
+		<a
+			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
+			href="https://paste.reluekiss.com"
+		>
+			/paste/
 		</a>
 		<a
 			class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01"
