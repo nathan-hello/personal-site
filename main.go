@@ -39,10 +39,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Print("before db init")
 	_, err = db.InitDb(utils.Env().DATABASE_URI)
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Print("after db init")
 
 	if !build && !serve {
 		log.Fatal("neither --build or --serve was given: choose one!")
@@ -109,10 +111,6 @@ func serveHttp() {
 
 	mux.HandleFunc("/git-hook", utils.HookHandler)
 
-
-
-
 	log.Println("Starting webserver on :3000")
 	log.Fatal(http.ListenAndServe(":3000", mux))
 }
-

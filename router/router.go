@@ -20,6 +20,7 @@ type Site struct {
 	Hfunc       http.HandlerFunc
 	Middlewares alice.Chain
 }
+
 func auth() natauth.Handlers {
 	store, err := storage.NewValkey("127.0.0.1:6379", "app")
 	if err != nil {
@@ -61,14 +62,12 @@ func auth() natauth.Handlers {
 
 var authHandler = auth()
 
-
 var ApiRoutes = []Site{
 	{Route: "/api/comments/{id}",
 		Hfunc: routes.ApiComments,
 		Middlewares: alice.New(
 			Logging,
 			AllowMethods("GET", "POST"),
-			authHandler.Middleware,
 		)},
 	{Route: "/api/comment-delete",
 		Hfunc: routes.ApiCommentsDelete,

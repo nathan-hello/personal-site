@@ -1,12 +1,12 @@
-setup:
+js/install:
 	bun install
 js/tailwind:
 	bun run tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css
 js/tailwind/watch:
 	bunx tailwindcss -i ./public/css/tw-input.css -o ./public/css/tw-output.css --watch
-js/prod:
-	make js/install js/tailwind
 
+build/css:
+	make js/install js/tailwind
 build/templ:
 	templ generate
 build/sqlc:
