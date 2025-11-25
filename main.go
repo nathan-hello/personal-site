@@ -15,7 +15,6 @@ import (
 )
 
 const OUTPUT_PUBLIC = "./dist/public"
-const OUTPUT_PRIVATE = "./dist/private"
 
 const INPUT_BLOG = "./public/content/blog"
 const INPUT_PAGES = "./pages"
