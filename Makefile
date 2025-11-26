@@ -16,3 +16,6 @@ build/go:
 
 build:
 	make build/sqlc build/css build/templ build/go
+
+serve:
+	make build && ./personal-site --build --serve
