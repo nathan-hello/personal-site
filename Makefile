@@ -17,5 +17,7 @@ build/go:
 build:
 	make build/sqlc build/css build/templ build/go
 
+# don't forget to allow nginx to read from dist/public
+# doas chown -R morrow:nginx ./dist
 serve:
 	make build && ./personal-site --build --serve
