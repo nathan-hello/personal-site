@@ -1,5 +1,7 @@
 tmp
 
+*.log
+
 *_templ.txt
 *_templ.go
 *.sql.go

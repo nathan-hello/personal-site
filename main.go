@@ -20,8 +20,7 @@ const INPUT_BLOG = "./public/content/blog"
 const INPUT_PAGES = "./pages"
 const INPUT_PUBLIC = "./public"
 
-//go:embed .env
-var dotenv string
+const DATABASE_URI = "./data.db"
 
 func main() {
 	build := slices.Contains(os.Args, "--build")
@@ -33,16 +32,12 @@ func main() {
 		serve = true
 	}
 
-	err := utils.ParseDotenv(dotenv)
+	log.Print("before db init")
+	_, err := db.InitDb(DATABASE_URI)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Print("before db init")
-	_, err = db.InitDb(utils.Env().DATABASE_URI)
-	if err != nil {
-		log.Fatal(err)
-	}
 	log.Print("after db init")
 
 	if !build && !serve {
@@ -107,8 +102,6 @@ func serveHttp() {
 			http.ServeFile(w, r, filepath.Join(OUTPUT_PUBLIC, "index.html"))
 		})
 	}
-
-	mux.HandleFunc("/git-hook", utils.HookHandler)
 
 	log.Println("Starting webserver on :3000")
 	log.Fatal(http.ListenAndServe(":3000", mux))

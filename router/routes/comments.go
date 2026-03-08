@@ -14,8 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/nathan-hello/personal-site/components"
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/render"
@@ -244,43 +242,45 @@ func ApiCommentImage(w http.ResponseWriter, r *http.Request) {
 	w.Write(imageBuf[:n])
 }
 
-func ApiCommentsDelete(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "Error parsing form", http.StatusBadRequest)
-		return
-	}
-
-	adminPass := utils.Env().ADMIN_PASS
-	passAttempt := r.FormValue("delete-password")
-	err = bcrypt.CompareHashAndPassword([]byte(adminPass), []byte(passAttempt))
-	if err != nil {
-		utils.ShowStatusCode(w, r, http.StatusUnauthorized)
-		return
-	}
-
-	selectedComments := r.Form["selected-comments"]
-	for _, idStr := range selectedComments {
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		comment, err := db.Conn.SelectFromComment(r.Context(), int64(id))
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		err = db.Conn.DeleteImageById(r.Context(), *comment.ImageID)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		err = db.Conn.DeleteCommentById(r.Context(), int64(id))
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-	w.Header().Set("HX-Refresh", "true")
-}
+// TODO(nate): reimplement deleting comments via admin role from auth server
+//
+// func ApiCommentsDelete(w http.ResponseWriter, r *http.Request) {
+// 	err := r.ParseForm()
+// 	if err != nil {
+// 		http.Error(w, "Error parsing form", http.StatusBadRequest)
+// 		return
+// 	}
+//
+// 	adminPass := utils.Env().ADMIN_PASS
+// 	passAttempt := r.FormValue("delete-password")
+// 	err = bcrypt.CompareHashAndPassword([]byte(adminPass), []byte(passAttempt))
+// 	if err != nil {
+// 		utils.ShowStatusCode(w, r, http.StatusUnauthorized)
+// 		return
+// 	}
+//
+// 	selectedComments := r.Form["selected-comments"]
+// 	for _, idStr := range selectedComments {
+// 		id, err := strconv.Atoi(idStr)
+// 		if err != nil {
+// 			w.WriteHeader(http.StatusInternalServerError)
+// 			return
+// 		}
+// 		comment, err := db.Conn.SelectFromComment(r.Context(), int64(id))
+// 		if err != nil {
+// 			w.WriteHeader(http.StatusInternalServerError)
+// 			return
+// 		}
+// 		err = db.Conn.DeleteImageById(r.Context(), *comment.ImageID)
+// 		if err != nil {
+// 			w.WriteHeader(http.StatusInternalServerError)
+// 			return
+// 		}
+// 		err = db.Conn.DeleteCommentById(r.Context(), int64(id))
+// 		if err != nil {
+// 			w.WriteHeader(http.StatusInternalServerError)
+// 			return
+// 		}
+// 	}
+// 	w.Header().Set("HX-Refresh", "true")
+// }

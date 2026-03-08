@@ -11,7 +11,7 @@ import (
 	"time"
 
 	gws "github.com/gorilla/websocket"
-	"github.com/nathan-hello/nat-auth/auth"
+	"github.com/nathan-hello/personal-site/auth"
 	"github.com/nathan-hello/personal-site/components"
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/utils"
@@ -19,6 +19,7 @@ import (
 
 const DEFAULT_ROOM_ID = 1
 const DEFAULT_CHAT_COLOR = "text-gray-500"
+const DEFAULT_CHAT_NAME = "anon"
 
 var upgrader = gws.Upgrader{CheckOrigin: func(r *http.Request) bool {
 	return true
@@ -64,8 +65,7 @@ var manager = Manager{
 }
 
 func ChatSocket(w http.ResponseWriter, r *http.Request) {
-	user := auth.GetUser(r)
-
+	user, _ := auth.GetUser(r)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -81,12 +81,12 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-		color, err := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: user.Subject})
+		color, err := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: user.ID})
 		if err != nil {
 			color = "text-gray-500"
 		}
 
-		msg, err := newChatFromBytes(clientMsg, user.Username, user.Subject, color)
+		msg, err := newChatFromBytes(clientMsg, user.Username, user.ID, color)
 		if err != nil {
 			log.Println(err)
 			w.Write([]byte(err.Error()))
@@ -95,7 +95,12 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 		db.Db().InsertMessage(
 			r.Context(),
 			db.InsertMessageParams{
-				AuthorID:       &user.Subject,
+				// TODO(nate): fix this being a reference
+				// normalize chats being able to have anons
+				// in them via chatroom id. This is already
+				// happening with newMessageFromBytes but it
+				// isn't good enough.
+				AuthorID:       &user.ID,
 				AuthorUsername: msg.Username,
 				Message:        msg.Text,
 				CreatedAt:      msg.CreatedAt,
@@ -109,7 +114,7 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func ApiChat(w http.ResponseWriter, r *http.Request) {
-	user := auth.GetUser(r)
+	user, _ := auth.GetUser(r)
 	htmlResponse := r.Header.Get("Content-Type") == "text/html"
 	jsonResponse := r.Header.Get("Content-Type") == "application/json"
 	if !htmlResponse && !jsonResponse {
@@ -123,12 +128,12 @@ func ApiChat(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "{error: \"%v\"}", err)
 		}
 
-		color, _ := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: user.Subject})
+		color, _ := db.Db().SelectColorFromUserAndRoom(r.Context(), db.SelectColorFromUserAndRoomParams{ChatroomID: DEFAULT_ROOM_ID, UserID: user.ID})
 		if color == "" {
 			color = "text-gray-500"
 		}
 
-		c, err := newChatFromBytes(body, user.Username, user.Subject, color)
+		c, err := newChatFromBytes(body, user.Username, user.ID, color)
 		if err != nil {
 			fmt.Fprintf(w, "{error: \"%v\"}\n", err)
 			return
@@ -169,7 +174,7 @@ func ApiChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func Chat(w http.ResponseWriter, r *http.Request) {
-	user := auth.GetUser(r)
+	user, _ := auth.GetUser(r)
 	embed := r.URL.Query().Get("embed") == "true"
 
 	if r.Method == "GET" {
@@ -212,13 +217,12 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 			renderedMessages = append(renderedMessages, m)
 		}
 
-
-		profile, err := db.Conn.SelectUserProfileById(r.Context(), user.Subject)
+		profile, err := db.Conn.SelectUserProfileById(r.Context(), user.ID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		
+
 		components.ChatRoot(profile, embed, renderedMessages).Render(r.Context(), w)
 	}
 }
@@ -235,6 +239,10 @@ func newChatFromBytes(bits []byte, username string, userId string, color string)
 	}
 	if raw.Text == "" {
 		return nil, utils.ErrNoTextInChatMsg
+	}
+
+	if userId == "" {
+		userId = "anon-id"
 	}
 
 	if username == "" {
