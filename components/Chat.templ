@@ -1,0 +1,95 @@
+package components
+
+import "github.com/nathan-hello/personal-site/utils"
+import "github.com/nathan-hello/personal-site/db"
+
+templ ChatMessage(chat *utils.ChatMessage) {
+	<div id={ chat.TimeToString(false) } class="">
+		<span class="text-white font-thin">{ chat.TimeToString(true) }</span>
+		<span class={ "font-semibold " + chat.Color }>{ chat.Username }</span>
+		<span class=" text-white">{ chat.Text }</span>
+	</div>
+}
+
+templ LoginBox() {
+<div class="bg-black text-white-500 font-mono border-4 border-white-500 p-4 w-80 mx-auto mt-10">
+        <form class="text-2xl gay-y-4 flex flex-col max-w-screen-md mx-auto" hx-post="/signin" hx-target="this">
+        </form>
+</div>
+}
+
+templ ChatBear() {
+  <div class="h-1 bg-white-500 my-2"></div>
+}
+
+templ ChatRoot(user db.Profile,embed bool, messages []*utils.ChatMessage) {
+	if (embed) {
+			<!-- @chatScripts() -->
+            <div class="flex flex-col bg-black text-white-500 font-mono border-4 border-white-500 p-2 h-screen overflow-hidden">
+				@chatBox(messages)
+			</div>
+	} else {
+			<!-- @chatScripts() -->
+			<div class="flex flex-col relative" style="height: calc(100vh - 64px);">
+				@chatBox(messages)
+			</div>
+	}
+}
+
+templ chatBox(messages []*utils.ChatMessage) {
+	<button
+		hidden
+		id="scroll-bottom-button"
+		onclick="controlScroll(true)"
+		style="position: absolute; top: -1px; left: 0; right: 0;"
+		class="h-8 mx-20 min-w-0 min-h-0 mt-4 bg-gray-950 text-white z-10 flex justify-center opacity-85"
+	>
+		<span hidden id="scroll-bottom-span" class=" mx-auto my-auto">Scroll to bottom</span>
+	</button>
+	<div class="flex flex-col h-full">
+		<div id="message-container" class="flex-grow bg-gray-900 overflow-auto gap-y-1">
+			<div class="min-h-0" id="messages">
+				if messages != nil {
+					for _, v := range messages {
+						if v == nil {
+							continue
+						}
+						@ChatMessage(v)
+					}
+				}
+			</div>
+		</div>
+		<div class="bg-gray-800 p-1">
+			@chatForm()
+		</div>
+	</div>
+}
+
+templ chatForm() {
+  <form
+    id="chat-form"
+    class="flex chroma-bg mx-auto my-auto"
+  >
+  <div class="flex flex-row items-stretch p-2 space-x-2">
+       <input
+         required type="text" name="msg-text" id="msg-input-id"
+         class="w-80 h-full p-1 text-lg"
+         style="background-color: #171717;"
+       />
+      <input
+        type="submit"
+        class="w-12 text-white h-full px-2 col-span-1 hover:bg-gray-200 transition cursor-pointer inline-block"
+        value="Post"
+        style="background-color: #171717"
+	    />
+	</div>
+	</form>
+}
+
+//templ chatScripts() {
+//	<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+//	<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+//	<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+//	<script> htmx.logAll() </script>
+//	<script src="/js/chat.js"></script>
+//}

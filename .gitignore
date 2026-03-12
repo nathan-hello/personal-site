@@ -1,8 +1,10 @@
 tmp
 
+*.log
+
 *_templ.txt
 *_templ.go
-
+*.sql.go
 
 # build output
 dist/
@@ -10,6 +12,7 @@ tw-output.css
 personal-site
 # generated types
 .astro/
+personal-site.pid
 
 # dependencies
 node_modules/
@@ -24,6 +27,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+!.env.local
+data.db
 
 # macOS-specific files
 .DS_Store

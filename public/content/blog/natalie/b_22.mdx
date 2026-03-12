@@ -1,0 +1,213 @@
+---
+title: hashmaps
+date: 27-Jul-2025
+author: natalie
+image:
+    crayon.webp:
+        alt: A crayon for you <3 
+---
+If you just want the [code](https://git.sr.ht/~relue/swisshash).
+
+Hashmaps are a datastructure that come up pretty frequently, and while I will
+say they are reached for more often then they should be. See: lookup tables.
+They are when they are needed indispensible for making your program run in a
+timely manner. With this being the case you often think, so what hashmap should
+I use? And there are dozens of options, and in systems software the often toted
+truth is that if you need a datastructure you should make it with the program
+being written in mind. So where do you sit once you have implemented something
+half a dozen times and sometimes cannot be bothered to do it again. You grab an
+off the shelf solution, and in C, there are quite a few notable ones:
+[uthash](https://github.com/troydhanson/uthash),
+[khash](https://github.com/attractivechaos/klib/blob/master/khash.h),
+[stb](https://github.com/nothings/stb/blob/master/stb_ds.h),
+[cc](https://github.com/JacksonAllan/CC) and more. However all of them are
+quite large, complex, and difficult to debug. With often complex interfaces
+using callbacks or strange defaults, and there is nothing really wrong with any
+of these per se. However, when I use something I wish to read the code of what
+I am using... And for large libraries this is often a nightmare, due to layers
+upon layers of macros which abstract the workings of the library away from the
+user.
+
+Now one day I was at my computer and I saw a
+[talk](https://www.youtube.com/watch?v=ncHmEUmJZf4) about a hashmap made at
+google, about a type of hashmap called a swiss hashmap, which used simd and
+control groups for lookups. So again trying to read the [source]() of the code
+provided by the video I had a lot of trouble finding the really useful
+information because of again, this time instead of macros in C we have
+templates in C++... yay. But luckily the slides had some illustrative enough
+pseudo code so that I could figure out how to write it.
+
+There's not a lot to it:
+```C
+void *sm_find(void *map, const void *key, uint64_t key_size, uint64_t val_size) {
+    swiss_map_generic_t *m = (swiss_map_generic_t*)map;
+    uint64_t h = m->alloc.hash(key, key_size);
+    uint8_t h2 = ((uint8_t)(h >> 56)) & 0x7F;
+    uint64_t idx = index_for(h, m->lgcap);
+    
+    for (;;) {
+        uint32_t mask = match(h2, &m->ctrl[idx]);
+        while (mask) {
+            int j = __builtin_ctz(mask);
+            uint64_t pos = (idx + j) & (m->cap - 1);
+            if (memcmp((char*)m->keys + pos * key_size, key, key_size) == 0) {
+                return (char*)m->vals + pos * val_size;
+            }
+            mask &= mask - 1;
+        }
+        if (match(EMPTY, &m->ctrl[idx])) return NULL;
+        idx = (idx + GROUP_SIZE) & (m->cap - 1);
+    }
+}
+```
+
+That is the entire function to look something up, which may look like a lot so
+lets break it down. First, we computes the full 64-bit hash and a 7-bit "tag"
+(h2).
+```C
+uint64_t h  = m->alloc.hash(key, key_size);
+uint8_t  h2 = ((uint8_t)(h >> 56)) & 0x7F;
+```
+
+Map that hash to an initial bucket index using multiplicative hashing:
+```C
+uint64_t idx = (h * 11400714819323198485ull) >> (64 - m->lgcap);
+```
+
+Then probe in groups of control bytes until we hit the key or an empty slot.
+```C
+for (;;) {
+    // find all slots in this group whose tag == h2
+    uint32_t mask = match(h2, &m->ctrl[idx]);
+
+    // check each candidate
+    while (mask) {
+        int j = __builtin_ctz(mask);
+        uint64_t pos = (idx + j) & (m->cap - 1);
+        // full key compare
+        if (memcmp((char*)m->keys + pos*key_size, key, key_size) == 0) {
+            // found: return pointer to the value
+            return (char*)m->vals + pos*val_size;
+        }
+        mask &= mask - 1;  // clear lowest bit
+    }
+
+    // if any slot in this group is EMPTY, the key is absent
+    if (match(EMPTY, &m->ctrl[idx]))
+        return NULL;
+
+    // else advance to next group (wrap via mask)
+    idx = (idx + GROUP_SIZE) & (m->cap - 1);
+}
+```
+
+Using [match](https://git.sr.ht/~relue/swisshash/tree/main/item/hash.c#L128)
+which is the afformentioned simd, which returns a bitmask of which lanes equal
+the tag.
+
+Most other functions work in accessing the data in practically the same way
+but then do something slightly different to it.
+
+Now going back to what I said earlier about disliking the interfaces of other
+hashmaps provided me with a challenge: Designing the interface for this. And I
+took a lot of inspiration from cc, in using C11 style name templating. Which I
+am not sure I am happy with, however, It is a minimal amount of overhead for
+retaining some amount of type information with something which actually is
+generic.
+
+The macros ended up being quite pleasant to use and when I need a hashmap to
+easily vendor I can slap a:
+```C
+map(map, type_a, type_b, (sm_allocator_t){0});
+```
+And be on my merry way.
+doing:
+```C
+put(map, a, b);
+type_a *c = get(map, a);
+printf(c->d);
+```
+
+When working with it on a more complex project, namely a proof of work http
+file server, I wished to use an arena allocator so I can cleanly remove heap
+objects after the end of a requests context. So, how do I do that for a
+hashmap, one of two ways really, create a reset function (which as a result is
+not thread safe) or allow for custom allocators.
+
+Using custom allocators and hashmaps are relatively easy, they are simply
+callback functions which have a certain signature that you configure when
+creating the map for the first time.
+
+On a side note, the internal structure is also technically exposed allowing you
+to modify any part of it, like the hash function, allocator or access internal
+elements such as the value and key arrys directly. Which is how I used to do
+for loops until I realised I kept doing the same if statement to check for
+tombstones, and made a
+[for_each](https://git.sr.ht/~relue/swisshash/tree/main/item/hash.h#L69) macro.
+
+Now one more thing before moving onto profiling is I vendored some code from
+the [xxHash](https://github.com/lhecker/xxHash) hash function library, namely
+because they are also filthy macro abusers and deciphering the api was a pain
+in the but. So, after some digging I rewrote the one function I was going to
+use from it and chucked the rest. Which you can use when including the header.
+```C
+sm_allocator_t newhash(sm_allocator_t a) {
+  a.hash = XXH3_64bits;
+  return a;
+}
+
+map(map1, uint64_t, uint64_t, newhash(sm_mmap_allocator()));
+```
+
+Testing and profiling.
+The dreaded phase of anyone making a hashmap or other datastructure. But a
+necerssary evil, it allowed me to iron out some edge cases and bugs that I
+wasn't aware of. But also it is what justifies this excursion at all. In making
+somthing readable and digestable while having a nice interface and good
+performance characteristics. And I won't bombard you with graphs, the
+[repo](https://git.sr.ht/~relue/swisshash-testing) can generate you results
+quite easily.
+
+The methodology was quite simple, write some tests which check various usecases
+such as different key/value sizes and random vs non-random access. I didn't
+really bother with resizing semantics, memory overhead or looping in these
+tests but to sum them up as I did some tests previously.
+
+Ska and swiss were more aggressive then boost when resizing and as such took up
+more memory per key. However swiss had the most actually used elements inside
+of the maps. Presumably because of xxhash being a good hashing function. And
+Swiss had the slowest iterations going from about 5ms for ska and boost over a
+million elements to 30ms for swiss, just due to the fact that it doesn't clear
+tombstones until resizes while the other two presumably use backshifting or
+have really good collision avoidance. But considering the assembly spat out by
+ska:
+
+```assembly
+.L250:
+        add     edi, DWORD PTR [rax+1028]
+        add     rax, 2056
+.L253:
+        mov     rdx, rax
+        add     rax, 2056
+        cmp     BYTE PTR [rax-2056], 0
+        js      .L253
+        mov     rax, rdx
+        cmp     rcx, rdx
+        jne     .L250
+```
+
+for:
+```cpp
+for (auto const& [key, val] : m) {
+    sum += val.num;
+}
+```
+
+There couldn't be any tombstones.
+
+Now before anyone comes after me for not including any more things in my
+profiling, this stuff does not get updated often, and I am more than happy to
+hear about your own great hashtables. But I will use the post made by Malte
+[ska](https://probablydance.com/2017/02/26/i-wrote-the-fastest-hashtable/) to
+act as a proxy for the performance of my hashtable  against the others that
+were not mentioned.

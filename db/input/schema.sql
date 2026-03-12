@@ -1,8 +1,90 @@
+CREATE TABLE IF NOT EXISTS Images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    image TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    ext TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at TEXT NOT NULL,
     author TEXT NOT NULL,
     text TEXT NOT NULL,
     html TEXT NOT NULL,
-    post_id INTEGER NOT NULL
+    post_id INTEGER NOT NULL,
+    image_id INTEGER,
+    FOREIGN KEY (image_id) REFERENCES Images(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS CommentReplies (
+    comment_id INTEGER,
+    reply_comment_id INTEGER,
+    PRIMARY KEY (comment_id, reply_comment_id),
+    FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (reply_comment_id) REFERENCES Comments(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS auth_users (
+    id TEXT PRIMARY KEY NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_salt TEXT NOT NULL,
+    encrypted_password TEXT NOT NULL,
+    password_created_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS profiles (
+    id TEXT PRIMARY KEY NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    global_chat_color TEXT NOT NULL,
+    FOREIGN KEY (id) REFERENCES auth_users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS chatrooms (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    creator TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+     
+);
+
+CREATE TABLE IF NOT EXISTS chatroom_members (
+    chatroom_id INTEGER NOT NULL,
+    user_id TEXT NOT NULL,
+    chatroom_color TEXT NOT NULL,
+    PRIMARY KEY (chatroom_id, user_id),
+    FOREIGN KEY (chatroom_id) REFERENCES chatrooms(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES auth_users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id TEXT, -- nullable for anon messages
+    author_username TEXT NOT NULL,
+    message TEXT NOT NULL,
+    room_id INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (room_id) REFERENCES chatrooms(id) ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES auth_users(id) ON DELETE CASCADE
+    -- No foreign key constraint for author_username in case they change their username, we don't have to rewrite the messages they sent under a different username with a join.
+);
+
+CREATE TABLE IF NOT EXISTS tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    jwt_type TEXT NOT NULL,
+    jwt TEXT NOT NULL,
+    valid BOOLEAN NOT NULL,
+    family TEXT NOT NULL,
+    expires_at INTEGER NOT NULL,
+    device TEXT,
+    ip TEXT,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE TABLE IF NOT EXISTS users_tokens (
+    user_id TEXT NOT NULL,
+    token_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES auth_users(id) ON DELETE CASCADE,
+    FOREIGN KEY (token_id) REFERENCES tokens(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, token_id)
+);
+

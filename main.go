@@ -1,104 +1,108 @@
 package main
 
 import (
-	"fmt"
+	_ "embed"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"slices"
 
 	"github.com/nathan-hello/personal-site/db"
 	"github.com/nathan-hello/personal-site/render"
 	"github.com/nathan-hello/personal-site/router"
+	"github.com/nathan-hello/personal-site/utils"
 )
 
-var prod map[string]string = map[string]string{
-	"public":  "./dist/public",
-	"private": "./dist/private",
-	"db":      "/var/www/reluekiss.com/private/data.db",
-}
-
-var dev map[string]string = map[string]string{
-	"public":  "./dist/public",
-	"private": "./dist/private",
-	"db":      ":memory:",
-}
+const OUTPUT_PUBLIC = "./dist/public"
 
 const INPUT_BLOG = "./public/content/blog"
 const INPUT_PAGES = "./pages"
 const INPUT_PUBLIC = "./public"
 
+const DATABASE_URI = "./data.db"
+
 func main() {
 	build := slices.Contains(os.Args, "--build")
 	serve := slices.Contains(os.Args, "--serve")
+	isDev := slices.Contains(os.Args, "--dev")
 
-	m := prod
-	if slices.Contains(os.Args, "--dev") {
-		m = dev
+	if isDev {
 		build = true
 		serve = true
 	}
 
-	_, err := db.InitDb(m["db"])
+	log.Print("before db init")
+	_, err := db.InitDb(DATABASE_URI)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Print("after db init")
 
 	if !build && !serve {
 		log.Fatal("neither --build or --serve was given: choose one!")
 	}
 
 	if build {
-		generate(m)
+		generate()
 	}
 
 	if serve {
-		serveHttp(m)
+		serveHttp()
 	}
-
 }
 
-func generate(m map[string]string) {
-
-	err := render.PagesHtml(INPUT_PAGES, m["public"])
+func generate() {
+	err := render.PagesHtml(INPUT_PAGES, OUTPUT_PUBLIC)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = render.Public(INPUT_PUBLIC, m["public"])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-    blogs, err := render.Blogs(INPUT_BLOG, m["public"], true)
+	err = render.Public(INPUT_PUBLIC, OUTPUT_PUBLIC)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-    err = render.Rss(blogs, m["public"])
-    if err != nil {
+	blogs, err := render.Blogs(INPUT_BLOG, OUTPUT_PUBLIC, true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = render.Rss(blogs, OUTPUT_PUBLIC)
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Currently no static templs, but we could!
-	err = render.PagesTempl(m["public"], []render.TemplStaticPages{})
+	err = render.PagesTempl(OUTPUT_PUBLIC, []render.TemplStaticPages{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 }
 
-func serveHttp(m map[string]string) {
-	router.RegisterApiHttpHandler()
-
-        if slices.Contains(os.Args, "--dev") {
-		http.Handle("/", http.FileServer(http.Dir(m["public"])))
+func serveHttp() {
+	mux := http.NewServeMux()
+	for _, v := range router.ApiRoutes {
+		mux.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
 	}
 
-	fmt.Printf("Listening on port :3000 for routes: %#v\n", router.ApiRoutes)
-
-	err := http.ListenAndServe(":3000", nil)
-	if err != nil {
-		log.Fatal(err)
+	// If dev server, serve /dist as a FileServer
+	// If prod, 404 on things that don't match a known route
+	// Nginx is responsible for handling static routes without .html
+	// E.g. /tv instead of /tv.html
+	if slices.Contains(os.Args, "--dev") {
+		mux.Handle("/", http.FileServer(http.Dir(OUTPUT_PUBLIC)))
+	} else {
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/" {
+				http.Redirect(w, r, utils.StatusCodes[404], http.StatusMovedPermanently)
+				return
+			}
+			http.ServeFile(w, r, filepath.Join(OUTPUT_PUBLIC, "index.html"))
+		})
 	}
 
+	log.Println("Starting webserver on :3000")
+	log.Fatal(http.ListenAndServe(":3000", mux))
 }

@@ -1,19 +1,59 @@
 package router
 
 import (
-	"log"
 	"net/http"
 	"slices"
 	"time"
 
 	"github.com/justinas/alice"
+	"github.com/nathan-hello/personal-site/auth"
+	"github.com/nathan-hello/personal-site/utils"
 )
+
+func InjectUser(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		stack, cookie, ok := auth.GetSessionFromRequest(r)
+		if !ok {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if cookie != "" {
+			w.Header().Set("Set-Cookie", cookie)
+		}
+
+		wrap := auth.InjectContext(r, stack)
+
+		next.ServeHTTP(w, wrap)
+	})
+}
 
 func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
+		// TODO:
+		// code is always blank even if i put in context (or did i????)
+		// json is always blank even if i put in context (or did i????)
+
 		defer func() {
-			log.Printf("IP: %v, ROUTE REQUESTED: %v, RESPONSE TIME: %v\n", r.URL.User, r.URL.Path, time.Since(start))
+
+			code, ok := r.Context().Value(utils.AnalyticsContextKeyHttpResponseStatus).(int)
+			if !ok || code == 0 {
+				code = 200
+			}
+
+			json, ok := r.Context().Value(utils.JsonContextKey).(string)
+			if !ok || json == "" {
+				json = "{}"
+			}
+
+			host := utils.RealIP(r)
+			if host == "" {
+				host = "0.0.0.0"
+			}
+
+			utils.HttpAnalytic(time.Now(), host, code, r.Method, r.URL.Path, start, json)
 		}()
 		next.ServeHTTP(w, r)
 	})
@@ -27,15 +67,6 @@ func AllowMethods(methods ...string) alice.Constructor {
 				w.Write([]byte("Method not allowed"))
 				return
 			}
-			next.ServeHTTP(w, r)
-		})
-	}
-}
-
-func CreateHeader(key string, value string) alice.Constructor {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add(key, value)
 			next.ServeHTTP(w, r)
 		})
 	}

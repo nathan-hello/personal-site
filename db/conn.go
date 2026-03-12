@@ -38,3 +38,7 @@ func InitDb(input string) (*Queries, error) {
 
 	return Conn, nil
 }
+
+func Db() *Queries {
+        return Conn
+}

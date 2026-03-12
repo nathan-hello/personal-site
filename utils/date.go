@@ -15,12 +15,12 @@ var formats = []string{
 }
 
 func DateFormatString(dateStr string) string {
-	dateObj,err := DateStringToObject(dateStr)
-        if err != nil {
-                panic(err)
-        }
+	dateObj, err := DateStringToObject(dateStr)
+	if err != nil {
+		panic(err)
+	}
 
-        return DateFormatObject(dateObj)
+	return DateFormatObject(dateObj)
 }
 
 func DateFormatObject(dateObj time.Time) string {
@@ -47,8 +47,8 @@ func DateStringToObject(dateStr string) (time.Time, error) {
 	}
 
 	if err != nil {
-                return time.Time{},err
+		return time.Time{}, err
 	}
 
-	return dateObj,nil
+	return dateObj, nil
 }
