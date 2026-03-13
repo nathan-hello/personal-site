@@ -16,9 +16,6 @@ type ChatMessage struct {
 	CreatedAt time.Time `json:"msg-time"`
 }
 
-// TimeToString(true)  = string(HH:MM)
-//
-// TimeToString(false) = .Format(time.RFC3339)
 func (c *ChatMessage) TimeToString(hourMinute bool) string {
 	if hourMinute {
 		return fmt.Sprintf("%02d:%02d", c.CreatedAt.Hour(), c.CreatedAt.Minute())
