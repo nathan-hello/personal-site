@@ -13,8 +13,8 @@ import (
 	"github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
-	"github.com/nathan-hello/personal-site/components"
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/components"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func code(c component) (templ.Component, error) {

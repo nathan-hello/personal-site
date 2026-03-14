@@ -6,7 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func Rss(blogs []utils.Blog, output string) error {

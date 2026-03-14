@@ -14,9 +14,9 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
-	"github.com/nathan-hello/personal-site/db"
-	"github.com/nathan-hello/personal-site/layouts"
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/db"
+	"github.com/nathan-hello/personal-site/src/layouts"
+	"github.com/nathan-hello/personal-site/src/utils"
 	"gopkg.in/yaml.v3"
 )
 

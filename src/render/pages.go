@@ -13,9 +13,9 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	"github.com/nathan-hello/personal-site/components"
-	"github.com/nathan-hello/personal-site/layouts"
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/components"
+	"github.com/nathan-hello/personal-site/src/layouts"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 // This renders .html files in the pages/ dir.
