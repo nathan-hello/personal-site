@@ -11,7 +11,6 @@ import (
 	"time"
 
 	gws "github.com/gorilla/websocket"
-	"github.com/nathan-hello/personal-site/src/auth"
 	"github.com/nathan-hello/personal-site/src/components"
 	"github.com/nathan-hello/personal-site/src/db"
 	"github.com/nathan-hello/personal-site/src/utils"
@@ -65,7 +64,7 @@ var manager = Manager{
 }
 
 func ChatSocket(w http.ResponseWriter, r *http.Request) {
-	user, _ := auth.GetUser(r)
+	user, _ := utils.GetUser(r)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -114,7 +113,7 @@ func ChatSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func ApiChat(w http.ResponseWriter, r *http.Request) {
-	user, _ := auth.GetUser(r)
+	user, _ := utils.GetUser(r)
 	htmlResponse := r.Header.Get("Content-Type") == "text/html"
 	jsonResponse := r.Header.Get("Content-Type") == "application/json"
 	if !htmlResponse && !jsonResponse {
@@ -174,7 +173,7 @@ func ApiChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func Chat(w http.ResponseWriter, r *http.Request) {
-	user, _ := auth.GetUser(r)
+	user, _ := utils.GetUser(r)
 	embed := r.URL.Query().Get("embed") == "true"
 
 	if r.Method == "GET" {

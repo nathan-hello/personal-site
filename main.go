@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"slices"
 
-	"github.com/nathan-hello/personal-site/db"
-	"github.com/nathan-hello/personal-site/render"
-	"github.com/nathan-hello/personal-site/router"
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/db"
+	"github.com/nathan-hello/personal-site/src/render"
+	"github.com/nathan-hello/personal-site/src/router"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 const OUTPUT_DIR = "./dist"

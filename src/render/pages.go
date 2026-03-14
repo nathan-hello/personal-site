@@ -14,7 +14,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/nathan-hello/personal-site/src/components"
-	"github.com/nathan-hello/personal-site/src/layouts"
+	"github.com/nathan-hello/personal-site/src/components/layouts"
 	"github.com/nathan-hello/personal-site/src/utils"
 )
 
