@@ -34,7 +34,22 @@ setInterval(async () => {
 </script>
 <div class="flex flex-row justify-center space-x-2 items-stretch h-[720px]">
   <div class="fallback">
-
+    <div id="wrap"><canvas id="canvas" tabindex="0"></canvas></div>
+    <script>
+      var Module = {
+        canvas: (function () {
+          const n = document.getElementById("canvas");
+          return n.addEventListener("click", () => n.focus()), n;
+        })(),
+        print: function (n) {
+          console.log(n);
+        },
+        printErr: function (n) {
+          console.error(n);
+        },
+      };
+    </script>
+    <script async src="sorter.js"></script>
   </div>
   <iframe id="video-player" width="1280" height="720" allowfullscreen
     src="https://tv.reluekiss.com/mystream"></iframe>
