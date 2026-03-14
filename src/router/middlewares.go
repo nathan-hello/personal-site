@@ -6,14 +6,13 @@ import (
 	"time"
 
 	"github.com/justinas/alice"
-	"github.com/nathan-hello/personal-site/auth"
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func InjectUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		stack, cookie, ok := auth.GetSessionFromRequest(r)
+		stack, cookie, ok := utils.GetSessionFromRequest(r)
 		if !ok {
 			next.ServeHTTP(w, r)
 			return
@@ -23,7 +22,7 @@ func InjectUser(next http.Handler) http.Handler {
 			w.Header().Set("Set-Cookie", cookie)
 		}
 
-		wrap := auth.InjectContext(r, stack)
+		wrap := utils.InjectContext(r, stack)
 
 		next.ServeHTTP(w, wrap)
 	})

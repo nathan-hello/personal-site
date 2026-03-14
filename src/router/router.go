@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/justinas/alice"
-	"github.com/nathan-hello/personal-site/router/routes"
-	"github.com/nathan-hello/personal-site/router/routes/chat"
+	"github.com/nathan-hello/personal-site/src/router/routes"
+	"github.com/nathan-hello/personal-site/src/router/routes/chat"
 )
 
 type Site struct {

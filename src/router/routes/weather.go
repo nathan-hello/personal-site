@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func Weather(w http.ResponseWriter, r *http.Request) {

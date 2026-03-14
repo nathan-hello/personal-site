@@ -11,10 +11,10 @@ import (
 	"time"
 
 	gws "github.com/gorilla/websocket"
-	"github.com/nathan-hello/personal-site/auth"
-	"github.com/nathan-hello/personal-site/components"
-	"github.com/nathan-hello/personal-site/db"
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/auth"
+	"github.com/nathan-hello/personal-site/src/components"
+	"github.com/nathan-hello/personal-site/src/db"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 const DEFAULT_ROOM_ID = 1
