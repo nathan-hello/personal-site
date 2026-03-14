@@ -44,7 +44,7 @@ func Blogs(input, output string, write bool) ([]utils.Blog, error) {
 
 		dist := fmt.Sprintf("%s/%s/p/%d", output, strings.ToLower(v.Frnt.Author), v.Id)
 		v.Path = dist + ".html"
-		v.Url = strings.TrimPrefix(dist, "./dist")
+		v.Url = strings.TrimPrefix(dist, "./dist") + ".html"
 
 		v.Comments = getComments(int64(v.Id))
 

@@ -13,7 +13,7 @@ templ Comments(blog utils.Blog) {
 	@CommentHeader()
 	@CommentForm(blog)
 	@CommentBox(blog.Id)
-	<span id="Bottom" class="px-2">&lbrack;<a href={ templ.URL(fmt.Sprintf("/%s", blog.Frnt.Author)) }>Index</a>&rbrack; &lbrack;<a href="#Top">Top</a>&rbrack;</span>
+	<span id="Bottom" class="px-2">[<a href={ templ.URL(fmt.Sprintf("/%s", blog.Frnt.Author)) }>Index</a>] [<a href="#Top">Top</a>]</span>
 }
 
 templ CaptchaBox(params utils.Captcha) {
@@ -195,6 +195,6 @@ templ DeleteForm() {
 
 templ CommentHeader() {
 	<span id="Top" class="px-2">
-		<span>&lbrack</span> <a href="#Bottom">Bottom</a><span>&rbrack</span>
+		<span>&lbrack;</span><a href="#Bottom">Bottom</a><span>&rbrack;</span>
 	</span>
 }

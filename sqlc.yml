@@ -1,13 +1,13 @@
 version: "2"
 sql:
-    - schema: db/input/schema.sql
-      queries: db/input/queries.sql
+    - schema:  src/db/input/schema.sql
+      queries: src/db/input/queries.sql
       engine: sqlite
       database:
           uri: file:test.db?cache=shared&mode=memory
       gen:
           go:
               package: db
-              out: db/
+              out: src/db/
               emit_pointers_for_null_types: true
               emit_sql_as_comment: true
