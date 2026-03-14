@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nathan-hello/personal-site/utils"
+	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func (cmt Comment) NewBlogComment() utils.Comment {
