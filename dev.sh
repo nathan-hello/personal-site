@@ -1,55 +1,128 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-APP_NAME="personal-site"
-PORT=3000
-TEMPL_DIRS="components layouts"
-TAILWIND_INPUT="./public/css/tw-input.css"
-TAILWIND_OUTPUT="./public/css/tw-output.css"
-GO_FILES="."
+APP_PORT="${APP_PORT:-3000}"
+TEMPL_PROXY_PORT="${TEMPL_PROXY_PORT:-7331}"
+
+SERVER_PID=""
+TEMPL_PID=""
+TAILWIND_PID=""
+
+log() {
+    printf '==> %s\n' "$*"
+}
+
+stop_pid() {
+    local pid="${1:-}"
+
+    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+        kill "$pid" 2>/dev/null || true
+        wait "$pid" 2>/dev/null || true
+    fi
+}
+
+kill_port() {
+    local pids
+
+    pids="$(lsof -ti tcp:"$APP_PORT" 2>/dev/null || true)"
+    if [ -n "$pids" ]; then
+        kill $pids 2>/dev/null || true
+        sleep 1
+    fi
+}
+
+stop_server() {
+    stop_pid "$SERVER_PID"
+    SERVER_PID=""
+    kill_port
+}
+
+start_server() {
+    stop_server
+    make dev/server &
+    SERVER_PID=$!
+}
+
+notify_browser() {
+    make dev/reload >/dev/null 2>&1 || true
+}
+
+restart_server() {
+    local reason="$1"
+    shift
+
+    log "$reason"
+    if [ "$#" -gt 0 ]; then
+        make "$@"
+    fi
+    start_server
+    notify_browser
+}
 
 cleanup() {
-    echo "Cleaning up..."
-    kill $TEMPL_PID $TAILWIND_PID $SERVER_PID 2>/dev/null || true
-    kill $(lsof -t -i:$PORT) 2>/dev/null || true
+    trap - EXIT INT TERM
+    log "Stopping dev server"
+    stop_pid "$TAILWIND_PID"
+    stop_pid "$TEMPL_PID"
+    stop_server
 }
 
 trap cleanup EXIT INT TERM
 
-echo "Starting Tailwind CSS in watch mode..."
-bunx tailwindcss -i $TAILWIND_INPUT -o $TAILWIND_OUTPUT --watch &
-TAILWIND_PID=$!
+log "Running initial build"
+make dev/bootstrap
 
-echo "Starting templ in watch mode..."
-templ generate --watch &
-TEMPL_PID=$!
-
-start_server() {
-    echo "Starting Go server..."
-    go run . --dev &
-    SERVER_PID=$!
-}
-
+log "Starting app server on :$APP_PORT"
 start_server
 
-echo "Watching for Go file changes..."
-while true; do
-    sleep 1
-    
-    NEWEST=$(find $GO_FILES -name "*.go" -not -name "*_templ.go" -not -name "*_gen.go" -newer /tmp/.dev_server_marker 2>/dev/null | head -1)
-    
-    if [ -n "$NEWEST" ]; then
-        echo "Detected change in $NEWEST, restarting server..."
-        kill $SERVER_PID 2>/dev/null || true
-        wait $SERVER_PID 2>/dev/null || true
-        
-        if lsof -i:$PORT >/dev/null 2>&1; then
-            kill $(lsof -t -i:$PORT) 2>/dev/null || true
-            sleep 1
-        fi
-        
-        touch /tmp/.dev_server_marker
-        start_server
-    fi
-done
+log "Starting templ proxy on :$TEMPL_PROXY_PORT"
+make dev/templ &
+TEMPL_PID=$!
+
+log "Starting Tailwind watcher"
+make dev/tailwind &
+TAILWIND_PID=$!
+
+sleep 2
+
+log "Open http://127.0.0.1:$TEMPL_PROXY_PORT for live reload"
+log "Watching Go, templ, pages, public content, and Tailwind output"
+
+while IFS= read -r changed_path; do
+    case "$changed_path" in
+        ./dist/*|./.git/*|./node_modules/*)
+            continue
+            ;;
+        *_templ.go|*_templ.txt|*_gen.go|*.sql.go|./personal-site)
+            continue
+            ;;
+        ./public/css/tw-input.css)
+            continue
+            ;;
+        ./public/css/tw-output.css)
+            restart_server "tailwind rebuilt: ${changed_path#./}"
+            ;;
+        *.templ)
+            restart_server "templ changed: ${changed_path#./}" dev/build-templ
+            ;;
+        *.go)
+            restart_server "go changed: ${changed_path#./}" dev/build-go
+            ;;
+        *.sql|./sqlc.yml)
+            restart_server "sql changed: ${changed_path#./}" dev/build-sql
+            ;;
+        *.html|*.mdx)
+            restart_server "content changed: ${changed_path#./}"
+            ;;
+        ./pages/*|./public/*)
+            restart_server "public asset changed: ${changed_path#./}"
+            ;;
+    esac
+done < <(
+    inotifywait -m -r \
+        --format '%w%f' \
+        --event close_write,create,move,delete \
+        --exclude '(^|/)(dist|node_modules|\.git)(/|$)|(_templ\.go$|_templ\.txt$|_gen\.go$|\.sql\.go$)|(^|/)personal-site$' \
+        .
+)
