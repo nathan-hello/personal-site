@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -uo pipefail
 
 APP_PORT="${APP_PORT:-3000}"
 TEMPL_PROXY_PORT="${TEMPL_PROXY_PORT:-7331}"
@@ -22,6 +22,21 @@ stop_pid() {
     fi
 }
 
+stop_pid_tree() {
+    local pid="${1:-}"
+    local child
+
+    if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
+        return
+    fi
+
+    while IFS= read -r child; do
+        [ -n "$child" ] && stop_pid_tree "$child"
+    done < <(pgrep -P "$pid" 2>/dev/null || true)
+
+    stop_pid "$pid"
+}
+
 kill_port() {
     local pids
 
@@ -33,13 +48,12 @@ kill_port() {
 }
 
 stop_server() {
-    stop_pid "$SERVER_PID"
+    stop_pid_tree "$SERVER_PID"
     SERVER_PID=""
     kill_port
 }
 
 start_server() {
-    stop_server
     make dev/server &
     SERVER_PID=$!
 }
@@ -48,14 +62,25 @@ notify_browser() {
     make dev/reload >/dev/null 2>&1 || true
 }
 
+run_make() {
+    if make "$@"; then
+        return 0
+    fi
+
+    log "build failed; keeping current server running"
+    return 1
+}
+
 restart_server() {
     local reason="$1"
     shift
 
     log "$reason"
-    if [ "$#" -gt 0 ]; then
-        make "$@"
+    if [ "$#" -gt 0 ] && ! run_make "$@"; then
+        return
     fi
+
+    stop_server
     start_server
     notify_browser
 }
@@ -63,17 +88,20 @@ restart_server() {
 cleanup() {
     trap - EXIT INT TERM
     log "Stopping dev server"
-    stop_pid "$TAILWIND_PID"
-    stop_pid "$TEMPL_PID"
+    stop_pid_tree "$TAILWIND_PID"
+    stop_pid_tree "$TEMPL_PID"
     stop_server
 }
 
 trap cleanup EXIT INT TERM
 
 log "Running initial build"
-make dev/bootstrap
+if ! run_make dev/bootstrap; then
+    exit 1
+fi
 
 log "Starting app server on :$APP_PORT"
+kill_port
 start_server
 
 log "Starting templ proxy on :$TEMPL_PROXY_PORT"
@@ -120,7 +148,7 @@ while IFS= read -r changed_path; do
             ;;
     esac
 done < <(
-    inotifywait -m -r \
+    inotifywait -q -m -r \
         --format '%w%f' \
         --event close_write,create,move,delete \
         --exclude '(^|/)(dist|node_modules|\.git)(/|$)|(_templ\.go$|_templ\.txt$|_gen\.go$|\.sql\.go$)|(^|/)personal-site$' \

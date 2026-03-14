@@ -1,0 +1,55 @@
+package components
+
+templ TvPage(showSorter bool) {
+	<script type="module" src="/scripts/tv.js"></script>
+	<div id="video-parent" class="is-offline flex flex-row justify-center space-x-2 items-stretch max-h-full">
+		if showSorter {
+			@SorterPlayer()
+		} else {
+			@VideoPlayer()
+		}
+		@chat()
+	</div>
+	<p class="text-lg">
+		If we're live, feel free to chat on our
+		<b><a href="/irc.html" class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01">irc</a></b> server
+		too :)
+	</p>
+	<p>The stream is served over hls and rtmp the direct links to which are:</p>
+	<p>hls: https://tv.reluekiss.com/mystream</p>
+	<p></p>
+	<hr/>
+	<b>
+		<a id="bottom" class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="#top">
+			[Top]
+		</a>
+	</b>
+}
+
+templ SorterPlayer() {
+	<canvas class="aspect-4/3 w-full" height="720" width="960" id="canvas" tabindex="0"></canvas>
+	<script async src="/scripts/sorter.js"></script>
+	<script>
+		var Module = {
+			canvas: (function () {
+				const n = document.getElementById("canvas");
+				return (n.addEventListener("click", () => n.focus()), n);
+			})(),
+		};
+	</script>
+}
+
+templ VideoPlayer() {
+	<iframe id="video-player" width="1280" height="720" allowfullscreen src=""></iframe>
+}
+
+templ chat() {
+	<div
+		id="side-window"
+		class="flex flex-col items-center justify-center w-[320px] p-2 h-full chroma-bg"
+		hx-get="/chat"
+		hx-target="#side-window"
+		hx-swap="innerHTML"
+		hx-on="load"
+	></div>
+}
