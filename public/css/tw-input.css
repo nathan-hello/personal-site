@@ -1,11 +1,10 @@
 @import "tailwindcss" source("../..");
 
 @theme {
-        --font-display: "sans-serif";
+    --font-display: "sans-serif";
 
-        --color-nat-white-c01: "#b3b8c3";
-        --color-nat-black-c01: "#0c090a";
-        --color-nat-pink-c01: "#440e38";
-        --color-nat-green-c01: "#0a241e";
-        
+    --color-nat-white-c01: "#b3b8c3";
+    --color-nat-black-c01: "#0c090a";
+    --color-nat-pink-c01: "#440e38";
+    --color-nat-green-c01: "#0a241e";
 }
