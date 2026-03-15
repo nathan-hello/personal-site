@@ -35,3 +35,33 @@ func (cmt Comment) NewBlogComment() utils.Comment {
 
 	return c
 }
+
+type MessagesByChatroom struct {
+	Message Message
+	Profile Profile
+}
+
+func GetMessagesByChatroom(ctx context.Context, arg SelectMessagesByChatroomParams) ([]MessagesByChatroom, error) {
+	asdf, err := Conn.SelectMessagesByChatroom(ctx, arg)
+	if err != nil {
+		return nil, err
+	}
+	arr := []MessagesByChatroom{}
+	for _, v := range asdf {
+		arr = append(arr, MessagesByChatroom{
+			Message: Message{
+				ID:        v.ID,
+				AuthorID:  v.AuthorID,
+				Message:   v.Message,
+				RoomID:    v.RoomID,
+				CreatedAt: v.CreatedAt,
+			},
+			Profile: Profile{
+				ID:       v.ID_2,
+				Username: v.Username,
+				Color:    v.Color,
+			},
+		})
+	}
+	return arr, nil
+}

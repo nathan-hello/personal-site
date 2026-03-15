@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/justinas/alice"
+	"github.com/nathan-hello/personal-site/src/auth"
 	"github.com/nathan-hello/personal-site/src/utils"
 )
 
 func InjectUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		stack, cookie, ok := utils.GetSessionFromRequest(r)
+		stack, cookie, ok := auth.GetSessionFromRequest(r)
 		if !ok {
 			next.ServeHTTP(w, r)
 			return
@@ -22,7 +23,7 @@ func InjectUser(next http.Handler) http.Handler {
 			w.Header().Set("Set-Cookie", cookie)
 		}
 
-		wrap := utils.InjectContext(r, stack)
+		wrap := auth.InjectContext(r, stack)
 
 		next.ServeHTTP(w, wrap)
 	})
@@ -31,10 +32,6 @@ func InjectUser(next http.Handler) http.Handler {
 func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		// TODO:
-		// code is always blank even if i put in context (or did i????)
-		// json is always blank even if i put in context (or did i????)
-
 		defer func() {
 
 			code, ok := r.Context().Value(utils.AnalyticsContextKeyHttpResponseStatus).(int)

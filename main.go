@@ -54,6 +54,7 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+	router.RegisterAuth(mux)
 	for _, v := range router.ApiRoutes {
 		mux.Handle(v.Route, v.Middlewares.ThenFunc(v.Hfunc))
 	}

@@ -24,7 +24,6 @@ func RealIP(r *http.Request) string {
 }
 
 func HttpAnalytic(now time.Time, remoteAddr string, statusCode int, method string, path string, startTime time.Time, json string) {
-	// Open the file in append mode, create if it doesn't exist
 	file, err := os.OpenFile(LOG_PATH, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println("Error opening file:", err)

@@ -26,4 +26,8 @@ templ Meta(title, description, url string, image []utils.Image) {
 		<meta property="og:image" content={ image[0].Url }/>
 		<meta property="twitter:image" content={ image[0].Url }/>
 	}
+        <script>
+          htmx.logAll();
+        </script>
+
 }

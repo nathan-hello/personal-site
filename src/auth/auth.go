@@ -1,12 +1,16 @@
-package utils
+package auth
 
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"io"
+	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/nathan-hello/personal-site/src/db"
 )
 
 const COOKIE_PREFIX = "reluekiss"
@@ -43,6 +47,30 @@ type BAuthSession struct {
 type tAuthKey uint64
 
 var vAuthKey tAuthKey
+
+func GetProfile(r *http.Request) (db.Profile, bool) {
+	user, ok := GetUser(r)
+	if !ok {
+		return anonProfile(), false
+	}
+
+	profile, err := db.Conn.SelectUserProfileById(r.Context(), user.ID)
+	if err == nil {
+		return profile, true
+	}
+	if err == sql.ErrNoRows {
+		profile, err = db.Conn.InsertUserProfile(r.Context(), db.InsertUserProfileParams{
+			ID:       user.ID,
+			Username: user.Username,
+			Color:    color_map["green"],
+		})
+		if err != nil {
+			return db.Profile{}, false
+		}
+	}
+
+	return profile, true
+}
 
 func GetUser(r *http.Request) (User, bool) {
 	ba, ok := GetSessionAndUser(r)
@@ -121,4 +149,30 @@ func GetSessionFromRequest(r *http.Request) (BAuthSession, string, bool) {
 	c := response.Header.Get("Set-Cookie")
 
 	return stack, c, true
+}
+
+func anonProfile() db.Profile {
+
+	colors := make([]string, 0, len(color_map))
+	for _, v := range color_map {
+		colors = append(colors, v)
+	}
+
+	num := rand.Intn(6)
+	c := colors[num]
+
+	return db.Profile{
+		ID:       "anon",
+		Username: "anon",
+		Color:    c,
+	}
+}
+
+var color_map map[string]string = map[string]string{
+	"orange": "#f97316",
+	"red":    "#ef4444",
+	"yellow": "#eab308",
+	"blue":   "#3b82f6",
+	"pink":   "#ec4899",
+	"green":  "#22c55e",
 }

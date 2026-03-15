@@ -60,5 +60,5 @@ const AsciiWebring = `
 `
 
 func AsciiRender(s string) string {
-        return strings.ReplaceAll(s, "!", "`")
+	return strings.ReplaceAll(s, "!", "`")
 }

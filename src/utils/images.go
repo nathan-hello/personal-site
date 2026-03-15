@@ -6,7 +6,6 @@ import (
 )
 
 func FormatSize(bytes int64) string {
-
 	if bytes == 0 {
 		return "0 Bytes"
 

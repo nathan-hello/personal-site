@@ -3,13 +3,14 @@ package utils
 import (
 	"time"
 )
+
 type Image struct {
-	Name     string
-    BytesCount int64
-	Size string
-        Ext string
-	Url      string
-	Alt  string
+	Name       string
+	BytesCount int64
+	Size       string
+	Ext        string
+	Url        string
+	Alt        string
 }
 
 type Frontmatter struct {
@@ -25,20 +26,20 @@ type Frontmatter struct {
 }
 
 type Blog struct {
-	Id   int
-        Url string
-	Frnt Frontmatter
-    Markdown string
-	Html string
-        Path string
-        Comments []Comment
+	Id       int
+	Url      string
+	Frnt     Frontmatter
+	Markdown string
+	Html     string
+	Path     string
+	Comments []Comment
 }
 
 type Comment struct {
-        Id int64
-        Author string
-        Date time.Time
-        PostId int64
-        Html string
-        Image Image
+	Id     int64
+	Author string
+	Date   time.Time
+	PostId int64
+	Html   string
+	Image  Image
 }

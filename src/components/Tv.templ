@@ -1,42 +1,59 @@
 package components
 
-templ TvPage(showSorter bool) {
+templ TvPage(isStreaming bool) {
 	<script type="module" src="/scripts/tv.js"></script>
-	<div id="video-parent" class="is-offline flex flex-row justify-center space-x-2 items-stretch max-h-full">
-		if showSorter {
-			@SorterPlayer()
-		} else {
-			@VideoPlayer()
-		}
-		@chat()
+	<div class="flex flex-col bg-black">
+		<div id="video-parent" class="bg-black is-offline flex flex-row justify-between space-x-2 items-stretch max-h-full">
+			if isStreaming {
+				@VideoPlayer()
+			} else {
+				<!-- @SorterPlayer() -->
+			}
+			@chat()
+		</div>
+		<hr/>
+		<div class="text-white text-lg">
+			<p class="text-lg">
+				If we're live, feel free to chat on our
+				<b><a href="/irc.html" class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01">irc</a></b> server
+				too :)
+			</p>
+			<p>The stream is served over hls and rtmp the direct links to which are:</p>
+			<p>hls: https://tv.reluekiss.com/mystream</p>
+			<p></p>
+			<hr/>
+			<b>
+				<a id="bottom" class="no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="#top">
+					[Top]
+				</a>
+			</b>
+		</div>
 	</div>
-	<p class="text-lg">
-		If we're live, feel free to chat on our
-		<b><a href="/irc.html" class="text-nat-white-c01 hover:text-nat-black-c01 hover:bg-nat-white-c01">irc</a></b> server
-		too :)
-	</p>
-	<p>The stream is served over hls and rtmp the direct links to which are:</p>
-	<p>hls: https://tv.reluekiss.com/mystream</p>
-	<p></p>
-	<hr/>
-	<b>
-		<a id="bottom" class="text-nat-white-c01 no-underline hover:text-nat-black-c01 hover:bg-nat-white-c01" href="#top">
-			[Top]
-		</a>
-	</b>
 }
 
 templ SorterPlayer() {
-	<canvas class="aspect-4/3 w-full" height="720" width="960" id="canvas" tabindex="0"></canvas>
-	<script async src="/scripts/sorter.js"></script>
+	<canvas class="ml-4 mt-4 mb-4 aspect-4/3 resize-canvas" id="canvas" tabindex="0"></canvas>
+	<style>
+		.resize-canvas {
+			width: 260px !important;
+			height: 220px !important;
+		}
+	</style>
 	<script>
 		var Module = {
 			canvas: (function () {
 				const n = document.getElementById("canvas");
 				return (n.addEventListener("click", () => n.focus()), n);
 			})(),
+			print: function (n) {
+				// console.log(n);
+			},
+			printErr: function (n) {
+				// console.error(n);
+			},
 		};
 	</script>
+	<script async src="/scripts/sorter.js"></script>
 }
 
 templ VideoPlayer() {
@@ -45,11 +62,10 @@ templ VideoPlayer() {
 
 templ chat() {
 	<div
-		id="side-window"
 		class="flex flex-col items-center justify-center w-[320px] p-2 h-full chroma-bg"
 		hx-get="/chat"
-		hx-target="#side-window"
+		hx-target="this"
 		hx-swap="innerHTML"
-		hx-on="load"
+		hx-trigger="load"
 	></div>
 }

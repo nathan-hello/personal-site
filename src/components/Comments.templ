@@ -8,8 +8,8 @@ import (
 
 templ Comments(blog utils.Blog) {
 	<h2 class="px-2">Comments</h2>
-	<script src="/public/scripts/tegaki.min.js"></script>
-	<link rel="stylesheet" href="/public/css/tegaki.min.css"/>
+	<script src="/scripts/tegaki.min.js"></script>
+	<link rel="stylesheet" href="/css/tegaki.min.css"/>
 	@CommentHeader()
 	@CommentForm(blog)
 	@CommentBox(blog.Id)

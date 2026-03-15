@@ -7,7 +7,6 @@ import (
 
 const TimeFormat = time.RFC3339
 
-
 type ChatMessage struct {
 	UserId    string    `json:"msg-userid"`
 	Username  string    `json:"msg-author"`
